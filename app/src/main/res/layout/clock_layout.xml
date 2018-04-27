@@ -7,9 +7,22 @@
     <TimePicker
         android:id="@+id/alarm"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:headerBackground="#2000"
         android:numbersSelectorColor="#800000">
+
     </TimePicker>
+
+    <Switch
+        android:id="@+id/alarmset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:minHeight="@android:dimen/notification_large_icon_height"
+        android:switchMinWidth="56dp"
+        android:textColorLink="@android:color/holo_red_dark"
+        android:maxHeight="10dp"
+        android:layout_marginBottom="40pt"/>
+
 
 </FrameLayout>

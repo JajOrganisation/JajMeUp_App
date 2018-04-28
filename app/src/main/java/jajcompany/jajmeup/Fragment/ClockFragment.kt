@@ -2,17 +2,20 @@ package jajcompany.jajmeup.Fragment
 
 import android.app.AlarmManager
 import android.app.Fragment
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.support.v4.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import jajcompany.jajmeup.Activity.YouTubeJAJActivity
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.Utils.Alarm
 import jajcompany.jajmeup.Utils.Alarm.alarmManager
 import kotlinx.android.synthetic.main.clock_layout.*
+import kotlinx.android.synthetic.main.youtube_layout.*
 
 
 class ClockFragment : Fragment() {
@@ -22,15 +25,14 @@ class ClockFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         alarm.setIs24HourView(true)
-        alarmset.setOnCheckedChangeListener{ buttonView, isChecked ->
+        alarmSet.setOnCheckedChangeListener{ buttonView, isChecked ->
             if (isChecked) {
                 alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                Alarm.setAlarm(activity, alarm.currentHour, alarm.currentMinute)
+                Alarm.setAlarm(activity, alarm.currentHour, alarm.currentMinute, alarmSet)
             }
             else {
                 Alarm.deleteAlarm(activity)
             }
         }
     }
-
 }

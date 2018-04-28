@@ -9,6 +9,7 @@ import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import jajcompany.jajmeup.R
+import kotlinx.android.synthetic.main.clock_layout.*
 import kotlinx.android.synthetic.main.youtube_layout.*
 
 class YouTubeJAJActivity : YouTubeBaseActivity(){
@@ -28,6 +29,9 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         setContentView(R.layout.youtube_layout)
         initUI()
         youtubeAlarm.initialize(API_KEY, youtubePlayerInit)
+        stopAlarm.setOnClickListener {
+            finish()
+        }
     }
 
     private fun initUI() {

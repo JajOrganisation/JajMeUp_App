@@ -5,34 +5,76 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.YouTubeJAJActivity"
-    android:weightSum="100"
+    android:weightSum="300"
     android:orientation="vertical">
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="50"
+        android:layout_weight="150"
         android:orientation="vertical">
-
         <com.google.android.youtube.player.YouTubePlayerView
             android:id="@+id/youtubeAlarm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="50"
-        android:orientation="vertical">
-
-        <TextView
+        android:layout_weight="150"
+        android:orientation="vertical"
+        android:weightSum="100">
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="70"
+            android:orientation="vertical">
+                <TextView
+                    android:id="@+id/userAlarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="USER_NAME :"/>
+                <TextView
+                    android:id="@+id/messageAlarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="BONJOUR TOI ALORS" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="BONJOUR"/>
-
+            android:layout_weight="30"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@color/colorPrimary"
+                android:layout_weight="200"
+                android:weightSum="2">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:weightSum="1">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:weightSum="1">
+                        <ImageButton
+                            android:id="@+id/stopAlarm"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@android:drawable/ic_lock_power_off" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
-
-
 </LinearLayout>

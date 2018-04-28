@@ -6,6 +6,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import jajcompany.jajmeup.Activity.YouTubeJAJActivity
+import jajcompany.jajmeup.Fragment.ClockFragment
 import java.util.*
 
 object Alarm {
@@ -28,8 +30,9 @@ object Alarm {
     }
 
     class onAlarm : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
+        override fun onReceive(context: Context, intent: Intent?) {
             Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_SHORT).show()
+            context.startActivity(YouTubeJAJActivity.newIntent(context))
         }
     }
 }

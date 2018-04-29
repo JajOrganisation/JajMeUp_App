@@ -23,23 +23,29 @@
         android:layout_weight="150"
         android:orientation="vertical"
         android:weightSum="100">
-        <LinearLayout
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="70"
             android:orientation="vertical">
-                <TextView
-                    android:id="@+id/userAlarm"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="USER_NAME :"/>
-                <TextView
-                    android:id="@+id/messageAlarm"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="BONJOUR TOI ALORS" />
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="2">
+                    <TextView
+                        android:id="@+id/userAlarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="USER_NAME :"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:id="@+id/messageAlarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="BONJOUR TOI ALORS" />
+            </LinearLayout>
+        </RelativeLayout>
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

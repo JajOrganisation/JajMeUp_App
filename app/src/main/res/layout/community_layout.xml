@@ -5,6 +5,6 @@
     tools:context="jajcompany.jajmeup.Fragment.CommunityFragment">
     <ExpandableListView
         android:id="@+id/community_list"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </FrameLayout>

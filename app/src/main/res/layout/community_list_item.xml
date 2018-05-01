@@ -20,5 +20,6 @@
         android:layout_height="wrap_content"
         android:text="UserName"
         android:layout_toRightOf="@+id/userPicturesList"
-        android:layout_toEndOf="@+id/userPicturesList"/>
+        android:layout_toEndOf="@+id/userPicturesList"
+        android:textSize="16sp"/>
 </RelativeLayout>

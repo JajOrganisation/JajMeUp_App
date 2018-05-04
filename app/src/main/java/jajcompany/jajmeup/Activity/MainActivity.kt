@@ -4,6 +4,8 @@ import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.Window
 import jajcompany.jajmeup.Fragment.ClockFragment
 import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
@@ -46,5 +48,10 @@ class MainActivity : AppCompatActivity() {
                 ClockFragment::class.java!!.getName()) as ClockFragment
         fragmentManager.beginTransaction().replace(R.id.fragmentlayout, fragment).commit()
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.app_bar_menu, menu)
+        return true
     }
 }

@@ -5,7 +5,8 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
-import android.view.Window
+import android.view.MenuItem
+import jajcompany.jajmeup.Activity.SettingsActivity
 import jajcompany.jajmeup.Fragment.ClockFragment
 import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
@@ -53,5 +54,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.app_bar_menu, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.settings -> {
+                startActivity(SettingsActivity.newIntent(this))
+            }
+            else->super.onOptionsItemSelected(item)
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -2,10 +2,13 @@ package jajcompany.jajmeup.Fragment
 
 import android.app.Fragment
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ExpandableListView
 import android.widget.ImageView
+import android.widget.Toast
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.Utils.CommunityExpandableAdapter
 import kotlinx.android.synthetic.main.community_layout.*
@@ -37,5 +40,36 @@ class CommunityFragment : Fragment() {
         val expandableAdapter = CommunityExpandableAdapter(activity, listHeader, listChild)
 
         community_list.setAdapter(expandableAdapter)
+
+        community_list.setOnChildClickListener { expandableListView, view, groupPosition, childPosition, l ->
+            if (arguments != null) {
+                Toast.makeText(activity, ""+listChild[listHeader[groupPosition]]!![childPosition].userName + " va avoir ce reveil : " + arguments.getString("link"), Toast.LENGTH_LONG).show()
+            }
+            else {
+                Toast.makeText(
+                        activity,
+                        " Aucun lien pour "
+                                + listChild[listHeader[groupPosition]]!![childPosition].userName,
+                        Toast.LENGTH_LONG).show()
+            }
+            false}
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
+            Log.d("YOUTUBE_FRAGMENT", arguments.getString("link"))
+        }
+    }
+
+    companion object {
+
+        fun newInstance(link: String): CommunityFragment {
+            val args = Bundle()
+            args.putString("link", link)
+            val fragment = CommunityFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

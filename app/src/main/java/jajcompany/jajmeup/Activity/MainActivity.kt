@@ -1,9 +1,11 @@
 package jajcompany.jajmeup
 
 import android.app.Fragment
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import jajcompany.jajmeup.Activity.SettingsActivity
@@ -49,6 +51,16 @@ class MainActivity : AppCompatActivity() {
                 ClockFragment::class.java!!.getName()) as ClockFragment
         fragmentManager.beginTransaction().replace(R.id.fragmentlayout, fragment).commit()
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        val intent: Intent = getIntent()
+        val action: String = intent?.action
+        var type: String? = intent?.type
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                handleSendText(intent)
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -65,4 +77,18 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    fun handleSendText(intent: Intent) {
+        val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+        if (sharedText != null) {
+            Log.d("YOUTUBE_SHARE", sharedText)
+            val communityFragment = CommunityFragment.newInstance(sharedText)
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragmentlayout, communityFragment, CommunityFragment::class.java!!.getName())
+                    .commit()
+
+        }
+    }
+
 }

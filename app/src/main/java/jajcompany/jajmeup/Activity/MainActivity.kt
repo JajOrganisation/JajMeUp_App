@@ -43,6 +43,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // TODO
+        // Checker les cookies
+        // S il n y a pas de cookie alors on lance l activity ConnectRegistrationActivity
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation) as BottomNavigationView

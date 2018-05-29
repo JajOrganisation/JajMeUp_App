@@ -42,7 +42,11 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".Activity.LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login"/>
+
+        <activity android:name=".Activity.ConnectRegistrationActivity" />
+
+        <activity android:name=".Activity.ConnectActivity" />
     </application>
 
 </manifest>

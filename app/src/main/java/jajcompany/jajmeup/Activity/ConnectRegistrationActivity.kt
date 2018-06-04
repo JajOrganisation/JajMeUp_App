@@ -1,5 +1,7 @@
 package jajcompany.jajmeup.Activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import jajcompany.jajmeup.R
@@ -10,10 +12,19 @@ class ConnectRegistrationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.connectregistration_layout)
         connectButton.setOnClickListener {
-            //Start Activity Connect
+            startActivity(ConnectActivity.newIntent(this))
+            finish()
         }
         registrationButton.setOnClickListener {
-            //Start Activity Registration
+            startActivity(RegistrationActivity.newIntent(this))
+            finish()
+        }
+    }
+
+    companion object {
+        fun newIntent(context: Context): Intent {
+            val intent = Intent(context, ConnectRegistrationActivity::class.java)
+            return intent
         }
     }
 }

@@ -44,6 +44,10 @@
             android:name=".Activity.LoginActivity"
             android:label="@string/title_activity_login"/>
 
+        <activity
+            android:name=".Activity.RegistrationActivity"
+            android:label="Sign up"/>
+
         <activity android:name=".Activity.ConnectRegistrationActivity" />
 
         <activity android:name=".Activity.ConnectActivity" />

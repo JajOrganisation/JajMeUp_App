@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Pseudo" />
+            android:hint="Pseudo" />
 
         <EditText
             android:id="@+id/passwordConnect"
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_below="@+id/userNameConnect"
-            android:text="Motdepasse"
+            android:hint="Motdepasse"
             android:inputType="textPassword" />
 
         <Button

@@ -1,5 +1,7 @@
 package jajcompany.jajmeup.Activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -31,6 +33,13 @@ class ConnectActivity : AppCompatActivity() {
                                     Toast.LENGTH_SHORT).show()
                         }
             }
+        }
+    }
+
+    companion object {
+        fun newIntent(context: Context): Intent {
+            val intent = Intent(context, ConnectActivity::class.java)
+            return intent
         }
     }
 }

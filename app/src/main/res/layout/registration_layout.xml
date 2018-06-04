@@ -18,7 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Pseudo" />
+            android:text="bonjour@bonjour.fr"
+            android:hint="Pseudo" />
 
         <EditText
         android:id="@+id/passwordRegistration"
@@ -26,7 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_below="@+id/userNameRegistration"
-        android:text="Motdepasse"
+        android:text="123456"
+        android:hint="Motdepasse"
         android:inputType="textPassword" />
 
         <EditText
@@ -35,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_below="@+id/passwordRegistration"
-            android:text="Motdepasse"
+            android:text="123456"
+            android:hint="Motdepasse"
             android:inputType="textPassword" />
 
         <Button

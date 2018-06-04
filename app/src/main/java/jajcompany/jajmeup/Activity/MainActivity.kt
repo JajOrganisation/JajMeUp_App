@@ -1,6 +1,7 @@
 package jajcompany.jajmeup
 
 import android.app.Fragment
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -8,6 +9,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.google.firebase.auth.FirebaseAuth
+import jajcompany.jajmeup.Activity.ConnectRegistrationActivity
+import jajcompany.jajmeup.Activity.RegistrationActivity
 import jajcompany.jajmeup.Activity.SettingsActivity
 import jajcompany.jajmeup.Fragment.ClockFragment
 import jajcompany.jajmeup.Fragment.CommunityFragment
@@ -43,9 +47,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // TODO
-        // Checker les cookies
-        // S il n y a pas de cookie alors on lance l activity ConnectRegistrationActivity
+        /*
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        if (auth.currentUser == null) {
+            startActivity(ConnectRegistrationActivity.newIntent(this))
+            finish()
+        }*/
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation) as BottomNavigationView
@@ -55,8 +62,8 @@ class MainActivity : AppCompatActivity() {
         fragmentManager.beginTransaction().replace(R.id.fragmentlayout, fragment).commit()
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         val intent: Intent = getIntent()
-        val action: String = intent?.action
-        var type: String? = intent?.type
+        val action: String? = intent.action
+        var type: String? = intent.type
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
@@ -91,6 +98,13 @@ class MainActivity : AppCompatActivity() {
                     .replace(R.id.fragmentlayout, communityFragment, CommunityFragment::class.java!!.getName())
                     .commit()
 
+        }
+    }
+
+    companion object {
+        fun newIntent(context: Context): Intent {
+            val intent = Intent(context, MainActivity::class.java)
+            return intent
         }
     }
 

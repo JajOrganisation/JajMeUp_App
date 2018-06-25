@@ -47,8 +47,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*
-        val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        /*val auth: FirebaseAuth = FirebaseAuth.getInstance()
         if (auth.currentUser == null) {
             startActivity(ConnectRegistrationActivity.newIntent(this))
             finish()

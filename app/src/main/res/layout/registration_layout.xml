@@ -21,12 +21,21 @@
             android:text="bonjour@bonjour.fr"
             android:hint="Pseudo" />
 
+       <EditText
+            android:id="@+id/pseudoRegistration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/userNameRegistration"
+            android:text="Bob"
+            android:hint="Pseudo" />
+
         <EditText
         android:id="@+id/passwordRegistration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_below="@+id/userNameRegistration"
+        android:layout_below="@+id/pseudoRegistration"
         android:text="123456"
         android:hint="Motdepasse"
         android:inputType="textPassword" />

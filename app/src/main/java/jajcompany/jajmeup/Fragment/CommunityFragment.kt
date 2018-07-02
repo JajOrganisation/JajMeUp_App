@@ -9,11 +9,16 @@ import android.view.ViewGroup
 import android.widget.ExpandableListView
 import android.widget.ImageView
 import android.widget.Toast
+import com.google.firebase.database.*
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.Utils.CommunityExpandableAdapter
 import kotlinx.android.synthetic.main.community_layout.*
 
 class CommunityFragment : Fragment() {
+
+    lateinit var databaseRef: DatabaseReference
+
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.community_layout, container, false)
     }
@@ -53,6 +58,9 @@ class CommunityFragment : Fragment() {
                         Toast.LENGTH_LONG).show()
             }
             false}
+        databaseRef = FirebaseDatabase.getInstance().getReference()
+        getGreeting()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,5 +79,16 @@ class CommunityFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
+    }
+
+    fun getGreeting(){
+        databaseRef.child("name").addValueEventListener(object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                println("BONJOUR: ${snapshot.value}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 }

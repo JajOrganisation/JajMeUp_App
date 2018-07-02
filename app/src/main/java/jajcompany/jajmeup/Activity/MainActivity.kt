@@ -10,6 +10,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import jajcompany.jajmeup.Activity.ConnectRegistrationActivity
 import jajcompany.jajmeup.Activity.RegistrationActivity
 import jajcompany.jajmeup.Activity.SettingsActivity
@@ -47,11 +49,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
         if (auth.currentUser == null) {
             startActivity(ConnectRegistrationActivity.newIntent(this))
             finish()
-        }*/
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation) as BottomNavigationView
@@ -69,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                 handleSendText(intent)
             }
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

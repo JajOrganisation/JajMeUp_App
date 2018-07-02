@@ -10,10 +10,13 @@ import jajcompany.jajmeup.R
 import android.util.Log
 import jajcompany.jajmeup.MainActivity
 import kotlinx.android.synthetic.main.registration_layout.*
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import jajcompany.jajmeup.Utils.User
+import jajcompany.jajmeup.Models.User
+import jajcompany.jajmeup.Utils.FireStore
+import com.google.firebase.auth.UserProfileChangeRequest
+
+
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -37,11 +40,16 @@ class RegistrationActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("RegistrationActivity", "createUserWithEmail:success")
-                                val user = mAuth?.currentUser
+                                var user = mAuth?.currentUser
                                 var mDatabase: DatabaseReference? = null
                                // updateUI(user)
                                 writeNewUser(user!!.uid, userpseudo, usermail)
-                                startActivity(MainActivity.newIntent(this))
+                                val profileUpdates = UserProfileChangeRequest.Builder()
+                                        .setDisplayName(userpseudo).build()
+                                user.updateProfile(profileUpdates)
+                                FireStore.initCurrentUser {
+                                    startActivity(MainActivity.newIntent(this))
+                                }
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w("RegistrationActivity", "createUserWithEmail:failure", task.exception)
@@ -53,9 +61,8 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun writeNewUser(userId: String, username: String?, email: String?) {
-        val user = User(username, email)
-
+    private fun writeNewUser(userId: String, username: String, email: String) {
+        val user = User(username, email, null)
         FirebaseDatabase.getInstance().reference.child("users").child(userId).setValue(user)
     }
 

@@ -52,9 +52,8 @@ class CommunityFragment : Fragment() {
             }
             shouldInitRecyclerView = false
         }
-        fun updateItems() {
+        fun updateItems() = userSection.update(items)
 
-        }
         if (shouldInitRecyclerView)
             init()
         else

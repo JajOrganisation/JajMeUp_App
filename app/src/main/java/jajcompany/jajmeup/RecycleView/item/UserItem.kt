@@ -2,6 +2,7 @@ package jajcompany.jajmeup.RecycleView.item
 
 
 import android.content.Context
+import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.glide.GlideApp
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
@@ -12,6 +13,8 @@ import kotlinx.android.synthetic.main.community_list_item.*
 
 class UserItem(val user: User, val userId: String, private val context: Context): Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        val auth = FirebaseAuth.getInstance()
+        val usercurrent = auth.currentUser
         viewHolder.textView_name.text = user.name
         if (user.profilePicture != null)
             GlideApp.with(context).load(StorageUtil.pathToReference(user.profilePicture))

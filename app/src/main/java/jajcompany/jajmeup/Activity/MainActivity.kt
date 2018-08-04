@@ -1,10 +1,12 @@
 package jajcompany.jajmeup
 
-import android.app.Fragment
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -27,22 +29,16 @@ class MainActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_clock -> {
-                fragment = Fragment.instantiate(this@MainActivity,
-                        ClockFragment::class.java!!.getName()) as ClockFragment
-                fragmentManager.beginTransaction().replace(R.id.fragmentlayout, fragment).commit()
-                return@OnNavigationItemSelectedListener true
+                replaceFragment(ClockFragment())
+                true
             }
             R.id.navigation_history -> {
-                fragment = Fragment.instantiate(this@MainActivity,
-                        HistoryFragment::class.java!!.getName()) as HistoryFragment
-                fragmentManager.beginTransaction().replace(R.id.fragmentlayout, fragment).commit()
-                return@OnNavigationItemSelectedListener true
+                replaceFragment(HistoryFragment())
+                true
             }
             R.id.navigation_community -> {
-                fragment = Fragment.instantiate(this@MainActivity,
-                        CommunityFragment::class.java!!.getName()) as CommunityFragment
-                fragmentManager.beginTransaction().replace(R.id.fragmentlayout, fragment).commit()
-                return@OnNavigationItemSelectedListener true
+                replaceFragment(CommunityFragment())
+                true
             }
         }
         false
@@ -55,8 +51,27 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_layout)
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation) as BottomNavigationView
+       setContentView(R.layout.main_layout)
+        replaceFragment(CommunityFragment())
+
+        navigation.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.navigation_clock -> {
+                    replaceFragment(ClockFragment())
+                    true
+                }
+                R.id.navigation_history -> {
+                    replaceFragment(HistoryFragment())
+                    true
+                }
+                R.id.navigation_community -> {
+                    replaceFragment(CommunityFragment())
+                    true
+                }
+            }
+            false
+        }
+        /*val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation) as BottomNavigationView
         bottomNavigationView.selectedItemId = R.id.navigation_clock
         fragment = Fragment.instantiate(this@MainActivity,
                 ClockFragment::class.java!!.getName()) as ClockFragment
@@ -70,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             if ("text/plain".equals(type)) {
                 handleSendText(intent)
             }
-        }
+        }*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -93,10 +108,10 @@ class MainActivity : AppCompatActivity() {
         if (sharedText != null) {
             Log.d("YOUTUBE_SHARE", sharedText)
             val communityFragment = CommunityFragment.newInstance(sharedText)
-            fragmentManager
+           /* fragmentManager
                     .beginTransaction()
                     .replace(R.id.fragmentlayout, communityFragment, CommunityFragment::class.java!!.getName())
-                    .commit()
+                    .commit()*/
 
         }
     }
@@ -107,5 +122,9 @@ class MainActivity : AppCompatActivity() {
             return intent
         }
     }
-
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentlayout, fragment)
+                .commit()
+    }
 }

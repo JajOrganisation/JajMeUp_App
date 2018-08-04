@@ -1,7 +1,7 @@
 package jajcompany.jajmeup.Fragment
 
 import android.app.AlarmManager
-import android.app.Fragment
+import android.support.v4.app.Fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,19 +14,19 @@ import kotlinx.android.synthetic.main.clock_layout.*
 
 
 class ClockFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.clock_layout, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         alarm.setIs24HourView(true)
         alarmSet.setOnCheckedChangeListener{ buttonView, isChecked ->
             if (isChecked) {
-                alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                Alarm.setAlarm(activity, alarm.currentHour, alarm.currentMinute, alarmSet)
+                alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                Alarm.setAlarm(this.activity!!, alarm.currentHour, alarm.currentMinute, alarmSet)
             }
             else {
-                Alarm.deleteAlarm(activity)
+                Alarm.deleteAlarm(this.activity!!)
             }
         }
     }

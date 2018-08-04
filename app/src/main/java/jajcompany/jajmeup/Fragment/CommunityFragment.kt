@@ -1,32 +1,76 @@
 package jajcompany.jajmeup.Fragment
 
-import android.app.Fragment
+import android.support.v4.app.Fragment
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView
-import android.widget.ImageView
 import android.widget.Toast
 import com.google.firebase.database.*
+import com.google.firebase.firestore.ListenerRegistration
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.OnItemClickListener
+import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.R
+import jajcompany.jajmeup.R.attr.layoutManager
+import jajcompany.jajmeup.RecycleView.item.UserItem
 import jajcompany.jajmeup.Utils.CommunityExpandableAdapter
+import jajcompany.jajmeup.Utils.FireStore
 import kotlinx.android.synthetic.main.community_layout.*
 
 class CommunityFragment : Fragment() {
 
     lateinit var databaseRef: DatabaseReference
+    private lateinit var userListenerRegistration: ListenerRegistration
+    private var shouldInitRecyclerView = true
+    private lateinit var userSection: Section
 
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerView)
         return inflater?.inflate(R.layout.community_layout, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        FireStore.removeListener(userListenerRegistration)
+        shouldInitRecyclerView = true
+    }
+
+    private fun updateRecyclerView(items:List<Item>) {
+        fun init() {
+            community_list.apply {
+                layoutManager = LinearLayoutManager(this@CommunityFragment.context)
+                adapter = GroupAdapter<ViewHolder>().apply {
+                    userSection = Section(items)
+                    add(userSection)
+                    setOnItemClickListener(onItemClick)
+                }
+            }
+            shouldInitRecyclerView = false
+        }
+        fun updateItems() {
+
+        }
+        if (shouldInitRecyclerView)
+            init()
+        else
+            updateItems()
+    }
+
+    private val onItemClick = OnItemClickListener { item, view ->
+        if (item is UserItem) {
+            Toast.makeText(activity, "Click on User", Toast.LENGTH_LONG).show()
+        }
+    }
+
+   /* override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val listFriend = mutableListOf<CommunityExpandableAdapter.itemCommunauty>()
+       val listFriend = mutableListOf<CommunityExpandableAdapter.itemCommunauty>()
         val tmp: CommunityExpandableAdapter.itemCommunauty = CommunityExpandableAdapter.itemCommunauty("BOB", R.drawable.abc_ic_star_black_36dp)
 
         listFriend.add(tmp)
@@ -61,14 +105,14 @@ class CommunityFragment : Fragment() {
         databaseRef = FirebaseDatabase.getInstance().getReference()
         getGreeting()
 
-    }
+    }*/
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            Log.d("YOUTUBE_FRAGMENT", arguments.getString("link"))
-        }
-    }
+    /* override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         if (arguments != null) {
+             Log.d("YOUTUBE_FRAGMENT", arguments.getString("link"))
+         }
+    }*/
 
     companion object {
 

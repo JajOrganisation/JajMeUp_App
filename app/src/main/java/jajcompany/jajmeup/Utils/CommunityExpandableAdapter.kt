@@ -50,8 +50,8 @@ class CommunityExpandableAdapter(val context: Context, val listHeader: List<Stri
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
         val child = getChild(groupPosition, childPosition) as CommunityExpandableAdapter.itemCommunauty
         val view: View = LayoutInflater.from(context).inflate(R.layout.community_list_item, parent, false)
-        val listItemTxt = view.findViewById<TextView>(R.id.userNameList)
-        val listItemImg = view.findViewById<ImageView>(R.id.userPicturesList)
+        val listItemTxt = view.findViewById<TextView>(R.id.textView_name)
+        val listItemImg = view.findViewById<ImageView>(R.id.imageView_profile_picture)
 
         listItemImg.setImageResource(child.profilPicture)
         listItemTxt.text = child.userName

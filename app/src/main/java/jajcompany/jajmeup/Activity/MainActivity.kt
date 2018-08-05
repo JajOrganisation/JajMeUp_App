@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase
 import jajcompany.jajmeup.Activity.ConnectRegistrationActivity
 import jajcompany.jajmeup.Activity.RegistrationActivity
 import jajcompany.jajmeup.Activity.SettingsActivity
+import jajcompany.jajmeup.Activity.TestSettings
 import jajcompany.jajmeup.Fragment.ClockFragment
 import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
@@ -96,7 +97,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.settings -> {
-                startActivity(SettingsActivity.newIntent(this))
+                //startActivity(SettingsActivity.newIntent(this))
+                startActivity(TestSettings.newIntent(this))
             }
             else->super.onOptionsItemSelected(item)
         }

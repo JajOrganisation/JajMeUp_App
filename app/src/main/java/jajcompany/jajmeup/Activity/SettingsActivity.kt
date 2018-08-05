@@ -15,8 +15,12 @@ import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.preference.RingtonePreference
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import jajcompany.jajmeup.R
+import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -74,6 +78,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     class GeneralPreferenceFragment : PreferenceFragment() {
+        private val RC_SELECT_IMAGE = 2
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_general)
@@ -85,6 +90,20 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("example_text"))
             bindPreferenceSummaryToValue(findPreference("example_list"))
+        }
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+            val view = inflater.inflate(R.layout.profilepicturesettings_layout, container, false)
+            view.apply {
+                profilePictureSettings.setOnClickListener {
+                    val intent = Intent().apply {
+                        type = "image/*"
+                        action = Intent.ACTION_GET_CONTENT
+                        putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
+                    }
+                  startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
+                }
+            }
+            return view
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {

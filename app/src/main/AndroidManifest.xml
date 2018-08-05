@@ -38,7 +38,10 @@
         <receiver android:name=".Utils.Alarm$onAlarm" />
 
         <activity
-            android:name=".Activity.SettingsActivity"
+        android:name=".Activity.SettingsActivity"
+        android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".Activity.TestSettings"
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".Activity.LoginActivity"

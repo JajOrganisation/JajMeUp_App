@@ -1,4 +1,7 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <Preference android:key="help_preference" android:title="" android:layout="@layout/profilepicturesettings_layout" />
 
     <SwitchPreference
         android:defaultValue="true"

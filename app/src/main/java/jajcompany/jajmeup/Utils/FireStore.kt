@@ -8,6 +8,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.xwray.groupie.kotlinandroidextensions.Item
 import jajcompany.jajmeup.Models.User
+import jajcompany.jajmeup.Models.Vote
+import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.RecycleView.item.UserItem
 
 object FireStore {
@@ -16,6 +18,9 @@ object FireStore {
     private val currentUserDocRef: DocumentReference
         get() = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
+
+
+    private val reveilVotesCollectionRef = fireStoreInstance.collection("reveilVotes")
 
 
     fun initCurrentUser(onComplete: () -> Unit) {
@@ -32,10 +37,10 @@ object FireStore {
         }
     }
 
-    fun updateCurrentUser(name: String = "", email: String = "", profilePicture: String? = null) {
+    fun updateCurrentUser(name: String = "", reveil: String = "", profilePicture: String? = null) {
         val userFieldMap = mutableMapOf<String, Any>()
         if (name != "") userFieldMap["name"] = name
-        if (email != "") userFieldMap["email"] = email
+        if (reveil != "") userFieldMap["reveil"] = reveil
         if (profilePicture != null) userFieldMap["profilePicture"] = profilePicture
         currentUserDocRef.update(userFieldMap)
     }
@@ -64,6 +69,29 @@ object FireStore {
                 }
     }
 
+    fun addReveilListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/reveilVote")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Reveil listener error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+
+                    val items = mutableListOf<Item>()
+                    querySnapshot!!.documents.forEach {
+                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
+                            items.add(VoteItem(it.toObject(Vote::class.java)!!, it.id, context))
+                    }
+                    onListen(items)
+                }
+    }
+
     fun removeListener(registration: ListenerRegistration) = registration.remove()
 
+    fun sendVote(vote: Vote, otherUserId: String) {
+        fireStoreInstance.document("users/${otherUserId}")
+                .collection("reveilVote")
+                .add(vote)
+    }
 }

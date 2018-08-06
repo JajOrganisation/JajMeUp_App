@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         fragment = Fragment.instantiate(this@MainActivity,
                 ClockFragment::class.java!!.getName()) as ClockFragment
         fragmentManager.beginTransaction().replace(R.id.fragmentlayout, fragment).commit()
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)*/
         val intent: Intent = getIntent()
         val action: String? = intent.action
         var type: String? = intent.type
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             if ("text/plain".equals(type)) {
                 handleSendText(intent)
             }
-        }*/
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -110,11 +110,10 @@ class MainActivity : AppCompatActivity() {
         if (sharedText != null) {
             Log.d("YOUTUBE_SHARE", sharedText)
             val communityFragment = CommunityFragment.newInstance(sharedText)
-           /* fragmentManager
+            supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fragmentlayout, communityFragment, CommunityFragment::class.java!!.getName())
-                    .commit()*/
-
+                    .commit()
         }
     }
 

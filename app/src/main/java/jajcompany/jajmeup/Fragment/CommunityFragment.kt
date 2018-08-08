@@ -24,7 +24,8 @@ import jajcompany.jajmeup.Utils.CommunityExpandableAdapter
 import jajcompany.jajmeup.Utils.FireStore
 import kotlinx.android.synthetic.main.community_layout.*
 import com.google.firebase.auth.FirebaseUser
-
+import java.util.*
+import java.util.regex.Pattern
 
 
 class CommunityFragment : Fragment() {
@@ -71,10 +72,19 @@ class CommunityFragment : Fragment() {
     private val onItemClick = OnItemClickListener { item, view ->
         if (item is UserItem) {
             if (arguments?.getString("link") != null){
-                Toast.makeText(activity, "Give "+arguments?.getString("link")+"for "+item.user.name, Toast.LENGTH_LONG).show()
-                val user = FirebaseAuth.getInstance().currentUser
-                val vote = Vote(arguments?.getString("link").toString(), user?.displayName.toString())
-                FireStore.sendVote(vote, item.userId)
+                val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
+                val compiledPattern = Pattern.compile(pattern)
+                val matcher = compiledPattern.matcher(arguments?.getString("link").toString())
+                if (matcher.find()) {
+                    Toast.makeText(activity, "Give "+matcher.group()+"for "+item.user.name, Toast.LENGTH_LONG).show()
+                    val user = FirebaseAuth.getInstance().currentUser
+                    val vote = Vote(matcher.group(), user?.displayName.toString(), Calendar.getInstance().time)
+                    FireStore.sendVote(vote, item.userId)
+                }
+                else
+                {
+                    Toast.makeText(activity, "Invalid link", Toast.LENGTH_LONG).show()
+                }
             }
             else {
                 Toast.makeText(activity, "Click on User", Toast.LENGTH_LONG).show()

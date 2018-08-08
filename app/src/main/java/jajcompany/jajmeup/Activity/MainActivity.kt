@@ -21,6 +21,7 @@ import jajcompany.jajmeup.Activity.TestSettings
 import jajcompany.jajmeup.Fragment.ClockFragment
 import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
+import jajcompany.jajmeup.Utils.FireStore.getLastReveil
 import kotlinx.android.synthetic.main.main_layout.*
 
 class MainActivity : AppCompatActivity() {
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
        setContentView(R.layout.main_layout)
         replaceFragment(CommunityFragment())
+
 
         navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {

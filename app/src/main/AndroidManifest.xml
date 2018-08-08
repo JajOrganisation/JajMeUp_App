@@ -35,6 +35,13 @@
             android:name=".Activity.YouTubeJAJActivity"
             android:label="@string/app_name" />
 
+        <receiver android:name=".Utils.Alarm$onReveilInfo" >
+            <intent-filter>
+                <action android:name="onReveilINFO" >
+                </action>
+            </intent-filter>
+        </receiver>
+
         <receiver android:name=".Utils.Alarm$onAlarm" />
 
         <activity

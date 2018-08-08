@@ -1,5 +1,7 @@
 package jajcompany.jajmeup.Models
 
-data class Vote(val lien: String, val votant:String) {
-    constructor(): this("", "")
+import java.util.*
+
+data class Vote(val lien: String, val votant:String, val time:Date) {
+    constructor(): this("", "", Date(0))
 }

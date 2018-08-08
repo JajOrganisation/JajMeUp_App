@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -14,17 +15,30 @@ import kotlinx.android.synthetic.main.youtube_layout.*
 
 class YouTubeJAJActivity : YouTubeBaseActivity(){
 
-    companion object {
+    companion object IntentOptions{
         val API_KEY: String = "AIzaSyBjGxgGofuyFwavGjp4VMlNkfD0_iFcscg"
-        fun newIntent(context: Context): Intent {
+        var votant:String? = ""
+        var lien:String? = ""
+        fun newIntent(context: Context, vot: String?, lie: String?): Intent {
+            Log.d("HELLO YT ", vot)
+            votant = vot
+            lien = lie
             val intent = Intent(context, YouTubeJAJActivity::class.java)
             return intent
+        }
+
+        fun Intent.setVotant(votantset: String){
+            votant = votantset
+        }
+        fun Intent.setLien(lienset: String){
+            lien = lienset
         }
     }
 
     lateinit var youtubePlayerInit: YouTubePlayer.OnInitializedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("HELLO YT 2", votant)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.youtube_layout)
         initUI()
@@ -37,7 +51,8 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
     private fun initUI() {
         youtubePlayerInit = object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, youtubeAlarm: YouTubePlayer?, p2: Boolean) {
-                youtubeAlarm?.loadVideo("dQw4w9WgXcQ")
+                youtubeAlarm?.loadVideo(lien)
+
             }
 
             override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {

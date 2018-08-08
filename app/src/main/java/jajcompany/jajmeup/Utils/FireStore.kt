@@ -1,14 +1,18 @@
 package jajcompany.jajmeup.Utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.*
 import com.xwray.groupie.kotlinandroidextensions.Item
+import jajcompany.jajmeup.Activity.YouTubeJAJActivity
 import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
+import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.RecycleView.item.UserItem
 
@@ -18,10 +22,6 @@ object FireStore {
     private val currentUserDocRef: DocumentReference
         get() = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
-
-
-    private val reveilVotesCollectionRef = fireStoreInstance.collection("reveilVotes")
-
 
     fun initCurrentUser(onComplete: () -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
@@ -49,6 +49,30 @@ object FireStore {
         currentUserDocRef.get()
                 .addOnSuccessListener {
                     onComplete(it.toObject(User::class.java)!!)
+                }
+    }
+
+    fun getLastReveil(context: Context) {
+        fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/reveilVote")
+                .orderBy("time", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        for (document in task.result) {
+                            var test = document.toObject(Vote::class.java)
+                            val intent = Intent()
+                            Log.d("HELLO", test.votant)
+                            intent.action = "onReveilINFO"
+                            intent.putExtra("lien", test.lien)
+                            intent.putExtra("votant", test.votant)
+                            intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
+                            context.sendBroadcast(intent)
+                        }
+                    } else {
+                        Log.e("FIRESTORE", "Users listener error.")
+                    }
                 }
     }
 

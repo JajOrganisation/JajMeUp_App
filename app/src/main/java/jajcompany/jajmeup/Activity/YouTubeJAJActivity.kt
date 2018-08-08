@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.youtube_layout.*
 class YouTubeJAJActivity : YouTubeBaseActivity(){
 
     companion object IntentOptions{
-        val API_KEY: String = "AIzaSyBjGxgGofuyFwavGjp4VMlNkfD0_iFcscg"
+        val API_KEY: String = "A_REMPLACER"
         var votant:String? = ""
         var lien:String? = ""
         fun newIntent(context: Context, vot: String?, lie: String?): Intent {

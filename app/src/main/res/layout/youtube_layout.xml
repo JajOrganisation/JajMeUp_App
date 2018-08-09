@@ -37,7 +37,7 @@
                         android:id="@+id/userAlarm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="USER_NAME :"
+                        android:text="USER_NAME"
                         android:layout_weight="1"/>
                     <TextView
                         android:id="@+id/messageAlarm"

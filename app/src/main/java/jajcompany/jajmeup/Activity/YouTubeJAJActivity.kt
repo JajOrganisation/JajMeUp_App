@@ -16,13 +16,14 @@ import kotlinx.android.synthetic.main.youtube_layout.*
 class YouTubeJAJActivity : YouTubeBaseActivity(){
 
     companion object IntentOptions{
-        val API_KEY: String = "A_REMPLACER"
+        val API_KEY: String = "AIzaSyBjGxgGofuyFwavGjp4VMlNkfD0_iFcscg"
         var votant:String? = ""
         var lien:String? = ""
-        fun newIntent(context: Context, vot: String?, lie: String?): Intent {
-            Log.d("HELLO YT ", vot)
+        var message:String? = ""
+        fun newIntent(context: Context, vot: String?, lie: String?, mess: String?): Intent {
             votant = vot
             lien = lie
+            message = mess
             val intent = Intent(context, YouTubeJAJActivity::class.java)
             return intent
         }
@@ -33,14 +34,18 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         fun Intent.setLien(lienset: String){
             lien = lienset
         }
+        fun Intent.setMessage(messageset: String){
+            message = messageset
+        }
     }
 
     lateinit var youtubePlayerInit: YouTubePlayer.OnInitializedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("HELLO YT 2", votant)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.youtube_layout)
+        userAlarm.setText(votant)
+        messageAlarm.setText(message)
         initUI()
         youtubeAlarm.initialize(API_KEY, youtubePlayerInit)
         stopAlarm.setOnClickListener {

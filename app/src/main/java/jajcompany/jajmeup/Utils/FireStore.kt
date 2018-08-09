@@ -67,6 +67,7 @@ object FireStore {
                             intent.action = "onReveilINFO"
                             intent.putExtra("lien", test.lien)
                             intent.putExtra("votant", test.votant)
+                            intent.putExtra("message", test.message)
                             intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
                             context.sendBroadcast(intent)
                         }

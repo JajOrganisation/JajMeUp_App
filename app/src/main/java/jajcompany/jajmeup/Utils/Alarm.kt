@@ -53,7 +53,7 @@ object Alarm {
     class onReveilInfo : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             Log.d("HELLO YT ", context.toString())
-            val intent = YouTubeJAJActivity.newIntent(context, intent?.getStringExtra("votant"), intent?.getStringExtra("lien"))
+            val intent = YouTubeJAJActivity.newIntent(context, intent?.getStringExtra("votant"), intent?.getStringExtra("lien"), intent?.getStringExtra("message"))
             context.startActivity(intent)
         }
     }

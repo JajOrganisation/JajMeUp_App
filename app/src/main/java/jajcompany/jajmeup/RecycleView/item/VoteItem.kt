@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.history_list_item.*
 class VoteItem(val vote: Vote, val userId: String, private val context: Context): Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         val auth = FirebaseAuth.getInstance()
-        viewHolder.videoName.text = vote.lien
+        viewHolder.videoName.text = vote.videoname
 
     }
 

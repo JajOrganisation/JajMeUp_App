@@ -4,12 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.Utils.FireStore
 import jajcompany.jajmeup.Utils.StorageUtil
@@ -61,11 +65,14 @@ class TestSettings : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         FireStore.getCurrentUser { user ->
-                if (!pictureJustChanged && user.profilePicture != null)
+                if (!pictureJustChanged && user.profilePicture != null) {
                     GlideApp.with(this)
                             .load(StorageUtil.pathToReference(user.profilePicture))
                             .placeholder(R.drawable.ic_account_circle_black_24dp)
                             .into(profilePictureSettings)
+                    Glide.with(this).load(StorageUtil.pathToReference(user.profilePicture)).apply(RequestOptions.circleCropTransform()).into(profilePictureSettings)
+                }
+
             }
     }
 

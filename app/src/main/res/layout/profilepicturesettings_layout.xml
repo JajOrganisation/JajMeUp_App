@@ -1,22 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/help_frame_layout"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:layout_weight="150">
 
     <LinearLayout
-        android:id="@+id/help_linear_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="150"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/picturelayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:weightSum="100"
+            android:layout_weight="150">
+            <ImageView
+                android:id="@+id/profilePictureSettings"
+                android:layout_margin="3pt"
+                android:layout_width="100pt"
+                android:layout_height="100pt"
+                android:src="@drawable/ic_account_circle_black_24dp"/>
+        </LinearLayout>
+         <LinearLayout
+        android:id="@+id/bonjour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <ImageView
-            android:id="@+id/profilePictureSettings"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_account_circle_black_24dp"/>
- </LinearLayout>
-</FrameLayout>
+        android:orientation="vertical"
+        android:weightSum="100"
+        android:layout_weight="50">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="COUCOU"/>
+         </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

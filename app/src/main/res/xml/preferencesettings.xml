@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:title="Paramètre de l'application">
+
+        <EditTextPreference
+            android:key="default_reveil"
+            android:title="Reveil par défault"
+            android:summary="Nom de la video"
+            android:dialogTitle="Lien YouTube pour te réveiller"
+            android:defaultValue="123456"/>
+
+        <ListPreference
+            android:key="visibility_preference"
+            android:title="Visibilite de mon reveil"
+            android:summary="Qui peut voir mon réveil"
+            android:entries="@array/visibilitearrays"
+            android:entryValues="@array/visibilitearray_id"
+            android:dialogTitle="Selectionne la visibilite de ton réveil"
+            android:defaultValue="WORLD"/>
+
+        <CheckBoxPreference
+            android:key="history_preference"
+            android:title="Historique"
+            android:summary="Activer / Désactiver lhistorique"
+            android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

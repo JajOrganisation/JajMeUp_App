@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="visibilitearrays">
+        <item>"Tout le monde"</item>
+        <item>"Amis"</item>
+        <item>"Juste moi"</item>
+    </string-array>
+    <string-array name="visibilitearray_id">
+        <item>WORLD</item>
+        <item>FRIENDS</item>
+        <item>PRIVATE</item>
+    </string-array>
+</resources>

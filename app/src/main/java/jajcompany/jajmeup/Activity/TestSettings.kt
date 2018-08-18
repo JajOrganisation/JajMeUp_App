@@ -4,14 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.preference.PreferenceFragment
 import android.provider.MediaStore
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jajcompany.jajmeup.R
@@ -36,6 +33,9 @@ class TestSettings : AppCompatActivity() {
                 putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
             }
             startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
+        }
+        layoutPreferenceSettings.setOnClickListener{
+            startActivity(SettingsPreferenceActivity.newIntent(this))
         }
     }
 

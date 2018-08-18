@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/help_frame_layout"
@@ -26,17 +27,41 @@
                 android:layout_height="100pt"
                 android:src="@drawable/ic_account_circle_black_24dp"/>
         </LinearLayout>
-         <LinearLayout
-        android:id="@+id/bonjour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:weightSum="100"
-        android:layout_weight="50">
+         <RelativeLayout
+             android:id="@+id/layoutGeneralSettings"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="100"
+            android:layout_weight="50">
+            <ImageView
+                android:id="@+id/imgGeneralSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_settings"/>
              <TextView
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
-                 android:text="COUCOU"/>
-         </LinearLayout>
+                 android:layout_toEndOf="@id/imgGeneralSettings"
+                 android:text="Compte"/>
+         </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/layoutPreferenceSettings"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="100"
+            android:layout_weight="50">
+            <ImageView
+                android:id="@+id/imgPreferenceSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_settings"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/imgPreferenceSettings"
+                android:text="Preferences"/>
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

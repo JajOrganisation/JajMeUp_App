@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="pref_key_category_1"
+        android:title="Information sur le compte" >
+
+        <Preference
+            android:dependency="pref_key_pref_1"
+            android:key="pref_key_pref_2"
+            android:summary="Email"
+            android:title="Email" />
+        <EditTextPreference
+            android:key="edittext_preference"
+            android:title="Email"
+            android:summary="Email"
+            android:dialogTitle="Email" />
+    </PreferenceCategory>
+</PreferenceScreen>

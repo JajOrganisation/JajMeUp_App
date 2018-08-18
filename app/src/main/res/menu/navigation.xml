@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/navigation_history"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_historique" />
+    <group android:id="@+id/history_menu">
+        <item
+            android:id="@+id/navigation_history"
+            android:icon="@drawable/ic_notifications_black_24dp"
+            android:title="@string/title_historique" />
+    </group>
 
     <item
         android:id="@+id/navigation_clock"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_reveil" />
 
-    <item
-        android:id="@+id/navigation_community"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_caummunaute" />
+    <group android:id="@+id/community_menu">
+        <item
+            android:id="@+id/navigation_community"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:title="@string/title_caummunaute" />
+    </group>
 
 </menu>

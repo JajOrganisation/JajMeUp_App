@@ -48,6 +48,9 @@
         android:name=".Activity.SettingsActivity"
         android:label="@string/title_activity_settings" />
         <activity
+            android:name=".Activity.SettingsPreferenceActivity"
+            android:label="@string/title_activity_settings" />
+        <activity
             android:name=".Activity.TestSettings"
             android:label="@string/title_activity_settings" />
         <activity

@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
        setContentView(R.layout.main_layout)
-        replaceFragment(ClockFragment())
+        replaceFragment(CommunityFragment())
 
 
         navigation.setOnNavigationItemSelectedListener {

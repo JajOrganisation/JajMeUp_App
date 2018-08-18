@@ -1,12 +1,10 @@
 package jajcompany.jajmeup.Fragment
 
-import android.content.Context
 import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -22,14 +20,11 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.R.attr.layoutManager
 import jajcompany.jajmeup.RecycleView.item.UserItem
-import jajcompany.jajmeup.Utils.CommunityExpandableAdapter
 import jajcompany.jajmeup.Utils.FireStore
 import kotlinx.android.synthetic.main.community_layout.*
-import com.google.firebase.auth.FirebaseUser
 import jajcompany.jajmeup.Utils.YoutubeInformation
-import kotlinx.android.synthetic.main.vote_popup_layout.*
+import kotlinx.android.synthetic.main.community_list_header.view.*
 import java.util.*
 import java.util.regex.Pattern
 
@@ -47,6 +42,24 @@ class CommunityFragment : Fragment() {
             Log.d("YOUTUBE_FRAGMENT", arguments.getString("link"))
         }*/
         return inflater?.inflate(R.layout.community_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        header_friends.header_communauty.text = "Amis"
+        header_world.header_communauty.text = "Tout le monde"
+
+        header_friends.header_communauty.setOnClickListener {
+            Toast.makeText(activity, "On va masquer les amis", Toast.LENGTH_LONG).show()
+        }
+
+        header_world.header_communauty.setOnClickListener {
+
+            if(community_list.visibility == View.GONE)
+                community_list.visibility = View.VISIBLE
+            else
+                community_list.visibility = View.GONE
+        }
     }
 
     override fun onDestroyView() {

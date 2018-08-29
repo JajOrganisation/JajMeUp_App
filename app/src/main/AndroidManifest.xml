@@ -58,6 +58,10 @@
             android:label="@string/title_activity_login"/>
 
         <activity
+            android:name=".Activity.AskingFriendsActivity"
+            android:label="JajMeUp"/>
+
+        <activity
             android:name=".Activity.RegistrationActivity"
             android:label="Sign up"/>
 

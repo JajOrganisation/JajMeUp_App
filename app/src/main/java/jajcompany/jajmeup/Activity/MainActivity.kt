@@ -19,6 +19,8 @@ import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
 import kotlinx.android.synthetic.main.main_layout.*
 import android.preference.PreferenceManager
+import jajcompany.jajmeup.Activity.AskingFriendsActivity
+import jajcompany.jajmeup.Models.AskingFriends
 
 
 class MainActivity : AppCompatActivity() {
@@ -116,6 +118,9 @@ class MainActivity : AppCompatActivity() {
             R.id.settings -> {
                 //startActivity(SettingsActivity.newIntent(this))
                 startActivity(TestSettings.newIntent(this))
+            }
+            R.id.notifications -> {
+                startActivity(AskingFriendsActivity.newIntent(this))
             }
             else->super.onOptionsItemSelected(item)
         }

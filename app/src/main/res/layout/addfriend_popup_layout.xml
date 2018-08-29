@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_layout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#bebebe"
+    android:padding="20dp"
+    >
+    <ImageView
+        android:id="@+id/addfriend_profile_picture"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="2pt"
+        tools:src="@drawable/ic_account_circle_black_24dp"/>
+    <TextView
+        android:id="@+id/addfriend_userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Username"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        />
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" >
+        <Button
+            android:id="@+id/button_addfriendpop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Demander en ami"
+            />
+        <Button
+            android:id="@+id/button_addfriend_closepop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Annuler"/>
+    </TableRow>
+</LinearLayout>

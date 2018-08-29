@@ -1,20 +1,19 @@
 package jajcompany.jajmeup.Utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.xwray.groupie.kotlinandroidextensions.Item
-import jajcompany.jajmeup.Activity.YouTubeJAJActivity
+import jajcompany.jajmeup.Models.AskingFriends
 import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
-import jajcompany.jajmeup.R
+import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
 import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.RecycleView.item.UserItem
+
+
 
 object FireStore {
     private val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
@@ -112,11 +111,65 @@ object FireStore {
                 }
     }
 
+    fun addAskingFriendsListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/askFriends")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Ask Friends listener error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+
+                    val items = mutableListOf<Item>()
+                    querySnapshot!!.documents.forEach {
+                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
+                            items.add(AskingFriendsItem(it.toObject(AskingFriends::class.java)!!, it.id, context))
+                    }
+                    onListen(items)
+                }
+    }
+
     fun removeListener(registration: ListenerRegistration) = registration.remove()
 
     fun sendVote(vote: Vote, otherUserId: String) {
         fireStoreInstance.document("users/${otherUserId}")
                 .collection("reveilVote")
                 .add(vote)
+    }
+
+    fun askFriends(userAsk: AskingFriends, otherUserID: String) {
+        fireStoreInstance.document("users/${otherUserID}")
+                .collection("askFriends")
+                .add(userAsk)
+    }
+
+    fun getProfilePicture(): String {
+        val auth = FirebaseAuth.getInstance()
+        val usercurrent = auth.currentUser
+        var result = ""
+        val docRef = fireStoreInstance.document("users/${usercurrent!!.uid}")
+        docRef.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val document = task.result
+                result = document.getString("profilePicture").toString()
+            } else {
+                Log.d("LOGGER", "get failed with ", task.exception)
+            }
+        }
+        Log.d("COUCOUu", result)
+        return result
+    }
+
+    fun acceptFriends(newFriend: User) {
+        val user = FirebaseAuth.getInstance().currentUser
+        fireStoreInstance.collection("askFriends")
+                .document("user/${user!!.uid}")
+                .delete()
+        fireStoreInstance.document("users/${newFriend}")
+                .collection("friends")
+                .add(user!!.uid)
+        fireStoreInstance.document("users/${user!!.uid}")
+                .collection("friends")
+                .add(newFriend)
     }
 }

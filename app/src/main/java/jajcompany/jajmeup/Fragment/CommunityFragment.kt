@@ -5,26 +5,36 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.ListenerRegistration
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
+import com.xwray.groupie.OnItemLongClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import jajcompany.jajmeup.Models.AskingFriends
 import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
 import jajcompany.jajmeup.Utils.FireStore
+import jajcompany.jajmeup.Utils.FireStore.askFriends
+import jajcompany.jajmeup.Utils.FireStore.getProfilePicture
+import jajcompany.jajmeup.Utils.StorageUtil
 import kotlinx.android.synthetic.main.community_layout.*
 import jajcompany.jajmeup.Utils.YoutubeInformation
+import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_list_header.view.*
+import kotlinx.android.synthetic.main.community_list_item.*
 import java.util.*
 import java.util.regex.Pattern
 
@@ -76,6 +86,7 @@ class CommunityFragment : Fragment() {
                     userSection = Section(items)
                     add(userSection)
                     setOnItemClickListener(onItemClick)
+                    setOnItemLongClickListener(onItemLongClick)
                 }
             }
             shouldInitRecyclerView = false
@@ -86,6 +97,59 @@ class CommunityFragment : Fragment() {
             init()
         else
             updateItems()
+    }
+
+    private val onItemLongClick = OnItemLongClickListener { item, view ->
+        if (item is UserItem) {
+            val inflater = LayoutInflater.from(context)
+            val view = inflater.inflate(R.layout.addfriend_popup_layout,null)
+            val popupWindow = PopupWindow(
+                    view, // Custom view to show in popup window
+                    LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+                    LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+            )
+            val slideIn = Slide()
+            slideIn.slideEdge = Gravity.TOP
+            popupWindow.enterTransition = slideIn
+            val slideOut = Slide()
+            slideOut.slideEdge = Gravity.RIGHT
+            popupWindow.exitTransition = slideOut
+            popupWindow.isFocusable = true
+            val closepop = view.findViewById<Button>(R.id.button_addfriend_closepop)
+            val usernametext = view.findViewById<TextView>(R.id.addfriend_userName)
+            val profilepicture = view.findViewById<ImageView>(R.id.addfriend_profile_picture)
+            val askfriend = view.findViewById<Button>(R.id.button_addfriendpop)
+            closepop.setOnClickListener{
+                popupWindow.dismiss()
+            }
+            askfriend.setOnClickListener {
+                val myuser = FireStore.getCurrentUser {myuser ->
+                    if ( myuser.profilePicture != null) {
+                        val user = FirebaseAuth.getInstance()
+                        val profilepath = myuser.profilePicture
+                        val myprofil = AskingFriends(user!!.uid.toString(), myuser.name, profilepath)
+                        FireStore.askFriends(myprofil, item.userId)
+
+                    }
+                }
+               // val myprofil = AskingFriends(user!!.uid, user?.displayName.toString(), profilepath)
+
+                popupWindow.dismiss()
+            }
+            if (item.user.profilePicture != null) {
+                GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
+                        .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
+                Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
+            }
+            usernametext.text = item.user.name
+            popupWindow.showAtLocation(
+                    community_layout,
+                    Gravity.CENTER,
+                    0,
+                    0
+            )
+        }
+        true
     }
 
     private val onItemClick = OnItemClickListener { item, view ->

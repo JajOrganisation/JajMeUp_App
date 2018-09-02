@@ -28,7 +28,6 @@ import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
 import jajcompany.jajmeup.Utils.FireStore
 import jajcompany.jajmeup.Utils.FireStore.askFriends
-import jajcompany.jajmeup.Utils.FireStore.getProfilePicture
 import jajcompany.jajmeup.Utils.StorageUtil
 import kotlinx.android.synthetic.main.community_layout.*
 import jajcompany.jajmeup.Utils.YoutubeInformation
@@ -43,11 +42,15 @@ class CommunityFragment : Fragment() {
 
     lateinit var databaseRef: DatabaseReference
     private lateinit var userListenerRegistration: ListenerRegistration
-    private var shouldInitRecyclerView = true
+    private lateinit var friendsListenerRegistration: ListenerRegistration
+    private var shouldInitRecyclerViewWorld = true
+    private var shouldInitRecyclerViewFriends = true
     private lateinit var userSection: Section
+    private lateinit var friendsSection: Section
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerView)
+        friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
+        userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
        /* if (arguments != null) {
             Log.d("YOUTUBE_FRAGMENT", arguments.getString("link"))
         }*/
@@ -60,7 +63,10 @@ class CommunityFragment : Fragment() {
         header_world.header_communauty.text = "Tout le monde"
 
         header_friends.header_communauty.setOnClickListener {
-            Toast.makeText(activity, "On va masquer les amis", Toast.LENGTH_LONG).show()
+            if(friends_list.visibility == View.GONE)
+                friends_list.visibility = View.VISIBLE
+            else
+                friends_list.visibility = View.GONE
         }
 
         header_world.header_communauty.setOnClickListener {
@@ -75,11 +81,13 @@ class CommunityFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         FireStore.removeListener(userListenerRegistration)
-        shouldInitRecyclerView = true
+        FireStore.removeListener(friendsListenerRegistration)
+        shouldInitRecyclerViewFriends = true
+        shouldInitRecyclerViewWorld = true
     }
 
-    private fun updateRecyclerView(items:List<Item>) {
-        fun init() {
+    private fun updateRecyclerViewWorld(items:List<Item>) {
+        fun initWorld() {
             community_list.apply {
                 layoutManager = LinearLayoutManager(this@CommunityFragment.context)
                 adapter = GroupAdapter<ViewHolder>().apply {
@@ -89,14 +97,35 @@ class CommunityFragment : Fragment() {
                     setOnItemLongClickListener(onItemLongClick)
                 }
             }
-            shouldInitRecyclerView = false
+            shouldInitRecyclerViewWorld = false
         }
-        fun updateItems() = userSection.update(items)
+        fun updateItemsWorld() = userSection.update(items)
 
-        if (shouldInitRecyclerView)
-            init()
+        if (shouldInitRecyclerViewWorld)
+            initWorld()
         else
-            updateItems()
+            updateItemsWorld()
+    }
+
+    private fun updateRecyclerViewFriends(items:List<Item>) {
+        fun initFriends() {
+            friends_list.apply {
+                layoutManager = LinearLayoutManager(this@CommunityFragment.context)
+                adapter = GroupAdapter<ViewHolder>().apply {
+                    friendsSection = Section(items)
+                    add(friendsSection)
+                    setOnItemClickListener(onItemClick)
+                    //setOnItemLongClickListener(onItemLongClick)
+                }
+            }
+            shouldInitRecyclerViewFriends = false
+        }
+        fun updateItemsFriends() = friendsSection.update(items)
+
+        if (shouldInitRecyclerViewFriends)
+            initFriends()
+        else
+            updateItemsFriends()
     }
 
     private val onItemLongClick = OnItemLongClickListener { item, view ->
@@ -210,26 +239,7 @@ class CommunityFragment : Fragment() {
                     0,
                     0
             )
-           /* if (arguments?.getString("link") != null){
-                val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
-                val compiledPattern = Pattern.compile(pattern)
-                val matcher = compiledPattern.matcher(arguments?.getString("link").toString())
-                if (matcher.find()) {
-                    Toast.makeText(activity, "Give "+matcher.group()+"for "+item.user.name, Toast.LENGTH_LONG).show()
-                    val user = FirebaseAuth.getInstance().currentUser
-                    val vote = Vote(matcher.group(), user?.displayName.toString(), "bonjour", Calendar.getInstance().time)
-                    FireStore.sendVote(vote, item.userId)
-                }
-                else
-                {
-                    Toast.makeText(activity, "Invalid link", Toast.LENGTH_LONG).show()
-                }
-            }
-            else {
-                Toast.makeText(activity, "Click on User", Toast.LENGTH_LONG).show()
-            }*/
-
-        }
+         }
     }
 
      companion object {

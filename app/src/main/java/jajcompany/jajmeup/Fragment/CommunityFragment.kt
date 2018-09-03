@@ -49,11 +49,13 @@ class CommunityFragment : Fragment() {
     private lateinit var friendsSection: Section
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
-        userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
+        setUpdateList()
+        //friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
+        //userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
        /* if (arguments != null) {
             Log.d("YOUTUBE_FRAGMENT", arguments.getString("link"))
         }*/
+
         return inflater?.inflate(R.layout.community_layout, container, false)
     }
 
@@ -76,17 +78,43 @@ class CommunityFragment : Fragment() {
             else
                 community_list.visibility = View.GONE
         }
+        searchusers.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                if(newText == "") {
+                    header_friends.visibility = View.VISIBLE
+                    friends_list.visibility = View.VISIBLE
+                    header_world.visibility = View.VISIBLE
+                    community_list.visibility = View.VISIBLE
+                    unsetSearch()
+                    setUpdateList()
+                }
+                else {
+                    header_friends.visibility = View.GONE
+                    friends_list.visibility = View.GONE
+                    header_world.visibility = View.GONE
+                    community_list.visibility = View.VISIBLE
+                    removeUpdateList()
+                    setSearch(newText)
+                }
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                //Task HERE
+                return false
+            }
+        })
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        FireStore.removeListener(userListenerRegistration)
-        FireStore.removeListener(friendsListenerRegistration)
+        removeUpdateList()
         shouldInitRecyclerViewFriends = true
         shouldInitRecyclerViewWorld = true
     }
 
-    private fun updateRecyclerViewWorld(items:List<Item>) {
+    fun updateRecyclerViewWorld(items:List<Item>) {
         fun initWorld() {
             community_list.apply {
                 layoutManager = LinearLayoutManager(this@CommunityFragment.context)
@@ -240,6 +268,24 @@ class CommunityFragment : Fragment() {
                     0
             )
          }
+    }
+
+    fun setUpdateList() {
+        friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
+        userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
+    }
+
+    fun setSearch(toSearch: String) {
+        userListenerRegistration = FireStore.searchUser(this.activity!!, this::updateRecyclerViewWorld, toSearch)
+    }
+
+    fun unsetSearch() {
+        FireStore.removeListener(userListenerRegistration)
+    }
+
+    fun removeUpdateList() {
+        FireStore.removeListener(userListenerRegistration)
+        FireStore.removeListener(friendsListenerRegistration)
     }
 
      companion object {

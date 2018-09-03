@@ -116,6 +116,26 @@ object FireStore {
                 }
     }
 
+    fun searchUser(context: Context, onListen: (List<Item>) -> Unit, txtSearch: String): ListenerRegistration {
+        return fireStoreInstance.collection("users")
+                .orderBy("name")
+                .startAt(txtSearch)
+                .limit(20)
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+
+                    val items = mutableListOf<Item>()
+                    querySnapshot!!.documents.forEach {
+                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
+                            items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
+                    }
+                    onListen(items)
+                }
+    }
+
     fun addReveilListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/reveilVote")

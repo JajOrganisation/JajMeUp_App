@@ -2,6 +2,7 @@ package jajcompany.jajmeup.Fragment
 
 import android.support.v4.app.Fragment
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -49,7 +50,11 @@ class CommunityFragment : Fragment() {
     private lateinit var friendsSection: Section
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setUpdateList()
+        setUpdateListFriends()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
+            setUpdateListWorld()
+        }
         //friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
         //userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
        /* if (arguments != null) {
@@ -62,7 +67,6 @@ class CommunityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         header_friends.header_communauty.text = "Amis"
-        header_world.header_communauty.text = "Tout le monde"
 
         header_friends.header_communauty.setOnClickListener {
             if(friends_list.visibility == View.GONE)
@@ -71,13 +75,6 @@ class CommunityFragment : Fragment() {
                 friends_list.visibility = View.GONE
         }
 
-        header_world.header_communauty.setOnClickListener {
-
-            if(community_list.visibility == View.GONE)
-                community_list.visibility = View.VISIBLE
-            else
-                community_list.visibility = View.GONE
-        }
         searchusers.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
@@ -87,14 +84,19 @@ class CommunityFragment : Fragment() {
                     header_world.visibility = View.VISIBLE
                     community_list.visibility = View.VISIBLE
                     unsetSearch()
-                    setUpdateList()
+                    setUpdateListFriends()
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
+                        setUpdateListWorld()
+                    }
                 }
                 else {
                     header_friends.visibility = View.GONE
                     friends_list.visibility = View.GONE
                     header_world.visibility = View.GONE
                     community_list.visibility = View.VISIBLE
-                    removeUpdateList()
+                    unsetFriendsList()
+                    unsetListWorld()
                     setSearch(newText)
                 }
                 return false
@@ -107,9 +109,33 @@ class CommunityFragment : Fragment() {
         })
     }
 
+    override fun onResume() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+        if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
+            setUpdateListWorld()
+            header_world.visibility = View.VISIBLE
+            community_list.visibility = View.VISIBLE
+            header_world.header_communauty.text = "Tout le monde"
+            header_world.header_communauty.setOnClickListener {
+
+                if (community_list.visibility == View.GONE)
+                    community_list.visibility = View.VISIBLE
+                else
+                    community_list.visibility = View.GONE
+            }
+        }
+        else {
+            header_world.visibility = View.GONE
+            community_list.visibility = View.GONE
+            unsetListWorld()
+        }
+        super.onResume()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        removeUpdateList()
+        unsetFriendsList()
+        unsetListWorld()
         shouldInitRecyclerViewFriends = true
         shouldInitRecyclerViewWorld = true
     }
@@ -270,9 +296,12 @@ class CommunityFragment : Fragment() {
          }
     }
 
-    fun setUpdateList() {
-        friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
+    fun setUpdateListWorld() {
         userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
+    }
+
+    fun setUpdateListFriends() {
+        friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
     }
 
     fun setSearch(toSearch: String) {
@@ -283,8 +312,11 @@ class CommunityFragment : Fragment() {
         FireStore.removeListener(userListenerRegistration)
     }
 
-    fun removeUpdateList() {
+    fun unsetListWorld() {
         FireStore.removeListener(userListenerRegistration)
+    }
+
+    fun unsetFriendsList() {
         FireStore.removeListener(friendsListenerRegistration)
     }
 

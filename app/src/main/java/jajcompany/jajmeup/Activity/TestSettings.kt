@@ -52,6 +52,7 @@ class TestSettings : AppCompatActivity() {
 
             GlideApp.with(this)
                     .load(selectedImageBytes)
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(profilePictureSettings)
 
             pictureJustChanged = true

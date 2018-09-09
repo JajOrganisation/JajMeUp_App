@@ -14,10 +14,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <SearchView
             android:id="@+id/searchusers"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:searchIcon="@drawable/ic_search_white_24p"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jajcompany.jajmeup.Fragment.HistoryFragment">
+    tools:context="jajcompany.jajmeup.Fragment.HistoryFragment"
+    android:background="@color/backgroundGeneral">
     <!--<ListView
         android:id="@+id/history_list"
         android:layout_width="match_parent"

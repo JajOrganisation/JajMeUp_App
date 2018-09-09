@@ -19,10 +19,10 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\Valentin\Desktop\settings.png" />
-                                      <entry key="outputName" value="ic_settings" />
+                                      <entry key="imageAsset" value="D:\Android_Studio\Project\IMG\icons8-search-24.png" />
+                                      <entry key="outputName" value="ic_search_white_24p" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="000000" />
+                                      <entry key="themeColor" value="ffffff" />
                                     </map>
                                   </option>
                                 </PersistentState>

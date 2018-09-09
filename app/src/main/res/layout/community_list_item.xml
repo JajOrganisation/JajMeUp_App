@@ -9,7 +9,8 @@
     android:layout_margin="4dp"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:background="#c9c9c9">
 
     <!--app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="4dp"
@@ -17,7 +18,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#c9c9c9">
         <ImageView
             android:id="@+id/imageView_profile_picture"
             android:layout_width="60dp"

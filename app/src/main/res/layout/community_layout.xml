@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="jajcompany.jajmeup.Fragment.CommunityFragment">
+    tools:context="jajcompany.jajmeup.Fragment.CommunityFragment"
+    android:background="@color/backgroundGeneral">
     <!--<ExpandableListView
         android:id="@+id/community_list"
         android:layout_width="match_parent"

@@ -32,14 +32,17 @@
         android:layout_marginTop="15dp" >
         <Button
             android:id="@+id/button_addfriendpop"
+            android:background="@drawable/button_drawable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Demander en ami"
             />
         <Button
             android:id="@+id/button_addfriend_closepop"
+            android:background="@drawable/button_drawable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:text="Annuler"/>
     </TableRow>
 </LinearLayout>

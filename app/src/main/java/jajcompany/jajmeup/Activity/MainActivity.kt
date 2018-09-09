@@ -3,6 +3,8 @@ package jajcompany.jajmeup
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.preference.ListPreference
 import android.support.design.widget.BottomNavigationView
@@ -25,26 +27,6 @@ import jajcompany.jajmeup.Models.AskingFriends
 
 class MainActivity : AppCompatActivity() {
 
-    private var fragment = Fragment()
-
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_clock -> {
-                replaceFragment(ClockFragment())
-                true
-            }
-            R.id.navigation_history -> {
-                replaceFragment(HistoryFragment())
-                true
-            }
-            R.id.navigation_community -> {
-                replaceFragment(CommunityFragment())
-                true
-            }
-        }
-        false
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         PreferenceManager.setDefaultValues(this, R.xml.preferencesettings, false)
@@ -56,26 +38,25 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
        setContentView(R.layout.main_layout)
-        replaceFragment(CommunityFragment())
-
 
         navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.navigation_clock -> {
-                    replaceFragment(ClockFragment())
-                    true
-                }
                 R.id.navigation_history -> {
                     replaceFragment(HistoryFragment())
-                    true
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.navigation_clock -> {
+                    replaceFragment(ClockFragment())
+                    return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_community -> {
                     replaceFragment(CommunityFragment())
-                    true
+                    return@setOnNavigationItemSelectedListener true
                 }
             }
-            false
+            true
         }
+        navigation.selectedItemId = R.id.navigation_community
         /*val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation) as BottomNavigationView
         bottomNavigationView.selectedItemId = R.id.navigation_clock
         fragment = Fragment.instantiate(this@MainActivity,
@@ -91,21 +72,12 @@ class MainActivity : AppCompatActivity() {
                 handleSendText(intent)
             }
         }
+        checkPref()
     }
 
     override fun onResume() {
+        checkPref()
         super.onResume()
-
-       val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
-        if (!sharedPreferences.getBoolean("history_preference", true))
-            navigation.menu.setGroupEnabled(R.id.history_menu, false)
-        else
-            navigation.menu.setGroupEnabled(R.id.history_menu, true)
-
-        if (sharedPreferences.getString("visibility_preference", "WORLD") == "PRIVATE")
-            navigation.menu.setGroupEnabled(R.id.community_menu, false)
-        else
-            navigation.menu.setGroupEnabled(R.id.community_menu, true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -149,5 +121,26 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentlayout, fragment)
                 .commit()
+    }
+
+    private fun checkPref() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
+        if(!sharedPreferences.getBoolean("history_preference", true)) {
+            navigation.menu.getItem(0).isEnabled = false
+            if(navigation.menu.getItem(0).isChecked) {
+                navigation.selectedItemId = R.id.navigation_clock
+            }
+        }
+        else
+            navigation.menu.getItem(0).isEnabled = true
+
+        if (sharedPreferences.getString("visibility_preference", "WORLD") == "PRIVATE") {
+            navigation.menu.getItem(2).isEnabled = false
+            if (navigation.menu.getItem(2).isChecked) {
+                navigation.selectedItemId = R.id.navigation_clock
+            }
+        }
+        else
+            navigation.menu.getItem(2).isEnabled = true
     }
 }

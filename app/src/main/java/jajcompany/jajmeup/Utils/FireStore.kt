@@ -3,6 +3,8 @@ package jajcompany.jajmeup.Utils
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -12,7 +14,6 @@ import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
 import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.RecycleView.item.UserItem
-
 
 
 object FireStore {
@@ -236,6 +237,21 @@ object FireStore {
         }
         Log.d("COUCOUu", result)
         return result
+    }
+
+    fun isFriend(context: Context, nameFriends: UserItem, onListen: (UserItem) -> Unit): ListenerRegistration {
+        return fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}")
+                .collection("friends")
+                .whereEqualTo("name", nameFriends.user.name)
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (querySnapshot!!.documents.size > 0)
+                        onListen(nameFriends)
+                    else {
+                        val nop = UserItem(User(), nameFriends.userId, context)
+                        onListen(nop)
+                    }
+                }
     }
 
     fun acceptFriends(newFriend: User) {

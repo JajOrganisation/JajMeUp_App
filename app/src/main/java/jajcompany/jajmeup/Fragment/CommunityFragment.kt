@@ -24,6 +24,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.Models.AskingFriends
+import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
@@ -44,28 +45,23 @@ class CommunityFragment : Fragment() {
     lateinit var databaseRef: DatabaseReference
     private lateinit var userListenerRegistration: ListenerRegistration
     private lateinit var friendsListenerRegistration: ListenerRegistration
+    private lateinit var searchListenerRegistration: ListenerRegistration
     private var shouldInitRecyclerViewWorld = true
     private var shouldInitRecyclerViewFriends = true
+    private var shouldInitRecyclerViewSearch = false
+    private var onSearch = false
     private lateinit var userSection: Section
     private lateinit var friendsSection: Section
+    private lateinit var isFriend: ListenerRegistration
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setUpdateListFriends()
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
-            setUpdateListWorld()
-        }
-        //friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
-        //userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
-       /* if (arguments != null) {
-            Log.d("YOUTUBE_FRAGMENT", arguments.getString("link"))
-        }*/
 
         return inflater?.inflate(R.layout.community_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        detectPref()
         header_friends.header_communauty.text = "Amis"
 
         header_friends.header_communauty.setOnClickListener {
@@ -79,10 +75,12 @@ class CommunityFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 if(newText == "") {
+                    onSearch = false
                     header_friends.visibility = View.VISIBLE
                     friends_list.visibility = View.VISIBLE
                     header_world.visibility = View.VISIBLE
                     community_list.visibility = View.VISIBLE
+                    search_list.visibility = View.GONE
                     unsetSearch()
                     setUpdateListFriends()
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -91,10 +89,13 @@ class CommunityFragment : Fragment() {
                     }
                 }
                 else {
+                    onSearch = true
+                    shouldInitRecyclerViewSearch = true
                     header_friends.visibility = View.GONE
                     friends_list.visibility = View.GONE
                     header_world.visibility = View.GONE
-                    community_list.visibility = View.VISIBLE
+                    community_list.visibility = View.GONE
+                    search_list.visibility = View.VISIBLE
                     unsetFriendsList()
                     unsetListWorld()
                     setSearch(newText)
@@ -103,32 +104,14 @@ class CommunityFragment : Fragment() {
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                //Task HERE
+
                 return false
             }
         })
     }
 
     override fun onResume() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-        if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
-            setUpdateListWorld()
-            header_world.visibility = View.VISIBLE
-            community_list.visibility = View.VISIBLE
-            header_world.header_communauty.text = "Tout le monde"
-            header_world.header_communauty.setOnClickListener {
-
-                if (community_list.visibility == View.GONE)
-                    community_list.visibility = View.VISIBLE
-                else
-                    community_list.visibility = View.GONE
-            }
-        }
-        else {
-            header_world.visibility = View.GONE
-            community_list.visibility = View.GONE
-            unsetListWorld()
-        }
+        detectPref()
         super.onResume()
     }
 
@@ -182,8 +165,43 @@ class CommunityFragment : Fragment() {
             updateItemsFriends()
     }
 
+    private fun updateRecyclerViewSearch(items:List<Item>) {
+        fun initWorld() {
+            search_list.apply {
+                layoutManager = LinearLayoutManager(this@CommunityFragment.context)
+                adapter = GroupAdapter<ViewHolder>().apply {
+                    userSection = Section(items)
+                    add(userSection)
+                    setOnItemClickListener(onItemClick)
+                    setOnItemLongClickListener(onItemLongClick)
+                }
+            }
+            shouldInitRecyclerViewSearch = false
+        }
+        fun updateItemsWorld() = userSection.update(items)
+
+        if (shouldInitRecyclerViewSearch)
+            initWorld()
+        else
+            updateItemsWorld()
+    }
+
+    private fun getIsMyFriend(result: UserItem) {
+        if(result.user.name != "")
+            showPopVote(result)
+        else
+            Log.d("LOGGER", "NON")
+    }
+
     private val onItemLongClick = OnItemLongClickListener { item, view ->
+
         if (item is UserItem) {
+            if (onSearch) {
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+                if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
+                    true
+                }
+            }
             val inflater = LayoutInflater.from(context)
             val view = inflater.inflate(R.layout.addfriend_popup_layout,null)
             val popupWindow = PopupWindow(
@@ -237,63 +255,18 @@ class CommunityFragment : Fragment() {
 
     private val onItemClick = OnItemClickListener { item, view ->
         if (item is UserItem) {
-            val inflater = LayoutInflater.from(context)
-            val view = inflater.inflate(R.layout.vote_popup_layout,null)
-            val popupWindow = PopupWindow(
-                    view, // Custom view to show in popup window
-                    LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
-                    LinearLayout.LayoutParams.WRAP_CONTENT // Window height
-            )
-
-            val slideIn = Slide()
-            slideIn.slideEdge = Gravity.TOP
-            popupWindow.enterTransition = slideIn
-            val slideOut = Slide()
-            slideOut.slideEdge = Gravity.RIGHT
-            popupWindow.exitTransition = slideOut
-            popupWindow.isFocusable = true
-            val closepop = view.findViewById<Button>(R.id.button_closepop)
-            val votepop = view.findViewById<Button>(R.id.button_votepop)
-            val edityt = view.findViewById<EditText>(R.id.youtubelinkpop)
-            val editmess = view.findViewById<EditText>(R.id.messagepop)
-            val labelmess = view.findViewById<TextView>(R.id.message_label)
-            labelmess.setText("Écrit un message pour "+item.user.name)
-            closepop.setOnClickListener{
-                popupWindow.dismiss()
-            }
-
-            votepop.setOnClickListener {
-                val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
-                val compiledPattern = Pattern.compile(pattern)
-                val matcher = compiledPattern.matcher(edityt.text.toString())
-                if (matcher.find()) {
-                    val user = FirebaseAuth.getInstance().currentUser
-                    val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.displayName.toString(), editmess.text.toString(), Calendar.getInstance().time)
-                    FireStore.sendVote(vote, item.userId)
-                    popupWindow.dismiss()
-                    Toast.makeText(activity,"Tu as voté pour "+item.user.name, Toast.LENGTH_LONG).show()
-                }
-                else {
-                    Toast.makeText(activity, "Invalid link", Toast.LENGTH_LONG).show()
+            var flag = true
+            if (onSearch) {
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+                if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
+                    flag = false
+                    isFriend = FireStore.isFriend(this.activity!!, item, this::getIsMyFriend)
                 }
             }
-            if (arguments?.getString("link") != null){
-                val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
-                val compiledPattern = Pattern.compile(pattern)
-                val matcher = compiledPattern.matcher(arguments?.getString("link").toString())
-                if (matcher.find()) {
-                    edityt.setText(arguments?.getString("link").toString())
-
-                }
+            if (flag) {
+                showPopVote(item)
             }
-            TransitionManager.beginDelayedTransition(community_layout)
-            popupWindow.showAtLocation(
-                    community_layout,
-                    Gravity.CENTER,
-                    0,
-                    0
-            )
-         }
+        }
     }
 
     fun setUpdateListWorld() {
@@ -305,11 +278,11 @@ class CommunityFragment : Fragment() {
     }
 
     fun setSearch(toSearch: String) {
-        userListenerRegistration = FireStore.searchUser(this.activity!!, this::updateRecyclerViewWorld, toSearch)
+        searchListenerRegistration = FireStore.searchUser(this.activity!!, this::updateRecyclerViewSearch, toSearch)
     }
 
     fun unsetSearch() {
-        FireStore.removeListener(userListenerRegistration)
+        FireStore.removeListener(searchListenerRegistration)
     }
 
     fun unsetListWorld() {
@@ -331,14 +304,85 @@ class CommunityFragment : Fragment() {
         }
     }
 
-    fun getGreeting(){
-        databaseRef.child("name").addValueEventListener(object : ValueEventListener {
+    private fun detectPref() {
+        setUpdateListFriends()
+        setUpdateListWorld()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+        if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
+            setUpdateListWorld()
+            header_world.visibility = View.VISIBLE
+            community_list.visibility = View.VISIBLE
+            header_world.header_communauty.text = "Tout le monde"
+            header_world.header_communauty.setOnClickListener {
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-                println("BONJOUR: ${snapshot.value}")
+                if (community_list.visibility == View.GONE)
+                    community_list.visibility = View.VISIBLE
+                else
+                    community_list.visibility = View.GONE
             }
+        }
+        else {
+            header_world.visibility = View.GONE
+            community_list.visibility = View.GONE
+            unsetListWorld()
+        }
+    }
 
-            override fun onCancelled(error: DatabaseError) {}
-        })
+    private fun showPopVote(item: UserItem) {
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.vote_popup_layout, null)
+        val popupWindow = PopupWindow(
+                view, // Custom view to show in popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+        )
+
+        val slideIn = Slide()
+        slideIn.slideEdge = Gravity.TOP
+        popupWindow.enterTransition = slideIn
+        val slideOut = Slide()
+        slideOut.slideEdge = Gravity.RIGHT
+        popupWindow.exitTransition = slideOut
+        popupWindow.isFocusable = true
+        val closepop = view.findViewById<Button>(R.id.button_closepop)
+        val votepop = view.findViewById<Button>(R.id.button_votepop)
+        val edityt = view.findViewById<EditText>(R.id.youtubelinkpop)
+        val editmess = view.findViewById<EditText>(R.id.messagepop)
+        val labelmess = view.findViewById<TextView>(R.id.message_label)
+        labelmess.setText("Écrit un message pour " + item.user.name)
+        closepop.setOnClickListener {
+            popupWindow.dismiss()
+        }
+
+        votepop.setOnClickListener {
+            val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
+            val compiledPattern = Pattern.compile(pattern)
+            val matcher = compiledPattern.matcher(edityt.text.toString())
+            if (matcher.find()) {
+                val user = FirebaseAuth.getInstance().currentUser
+                val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.displayName.toString(), editmess.text.toString(), Calendar.getInstance().time)
+                FireStore.sendVote(vote, item.userId)
+                popupWindow.dismiss()
+                Toast.makeText(activity, "Tu as voté pour " + item.user.name, Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(activity, "Invalid link", Toast.LENGTH_LONG).show()
+            }
+        }
+        if (arguments?.getString("link") != null) {
+            val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
+            val compiledPattern = Pattern.compile(pattern)
+            val matcher = compiledPattern.matcher(arguments?.getString("link").toString())
+            if (matcher.find()) {
+                edityt.setText(arguments?.getString("link").toString())
+
+            }
+        }
+        TransitionManager.beginDelayedTransition(community_layout)
+        popupWindow.showAtLocation(
+                community_layout,
+                Gravity.CENTER,
+                0,
+                0
+        )
     }
 }

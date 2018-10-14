@@ -91,9 +91,11 @@ object FireStore {
                     val items = mutableListOf<Item>()
                     querySnapshot!!.documents.forEach {
                         if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
-                            if ((!FriendsList.contains(it.toObject(User::class.java)!!)) || (FriendsList.isEmpty()))
+                            if ((!FriendsList.contains(it.toObject(User::class.java)!!)) || (FriendsList.isEmpty())) {
                                 items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
+                            }
                     }
+
                     onListen(items)
                 }
     }
@@ -221,7 +223,7 @@ object FireStore {
                     .add(myprofil)
         }
     }
-
+/*
     fun getProfilePicture(): String {
         val auth = FirebaseAuth.getInstance()
         val usercurrent = auth.currentUser
@@ -237,7 +239,7 @@ object FireStore {
         }
         Log.d("COUCOUu", result)
         return result
-    }
+    }*/
 
     fun isFriend(context: Context, nameFriends: UserItem, onListen: (UserItem) -> Unit): ListenerRegistration {
         return fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid

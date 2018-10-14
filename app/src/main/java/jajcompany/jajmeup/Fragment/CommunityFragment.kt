@@ -1,8 +1,14 @@
 package jajcompany.jajmeup.Fragment
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.getIntent
+import android.content.IntentFilter
 import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -23,11 +29,13 @@ import com.xwray.groupie.OnItemLongClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import jajcompany.jajmeup.MainActivity
 import jajcompany.jajmeup.Models.AskingFriends
 import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
+import jajcompany.jajmeup.Utils.Alarm
 import jajcompany.jajmeup.Utils.FireStore
 import jajcompany.jajmeup.Utils.FireStore.askFriends
 import jajcompany.jajmeup.Utils.StorageUtil
@@ -53,6 +61,7 @@ class CommunityFragment : Fragment() {
     private lateinit var userSection: Section
     private lateinit var friendsSection: Section
     private lateinit var isFriend: ListenerRegistration
+    private lateinit var _context: Context
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -115,6 +124,11 @@ class CommunityFragment : Fragment() {
         super.onResume()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        _context = context
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         unsetFriendsList()
@@ -126,7 +140,7 @@ class CommunityFragment : Fragment() {
     fun updateRecyclerViewWorld(items:List<Item>) {
         fun initWorld() {
             community_list.apply {
-                layoutManager = LinearLayoutManager(this@CommunityFragment.context)
+                layoutManager = LinearLayoutManager(_context)
                 adapter = GroupAdapter<ViewHolder>().apply {
                     userSection = Section(items)
                     add(userSection)
@@ -147,7 +161,7 @@ class CommunityFragment : Fragment() {
     private fun updateRecyclerViewFriends(items:List<Item>) {
         fun initFriends() {
             friends_list.apply {
-                layoutManager = LinearLayoutManager(this@CommunityFragment.context)
+                layoutManager = LinearLayoutManager(_context)
                 adapter = GroupAdapter<ViewHolder>().apply {
                     friendsSection = Section(items)
                     add(friendsSection)
@@ -168,7 +182,7 @@ class CommunityFragment : Fragment() {
     private fun updateRecyclerViewSearch(items:List<Item>) {
         fun initWorld() {
             search_list.apply {
-                layoutManager = LinearLayoutManager(this@CommunityFragment.context)
+                layoutManager = LinearLayoutManager(_context)
                 adapter = GroupAdapter<ViewHolder>().apply {
                     userSection = Section(items)
                     add(userSection)
@@ -189,8 +203,6 @@ class CommunityFragment : Fragment() {
     private fun getIsMyFriend(result: UserItem) {
         if(result.user.name != "")
             showPopVote(result)
-        else
-            Log.d("LOGGER", "NON")
     }
 
     private val onItemLongClick = OnItemLongClickListener { item, view ->
@@ -302,6 +314,7 @@ class CommunityFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
+
     }
 
     private fun detectPref() {
@@ -368,12 +381,14 @@ class CommunityFragment : Fragment() {
                 Toast.makeText(activity, "Invalid link", Toast.LENGTH_LONG).show()
             }
         }
-        if (arguments?.getString("link") != null) {
+        //if (arguments?.getString("link") != null) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+        if (sharedPreferences.getString("current_link", "123456") != "123456") {
             val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
             val compiledPattern = Pattern.compile(pattern)
-            val matcher = compiledPattern.matcher(arguments?.getString("link").toString())
+            val matcher = compiledPattern.matcher(sharedPreferences.getString("current_link", "123456"))
             if (matcher.find()) {
-                edityt.setText(arguments?.getString("link").toString())
+                edityt.setText(sharedPreferences.getString("current_link", "123456"))
 
             }
         }

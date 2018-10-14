@@ -25,6 +25,10 @@
             android:title="Historique"
             android:summary="Activer / Désactiver lhistorique"
             android:defaultValue="true"/>
+        <EditTextPreference
+            android:key="current_link"
+            android:defaultValue="123456"
+            android:visibility="gone"/>
 
     </PreferenceCategory>
 

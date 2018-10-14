@@ -3,11 +3,7 @@ package jajcompany.jajmeup
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
-import android.preference.ListPreference
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -15,17 +11,19 @@ import android.view.Menu
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.Activity.ConnectRegistrationActivity
-import jajcompany.jajmeup.Activity.TestSettings
+import jajcompany.jajmeup.Activity.SettingsActivity
 import jajcompany.jajmeup.Fragment.ClockFragment
 import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
 import kotlinx.android.synthetic.main.main_layout.*
 import android.preference.PreferenceManager
+import android.view.LayoutInflater
+import android.widget.EditText
 import jajcompany.jajmeup.Activity.AskingFriendsActivity
-import jajcompany.jajmeup.Models.AskingFriends
-
 
 class MainActivity : AppCompatActivity() {
+
+    var link: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -57,18 +55,15 @@ class MainActivity : AppCompatActivity() {
             true
         }
         navigation.selectedItemId = R.id.navigation_community
-        /*val bottomNavigationView: BottomNavigationView = findViewById(R.id.navigation) as BottomNavigationView
-        bottomNavigationView.selectedItemId = R.id.navigation_clock
-        fragment = Fragment.instantiate(this@MainActivity,
-                ClockFragment::class.java!!.getName()) as ClockFragment
-        fragmentManager.beginTransaction().replace(R.id.fragmentlayout, fragment).commit()
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)*/
-        val intent: Intent = getIntent()
+        val intent: Intent = intent
         val action: String? = intent.action
         var type: String? = intent.type
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
+                if (navigation.selectedItemId != R.id.navigation_community) {
+                    navigation.selectedItemId = R.id.navigation_community
+                }
                 handleSendText(intent)
             }
         }
@@ -89,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         when (item!!.itemId) {
             R.id.settings -> {
                 //startActivity(SettingsActivity.newIntent(this))
-                startActivity(TestSettings.newIntent(this))
+                startActivity(SettingsActivity.newIntent(this))
             }
             R.id.notifications -> {
                 startActivity(AskingFriendsActivity.newIntent(this))
@@ -99,15 +94,13 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun handleSendText(intent: Intent) {
+    private fun handleSendText(intent: Intent){
+
         val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
         if (sharedText != null) {
             Log.d("YOUTUBE_SHARE", sharedText)
-            val communityFragment = CommunityFragment.newInstance(sharedText)
-            supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragmentlayout, communityFragment, CommunityFragment::class.java!!.getName())
-                    .commit()
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+            sharedPreferences.edit().putString("current_link", sharedText).apply()
         }
     }
 
@@ -117,6 +110,8 @@ class MainActivity : AppCompatActivity() {
             return intent
         }
     }
+
+
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentlayout, fragment)

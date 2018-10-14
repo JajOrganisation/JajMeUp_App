@@ -4,22 +4,20 @@ package jajcompany.jajmeup
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
+import jajcompany.jajmeup.Activity.AskingFriendsActivity
 import jajcompany.jajmeup.Activity.ConnectRegistrationActivity
 import jajcompany.jajmeup.Activity.SettingsActivity
 import jajcompany.jajmeup.Fragment.ClockFragment
 import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
 import kotlinx.android.synthetic.main.main_layout.*
-import android.preference.PreferenceManager
-import android.view.LayoutInflater
-import android.widget.EditText
-import jajcompany.jajmeup.Activity.AskingFriendsActivity
 
 class MainActivity : AppCompatActivity() {
 

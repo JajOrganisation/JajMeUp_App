@@ -1,18 +1,12 @@
 package jajcompany.jajmeup.Fragment
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.Intent.getIntent
-import android.content.IntentFilter
-import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +15,7 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
@@ -29,21 +23,16 @@ import com.xwray.groupie.OnItemLongClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import jajcompany.jajmeup.MainActivity
 import jajcompany.jajmeup.Models.AskingFriends
-import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
-import jajcompany.jajmeup.Utils.Alarm
 import jajcompany.jajmeup.Utils.FireStore
-import jajcompany.jajmeup.Utils.FireStore.askFriends
 import jajcompany.jajmeup.Utils.StorageUtil
-import kotlinx.android.synthetic.main.community_layout.*
 import jajcompany.jajmeup.Utils.YoutubeInformation
 import jajcompany.jajmeup.glide.GlideApp
+import kotlinx.android.synthetic.main.community_layout.*
 import kotlinx.android.synthetic.main.community_list_header.view.*
-import kotlinx.android.synthetic.main.community_list_item.*
 import java.util.*
 import java.util.regex.Pattern
 
@@ -305,18 +294,6 @@ class CommunityFragment : Fragment() {
         FireStore.removeListener(friendsListenerRegistration)
     }
 
-     companion object {
-
-        fun newInstance(link: String): Fragment {
-            val args = Bundle()
-            args.putString("link", link)
-            val fragment = CommunityFragment()
-            fragment.arguments = args
-            return fragment
-        }
-
-    }
-
     private fun detectPref() {
         setUpdateListFriends()
         setUpdateListWorld()
@@ -381,7 +358,6 @@ class CommunityFragment : Fragment() {
                 Toast.makeText(activity, "Invalid link", Toast.LENGTH_LONG).show()
             }
         }
-        //if (arguments?.getString("link") != null) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
         if (sharedPreferences.getString("current_link", "123456") != "123456") {
             val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"

@@ -5,12 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.*
-import android.util.Log
-import jajcompany.jajmeup.R
-import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
-import jajcompany.jajmeup.Activity.SettingsPreferenceActivity.PrefsFragment
+import jajcompany.jajmeup.R
 
 
 class SettingsPreferenceActivity : Activity() {

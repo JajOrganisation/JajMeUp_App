@@ -29,6 +29,10 @@
             android:key="current_link"
             android:defaultValue="123456"
             android:visibility="gone"/>
+        <EditTextPreference
+            android:key="profilepicture_link"
+            android:defaultValue="123456"
+            android:visibility="gone"/>
 
     </PreferenceCategory>
 

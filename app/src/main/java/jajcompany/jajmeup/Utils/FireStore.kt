@@ -66,7 +66,6 @@ object FireStore {
                         for (document in task.result) {
                             var test = document.toObject(Vote::class.java)
                             val intent = Intent()
-                            Log.d("HELLO", test.votant)
                             intent.action = "onReveilINFO"
                             intent.putExtra("lien", test.lien)
                             intent.putExtra("votant", test.votant)
@@ -101,7 +100,7 @@ object FireStore {
                 }
     }
 
-    fun addFriendsListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+   /* fun addFriendsListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/friends")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -118,6 +117,38 @@ object FireStore {
                             items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
                     }
                     onListen(items)
+                }
+    }*/
+
+    fun addFriendsListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+        //val auth = FirebaseAuth.getInstance()
+        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/friends")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+                    querySnapshot!!.documents.forEach {
+                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+                            fireStoreInstance.collection("users/")
+                                    .whereEqualTo("uid", it["uid"].toString())
+                                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                        if (firebaseFirestoreException != null) {
+                                            Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                            return@addSnapshotListener
+                                        }
+                                        val items = mutableListOf<Item>()
+                                        querySnapshot!!.documents.forEach {
+                                            if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
+                                                FriendsList.add(it.toObject(User::class.java)!!)
+                                            items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
+                                        }
+                                        onListen(items)
+                                    }
+                        }
+                    }
+
                 }
     }
 
@@ -176,8 +207,21 @@ object FireStore {
 
                     val items = mutableListOf<Item>()
                     querySnapshot!!.documents.forEach {
-                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
-                            items.add(AskingFriendsItem(it.toObject(AskingFriends::class.java)!!, it.id, context))
+                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+                            fireStoreInstance.collection("users/")
+                                    .whereEqualTo("uid", it["uid"].toString())
+                                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                        if (firebaseFirestoreException != null) {
+                                            Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                            return@addSnapshotListener
+                                        }
+                                        val items = mutableListOf<Item>()
+                                        querySnapshot!!.documents.forEach {
+                                            items.add(AskingFriendsItem(it.toObject(AskingFriends::class.java)!!, it.id, context))
+                                        }
+                                        onListen(items)
+                                    }
+                        }
                     }
                     onListen(items)
                 }
@@ -191,63 +235,40 @@ object FireStore {
                 .add(vote)
     }
 
-    fun askFriends(userAsk: AskingFriends, otherUserID: String) {
+    fun askFriends(userAsk: String, otherUserID: String) {
+        val tmp: Map<String, String> = hashMapOf("uid" to userAsk)
         fireStoreInstance.document("users/${otherUserID}")
                 .collection("askFriends")
-                .add(userAsk)
+                .add(tmp)
     }
 
-    fun addFriends(userAsk: AskingFriends) {
+    fun addFriends(userAsk: String) {
+        var tmp: Map<String, String> = hashMapOf("uid" to userAsk)
         fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
                 .collection("friends")
-                .add(userAsk)
+                .add(tmp)
         val docRef = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
                 .collection("askFriends")
-                .whereEqualTo("name", userAsk.name)
+                .whereEqualTo("uid", userAsk)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val document = task.result
                         task.result.forEach {
-                            Log.d("LOGGER", "COUCOU on a des resultats")
                             it.reference.delete()
                         }
                     } else {
                         Log.d("LOGGER", "get failed with ", task.exception)
                     }
                 }
-        var myprofil = AskingFriends()
-        val myuser = FireStore.getCurrentUser { myuser ->
-            if (myuser.profilePicture != null) {
-                val user = FirebaseAuth.getInstance()
-                val profilepath = myuser.profilePicture
-                myprofil = AskingFriends(user!!.uid.toString(), myuser.name, profilepath)
-
-            }
-            fireStoreInstance.document("users/${userAsk.uid}")
-                    .collection("friends")
-                    .add(myprofil)
-        }
+        val user = FirebaseAuth.getInstance()
+        tmp = hashMapOf("uid" to user!!.uid.toString())
+        fireStoreInstance.document("users/${userAsk}")
+                .collection("friends")
+                .add(tmp)
     }
-/*
-    fun getProfilePicture(): String {
-        val auth = FirebaseAuth.getInstance()
-        val usercurrent = auth.currentUser
-        var result = ""
-        val docRef = fireStoreInstance.document("users/${usercurrent!!.uid}")
-        docRef.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                result = document.getString("profilePicture").toString()
-            } else {
-                Log.d("LOGGER", "get failed with ", task.exception)
-            }
-        }
-        Log.d("COUCOUu", result)
-        return result
-    }*/
 
     fun isFriend(context: Context, nameFriends: UserItem, onListen: (UserItem) -> Unit): ListenerRegistration {
         return fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid

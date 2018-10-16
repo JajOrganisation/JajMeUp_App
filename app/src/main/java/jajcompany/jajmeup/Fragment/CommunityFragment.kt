@@ -25,6 +25,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.Models.AskingFriends
+import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
@@ -238,14 +239,10 @@ class CommunityFragment : Fragment() {
                 val myuser = FireStore.getCurrentUser {myuser ->
                     if ( myuser.profilePicture != null) {
                         val user = FirebaseAuth.getInstance()
-                        val profilepath = myuser.profilePicture
-                        val myprofil = AskingFriends(user!!.uid.toString(), myuser.name, profilepath)
-                        FireStore.askFriends(myprofil, item.userId)
+                        FireStore.askFriends(user!!.uid.toString(), item.userId)
 
                     }
                 }
-               // val myprofil = AskingFriends(user!!.uid, user?.displayName.toString(), profilepath)
-
                 popupWindow.dismiss()
             }
             if (item.user.profilePicture != null) {
@@ -360,7 +357,8 @@ class CommunityFragment : Fragment() {
             val matcher = compiledPattern.matcher(edityt.text.toString())
             if (matcher.find()) {
                 val user = FirebaseAuth.getInstance().currentUser
-                val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.displayName.toString(), editmess.text.toString(), Calendar.getInstance().time)
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+                val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.displayName.toString(), sharedPreferences.getString("profilepicture_link", "123456"), editmess.text.toString(), Calendar.getInstance().time)
                 FireStore.sendVote(vote, item.user.uid)
                 popupWindow.dismiss()
                 Toast.makeText(activity, "Tu as voté pour " + item.user.name, Toast.LENGTH_LONG).show()

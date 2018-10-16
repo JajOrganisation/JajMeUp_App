@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -55,6 +56,8 @@ class SettingsActivity : AppCompatActivity() {
 
             pictureJustChanged = true
             StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+                sharedPreferences.edit().putString("profilepicture_link", imagePath).apply()
                 FireStore.updateCurrentUser("",
                         "", imagePath)
             }

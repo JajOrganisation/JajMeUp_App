@@ -56,7 +56,7 @@ class AskingFriendsActivity : AppCompatActivity() {
                     askingFriendsSection = Section(items)
                     add(askingFriendsSection)
                      setOnItemClickListener(onItemClick)
-                    //setOnItemLongClickListener(onItemLongClick)*/
+                    //setOnItemLongClickListener(onItemLongClick)
                 }
             }
             shouldInitRecyclerView = false
@@ -96,8 +96,7 @@ class AskingFriendsActivity : AppCompatActivity() {
 
             accept.setOnClickListener {
                 popupWindow.dismiss()
-                val askFriend = AskingFriends(item.user.uid, item.user.name, item.user.profilePicture)
-               FireStore.addFriends(askFriend)
+               FireStore.addFriends(item.user.uid)
             }
             if (item.user.profilePicture != null) {
                 GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))

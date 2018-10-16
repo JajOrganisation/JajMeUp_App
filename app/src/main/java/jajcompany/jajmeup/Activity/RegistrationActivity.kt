@@ -62,7 +62,7 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun writeNewUser(userId: String, username: String, email: String) {
-        val user = User(username, email, null)
+        val user = User(userId, username, email, null)
         FirebaseDatabase.getInstance().reference.child("users").child(userId).setValue(user)
     }
 

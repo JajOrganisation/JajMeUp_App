@@ -29,7 +29,7 @@ object FireStore {
     fun initCurrentUser(onComplete: () -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
-                val newUser = User(FirebaseAuth.getInstance().currentUser?.displayName ?: "", "", null)
+                val newUser = User(FirebaseAuth.getInstance().currentUser!!.uid, FirebaseAuth.getInstance().currentUser?.displayName ?: "", "", null)
                 currentUserDocRef.set(newUser).addOnSuccessListener {
                     onComplete()
                 }
@@ -90,10 +90,11 @@ object FireStore {
 
                     val items = mutableListOf<Item>()
                     querySnapshot!!.documents.forEach {
-                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
+                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
                             if ((!FriendsList.contains(it.toObject(User::class.java)!!)) || (FriendsList.isEmpty())) {
                                 items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
                             }
+                        }
                     }
 
                     onListen(items)
@@ -110,6 +111,7 @@ object FireStore {
                     }
 
                     val items = mutableListOf<Item>()
+                    FriendsList.clear()
                     querySnapshot!!.documents.forEach {
                         if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
                             FriendsList.add(it.toObject(User::class.java)!!)

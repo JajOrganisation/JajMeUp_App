@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -111,6 +112,8 @@ class CommunityFragment : Fragment() {
     override fun onResume() {
         detectPref()
         super.onResume()
+        unsetListWorld()
+        setUpdateListWorld()
     }
 
     override fun onAttach(context: Context) {
@@ -164,8 +167,12 @@ class CommunityFragment : Fragment() {
 
         if (shouldInitRecyclerViewFriends)
             initFriends()
-        else
+        else {
             updateItemsFriends()
+            unsetListWorld()
+            setUpdateListWorld()
+        }
+
     }
 
     private fun updateRecyclerViewSearch(items:List<Item>) {
@@ -351,7 +358,7 @@ class CommunityFragment : Fragment() {
             if (matcher.find()) {
                 val user = FirebaseAuth.getInstance().currentUser
                 val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.displayName.toString(), editmess.text.toString(), Calendar.getInstance().time)
-                FireStore.sendVote(vote, item.userId)
+                FireStore.sendVote(vote, item.user.uid)
                 popupWindow.dismiss()
                 Toast.makeText(activity, "Tu as voté pour " + item.user.name, Toast.LENGTH_LONG).show()
             } else {

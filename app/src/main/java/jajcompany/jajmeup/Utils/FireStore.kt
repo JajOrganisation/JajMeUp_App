@@ -144,6 +144,7 @@ object FireStore {
     fun addReveilListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/reveilVote")
+                .orderBy("time", Query.Direction.DESCENDING)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Log.e("FIRESTORE", "Reveil listener error.", firebaseFirestoreException)
@@ -151,9 +152,14 @@ object FireStore {
                     }
 
                     val items = mutableListOf<Item>()
+                    var flag = false
                     querySnapshot!!.documents.forEach {
-                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
-                            items.add(VoteItem(it.toObject(Vote::class.java)!!, it.id, context))
+                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+                            if (flag)
+                                items.add(VoteItem(it.toObject(Vote::class.java)!!, it.id, context))
+                            else
+                                flag = true
+                        }
                     }
                     onListen(items)
                 }

@@ -169,8 +169,11 @@ class CommunityFragment : Fragment() {
             initFriends()
         else {
             updateItemsFriends()
-            unsetListWorld()
-            setUpdateListWorld()
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+            if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
+                unsetListWorld()
+                setUpdateListWorld()
+            }
         }
 
     }

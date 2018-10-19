@@ -80,6 +80,7 @@ object FireStore {
     }
 
     fun addUsersListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+
         return fireStoreInstance.collection("users")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
@@ -100,28 +101,7 @@ object FireStore {
                 }
     }
 
-   /* fun addFriendsListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
-        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
-                ?: throw NullPointerException("UID is null.")}/friends")
-                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                    if (firebaseFirestoreException != null) {
-                        Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
-                        return@addSnapshotListener
-                    }
-
-                    val items = mutableListOf<Item>()
-                    FriendsList.clear()
-                    querySnapshot!!.documents.forEach {
-                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
-                            FriendsList.add(it.toObject(User::class.java)!!)
-                            items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
-                    }
-                    onListen(items)
-                }
-    }*/
-
     fun addFriendsListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
-        //val auth = FirebaseAuth.getInstance()
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/friends")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -186,8 +166,22 @@ object FireStore {
                     var flag = false
                     querySnapshot!!.documents.forEach {
                         if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
-                            if (flag)
-                                items.add(VoteItem(it.toObject(Vote::class.java)!!, it.id, context))
+                            if (flag) {
+                                var previousresult = it.toObject(Vote::class.java)
+                                fireStoreInstance.collection("users/")
+                                        .whereEqualTo("uid", previousresult!!.votant)
+                                        .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                            if (firebaseFirestoreException != null) {
+                                                Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                                return@addSnapshotListener
+                                            }
+                                            val items = mutableListOf<Item>()
+                                            querySnapshot!!.documents.forEach {
+                                                items.add(VoteItem(previousresult!!, it.toObject(User::class.java)!!, context))
+                                            }
+                                            onListen(items)
+                                        }
+                            }
                             else
                                 flag = true
                         }

@@ -3,6 +3,7 @@ package jajcompany.jajmeup.Fragment
 import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,20 +30,30 @@ class HistoryFragment : Fragment() {
 
     private fun updateRecyclerView(items:List<Item>) {
         fun init() {
-            history_list.apply {
-                layoutManager = LinearLayoutManager(this@HistoryFragment.context)
-                adapter = GroupAdapter<ViewHolder>().apply {
-                    voteSection = Section(items)
-                    add(voteSection)
+            try {
+                history_list.apply {
+                    layoutManager = LinearLayoutManager(this@HistoryFragment.context)
+                    adapter = GroupAdapter<ViewHolder>().apply {
+                        voteSection = Section(items)
+                        add(voteSection)
+                    }
                 }
+                shouldInitRecyclerView = false
+            } catch (e: Exception) {
+                Log.e("Error", "Error update vote")
             }
-            shouldInitRecyclerView = false
         }
         fun updateItems() = voteSection.update(items)
 
         if (shouldInitRecyclerView)
             init()
-        else
-            updateItems()
+        else{
+            try {
+                updateItems()
+            } catch (e: Exception) {
+                Log.e("Error", "Error update vote")
+            }
+        }
+
     }
 }

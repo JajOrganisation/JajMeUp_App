@@ -35,6 +35,7 @@ import jajcompany.jajmeup.Utils.YoutubeInformation
 import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_layout.*
 import kotlinx.android.synthetic.main.community_list_header.view.*
+import java.lang.Exception
 import java.util.*
 import java.util.regex.Pattern
 
@@ -114,7 +115,9 @@ class CommunityFragment : Fragment() {
         detectPref()
         super.onResume()
         unsetListWorld()
+        unsetFriendsList()
         setUpdateListWorld()
+        setUpdateListFriends()
     }
 
     override fun onAttach(context: Context) {
@@ -132,51 +135,68 @@ class CommunityFragment : Fragment() {
 
     fun updateRecyclerViewWorld(items:List<Item>) {
         fun initWorld() {
-            community_list.apply {
-                layoutManager = LinearLayoutManager(_context)
-                adapter = GroupAdapter<ViewHolder>().apply {
-                    userSection = Section(items)
-                    add(userSection)
-                    setOnItemClickListener(onItemClick)
-                    setOnItemLongClickListener(onItemLongClick)
+            try {
+                community_list.apply {
+                    layoutManager = LinearLayoutManager(_context)
+                    adapter = GroupAdapter<ViewHolder>().apply {
+                        userSection = Section(items)
+                        add(userSection)
+                        setOnItemClickListener(onItemClick)
+                        setOnItemLongClickListener(onItemLongClick)
+                    }
                 }
+                shouldInitRecyclerViewWorld = false
+            } catch (e: Exception) {
+                Log.e("Error", "Error update world")
             }
-            shouldInitRecyclerViewWorld = false
         }
         fun updateItemsWorld() = userSection.update(items)
 
         if (shouldInitRecyclerViewWorld)
             initWorld()
-        else
-            updateItemsWorld()
+        else {
+            try {
+                updateItemsWorld()
+            } catch (e: Exception) {
+                Log.e("Error", "Error update world")
+            }
+        }
     }
 
     private fun updateRecyclerViewFriends(items:List<Item>) {
         fun initFriends() {
-            friends_list.apply {
-                layoutManager = LinearLayoutManager(_context)
-                adapter = GroupAdapter<ViewHolder>().apply {
-                    friendsSection = Section(items)
-                    add(friendsSection)
-                    setOnItemClickListener(onItemClick)
-                    //setOnItemLongClickListener(onItemLongClick)
+            try {
+
+                friends_list.apply {
+                    layoutManager = LinearLayoutManager(_context)
+                    adapter = GroupAdapter<ViewHolder>().apply {
+                        friendsSection = Section(items)
+                        add(friendsSection)
+                        setOnItemClickListener(onItemClick)
+                        //setOnItemLongClickListener(onItemLongClick)
+                    }
                 }
+                shouldInitRecyclerViewFriends = false
+            } catch (e: Exception) {
+                Log.e("Error", "Error update friends")
             }
-            shouldInitRecyclerViewFriends = false
         }
         fun updateItemsFriends() = friendsSection.update(items)
 
         if (shouldInitRecyclerViewFriends)
             initFriends()
         else {
-            updateItemsFriends()
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-            if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
-                unsetListWorld()
-                setUpdateListWorld()
+            try {
+                updateItemsFriends()
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+                if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
+                    unsetListWorld()
+                    setUpdateListWorld()
+                }
+            } catch (e: Exception) {
+                Log.e("Error", "Error update friends")
             }
         }
-
     }
 
     private fun updateRecyclerViewSearch(items:List<Item>) {
@@ -357,8 +377,7 @@ class CommunityFragment : Fragment() {
             val matcher = compiledPattern.matcher(edityt.text.toString())
             if (matcher.find()) {
                 val user = FirebaseAuth.getInstance().currentUser
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-                val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.displayName.toString(), sharedPreferences.getString("profilepicture_link", "123456"), editmess.text.toString(), Calendar.getInstance().time)
+                val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.uid.toString(), editmess.text.toString(), Calendar.getInstance().time)
                 FireStore.sendVote(vote, item.user.uid)
                 popupWindow.dismiss()
                 Toast.makeText(activity, "Tu as voté pour " + item.user.name, Toast.LENGTH_LONG).show()

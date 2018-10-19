@@ -40,7 +40,7 @@ class HistoryFragment : Fragment() {
                 }
                 shouldInitRecyclerView = false
             } catch (e: Exception) {
-                Log.e("Error", "Error update vote")
+                Log.e("Error", "Error update votes")
             }
         }
         fun updateItems() = voteSection.update(items)
@@ -51,7 +51,7 @@ class HistoryFragment : Fragment() {
             try {
                 updateItems()
             } catch (e: Exception) {
-                Log.e("Error", "Error update vote")
+                Log.e("Error", "Error update votes")
             }
         }
 

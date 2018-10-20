@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="jajcompany.jajmeup.Fragment.ClockFragment"
-    android:background="@color/backgroundGeneral">
+    android:background="@drawable/gradientbackground">
 
     <TimePicker
         android:id="@+id/alarm"

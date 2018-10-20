@@ -217,7 +217,13 @@ class CommunityFragment : Fragment() {
         if (shouldInitRecyclerViewSearch)
             initWorld()
         else
-            updateItemsWorld()
+        {
+            try {
+                updateItemsWorld()
+            } catch (e: Exception) {
+                Log.e("Error", "Error update search")
+            }
+        }
     }
 
     private fun getIsMyFriend(result: UserItem) {

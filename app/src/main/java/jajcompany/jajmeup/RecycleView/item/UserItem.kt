@@ -16,8 +16,6 @@ import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
 
 class UserItem(val user: User, val userId: String, private val context: Context): Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        val auth = FirebaseAuth.getInstance()
-        val usercurrent = auth.currentUser
         viewHolder.textView_name.text = user.name
         if (user.profilePicture != null) {
             GlideApp.with(context).load(StorageUtil.pathToReference(user.profilePicture))

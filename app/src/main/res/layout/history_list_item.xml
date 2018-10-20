@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cardView_item_person"
+    android:id="@+id/cardView_item_history"
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:layout_margin="4dp"
@@ -13,25 +13,36 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/userPictureHistory"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="5dp"
             tools:src="@drawable/ic_account_circle_black_24dp" />
 
         <TextView
-            android:id="@+id/videoName"
+            android:id="@+id/usernameHistory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/userPictureHistory"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:textSize="25sp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat"
+            tools:text="Reso Coder"/>
+
+        <TextView
+            android:id="@+id/videoNameHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/userPictureHistory"
+            android:layout_below="@+id/usernameHistory"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:textSize="12sp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat"
             tools:text="Reso Coder" />
 

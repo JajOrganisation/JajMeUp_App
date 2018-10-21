@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jajcompany.jajmeup.R
@@ -52,6 +53,7 @@ class SettingsActivity : AppCompatActivity() {
             GlideApp.with(this)
                     .load(selectedImageBytes)
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
+                    .apply(RequestOptions.circleCropTransform())
                     .into(profilePictureSettings)
 
             pictureJustChanged = true

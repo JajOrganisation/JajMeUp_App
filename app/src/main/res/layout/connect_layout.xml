@@ -8,35 +8,43 @@
     tools:context=".Activity.ConnectActivity"
     android:background="@drawable/gradientbackground">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/connectElement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
         <EditText
             android:id="@+id/userNameConnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:hint="Pseudo" />
+            android:hint="Pseudo"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:layout_gravity="center_horizontal"/>
 
         <EditText
             android:id="@+id/passwordConnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_below="@+id/userNameConnect"
+            android:textColor="@android:color/white"
             android:hint="Motdepasse"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textSize="20dp"
+            android:layout_gravity="center_horizontal"/>
 
         <Button
             android:id="@+id/connectButtonLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_below="@+id/passwordConnect"
-            android:text="Connexion" />
+            android:background="@drawable/button_drawable"
+            android:text="Connexion"
+            android:textSize="20dp"
+            android:padding="12dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

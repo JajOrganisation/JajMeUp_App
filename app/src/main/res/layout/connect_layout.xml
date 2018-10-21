@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Pseudo"
+            android:textColorHint="@android:color/white"
             android:textColor="@android:color/white"
             android:textSize="20dp"
             android:layout_gravity="center_horizontal"/>
@@ -30,6 +31,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:hint="Motdepasse"
+            android:textColorHint="@android:color/white"
             android:inputType="textPassword"
             android:textSize="20dp"
             android:layout_gravity="center_horizontal"/>
@@ -40,7 +42,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_drawable"
             android:text="Connexion"
-            android:textSize="20dp"
+            android:textColor="@android:color/white"
+            android:textSize="30dp"
             android:padding="12dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"/>

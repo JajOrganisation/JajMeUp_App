@@ -5,4 +5,6 @@
     <color name="colorAccent">#000dff</color>
     <color name="backgroundGeneral">#222222</color>
     <color name="borderColor">#0077fa</color>
+    <color name="reveilUp">#51ff00</color>
+    <color name="reveilDown">#ff0008</color>
 </resources>

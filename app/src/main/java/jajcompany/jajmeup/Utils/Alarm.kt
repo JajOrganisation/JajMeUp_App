@@ -19,10 +19,11 @@ import java.util.*
 object Alarm {
     lateinit var alarmManager: AlarmManager
     lateinit var switchAlarm: Switch
-   // lateinit var onReveilInfo: onReveilInfo
+    lateinit var onReveilInfoReceiver: onReveilInfo
 
     fun setAlarm(context: Context, hours: Int, minutes: Int, switchA: Switch) {
         val intent = Intent(context, onAlarm::class.java)
+        intent.action = "onReveilRing"
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val cal: Calendar = Calendar.getInstance()
         cal.set(Calendar.HOUR_OF_DAY, hours)
@@ -32,29 +33,34 @@ object Alarm {
         switchAlarm = switchA
         val filter = IntentFilter()
         filter.addAction("onReveilINFO")
-        val onReveilInfo = onReveilInfo()
-        context.registerReceiver(onReveilInfo, filter)
+        onReveilInfoReceiver = onReveilInfo()
+        context.registerReceiver(onReveilInfoReceiver, filter)
     }
 
     fun deleteAlarm(context: Context) {
         val intent = Intent(context, onAlarm::class.java)
+        intent.action = "onReveilRing"
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
+        context.unregisterReceiver(onReveilInfoReceiver)
     }
 
     class onAlarm : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
-            Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_SHORT).show()
-            switchAlarm.setChecked(false)
-            FireStore.getLastReveil(context)
+            if (intent!!.action == "onReveilRing") {
+                Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_SHORT).show()
+                FireStore.getLastReveil(context)
+            }
         }
     }
 
     class onReveilInfo : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
-            Log.d("HELLO YT ", context.toString())
-            val intent = YouTubeJAJActivity.newIntent(context, intent?.getStringExtra("votant"), intent?.getStringExtra("lien"), intent?.getStringExtra("message"))
-            context.startActivity(intent)
+            if (intent!!.action == "onReveilINFO") {
+                val intent = YouTubeJAJActivity.newIntent(context, intent?.getStringExtra("votant"), intent?.getStringExtra("lien"), intent?.getStringExtra("message"))
+                switchAlarm.setChecked(false)
+                context.startActivity(intent)
+            }
         }
     }
 }

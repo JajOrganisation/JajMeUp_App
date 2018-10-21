@@ -58,8 +58,7 @@ class SettingsActivity : AppCompatActivity() {
             StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
                 sharedPreferences.edit().putString("profilepicture_link", imagePath).apply()
-                FireStore.updateCurrentUser("",
-                        "", imagePath)
+                FireStore.updateCurrentUser(profilePicture = imagePath)
             }
         }
     }

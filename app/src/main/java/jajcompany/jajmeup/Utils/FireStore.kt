@@ -2,6 +2,7 @@ package jajcompany.jajmeup.Utils
 
 import android.content.Context
 import android.content.Intent
+import android.preference.PreferenceManager
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -26,10 +27,10 @@ object FireStore {
         get() = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
 
-    fun initCurrentUser(onComplete: () -> Unit) {
+    fun initCurrentUser(myname: String, onComplete: () -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
-                val newUser = User(FirebaseAuth.getInstance().currentUser!!.uid, FirebaseAuth.getInstance().currentUser?.displayName ?: "", "", null)
+                val newUser = User(FirebaseAuth.getInstance().currentUser!!.uid, myname, "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "down", null)
                 currentUserDocRef.set(newUser).addOnSuccessListener {
                     onComplete()
                 }
@@ -40,10 +41,11 @@ object FireStore {
         }
     }
 
-    fun updateCurrentUser(name: String = "", reveil: String = "", profilePicture: String? = null) {
+    fun updateCurrentUser(name: String = "", reveilDefault: String = "", reveilCurrent: String = "", profilePicture: String? = null) {
         val userFieldMap = mutableMapOf<String, Any>()
         if (name != "") userFieldMap["name"] = name
-        if (reveil != "") userFieldMap["reveil"] = reveil
+        if (reveilDefault != "") userFieldMap["reveilDefaultLink"] = reveilDefault
+        if (reveilCurrent != "") userFieldMap["reveilCurrentHour"] = reveilCurrent
         if (profilePicture != null) userFieldMap["profilePicture"] = profilePicture
         currentUserDocRef.update(userFieldMap)
     }
@@ -56,6 +58,7 @@ object FireStore {
     }
 
     fun getLastReveil(context: Context) {
+        var flag = false
         fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/reveilVote")
                 .orderBy("time", Query.Direction.DESCENDING)
@@ -64,12 +67,23 @@ object FireStore {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         for (document in task.result) {
+                            flag = true
                             var test = document.toObject(Vote::class.java)
                             val intent = Intent()
                             intent.action = "onReveilINFO"
                             intent.putExtra("lien", test.lien)
                             intent.putExtra("votant", test.votant)
                             intent.putExtra("message", test.message)
+                            intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
+                            context.sendBroadcast(intent)
+                        }
+                        if(!flag) {
+                            val intent = Intent()
+                            intent.action = "onReveilINFO"
+                            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                            intent.putExtra("lien", sharedPreferences.getString("default_reveil", "dQw4w9WgXcQ"))
+                            intent.putExtra("votant", "Ton réveil")
+                            intent.putExtra("message", "Tu n'as pas reçu de vote")
                             intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
                             context.sendBroadcast(intent)
                         }

@@ -42,7 +42,12 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".Utils.Alarm$onAlarm" />
+        <receiver android:name=".Utils.Alarm$onAlarm" >
+            <intent-filter>
+                <action android:name="onReveilRing" >
+                </action>
+            </intent-filter>
+        </receiver>
 
         <activity
         android:name=".Activity.SettingsActivity"

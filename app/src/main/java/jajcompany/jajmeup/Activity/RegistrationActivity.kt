@@ -3,6 +3,7 @@ package jajcompany.jajmeup.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -27,7 +28,7 @@ class RegistrationActivity : AppCompatActivity() {
         setContentView(R.layout.registration_layout)
         mAuth = FirebaseAuth.getInstance()
         registrationButtonRegister.setOnClickListener {
-            val usermail: String = userNameRegistration.text.toString()
+            val usermail: String = emailRegistration.text.toString()
             val userpseudo: String = pseudoRegistration.text.toString()
             val password: String = passwordRegistration.text.toString()
             val passwordconfirm: String = passwordRegistrationConfirm.text.toString()
@@ -40,14 +41,8 @@ class RegistrationActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("RegistrationActivity", "createUserWithEmail:success")
-                                var user = mAuth?.currentUser
-                                var mDatabase: DatabaseReference? = null
-                               // updateUI(user)
-                                writeNewUser(user!!.uid, userpseudo, usermail)
-                                val profileUpdates = UserProfileChangeRequest.Builder()
-                                        .setDisplayName(userpseudo).build()
-                                user.updateProfile(profileUpdates)
-                                FireStore.initCurrentUser {
+                                startActivity(MainActivity.newIntent(this))
+                                FireStore.initCurrentUser(userpseudo) {
                                     startActivity(MainActivity.newIntent(this))
                                 }
                             } else {
@@ -60,12 +55,6 @@ class RegistrationActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun writeNewUser(userId: String, username: String, email: String) {
-        val user = User(userId, username, email, null)
-        FirebaseDatabase.getInstance().reference.child("users").child(userId).setValue(user)
-    }
-
     companion object {
         fun newIntent(context: Context): Intent {
             val intent = Intent(context, RegistrationActivity::class.java)

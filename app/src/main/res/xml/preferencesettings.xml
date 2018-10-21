@@ -9,7 +9,7 @@
             android:title="Reveil par défault"
             android:summary="Nom de la video"
             android:dialogTitle="Lien YouTube pour te réveiller"
-            android:defaultValue="123456"/>
+            android:defaultValue="dQw4w9WgXcQ"/>
 
         <ListPreference
             android:key="visibility_preference"

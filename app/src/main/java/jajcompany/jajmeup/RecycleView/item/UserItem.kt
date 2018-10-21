@@ -22,6 +22,14 @@ class UserItem(val user: User, val userId: String, private val context: Context)
                     .placeholder(R.drawable.ic_account_circle_black_24dp).into(viewHolder.imageView_profile_picture)
             Glide.with(context).load(StorageUtil.pathToReference(user.profilePicture)).apply(RequestOptions.circleCropTransform()).into(viewHolder.imageView_profile_picture)
         }
+        if (user.reveilCurrentHour == "down") {
+            viewHolder.textView_reveil.text = "N'a pas mis de réveil"
+            viewHolder.textView_reveil.setTextColor(context.getColor(R.color.reveilDown))
+        }
+        else {
+            viewHolder.textView_reveil.text = "Se réveil à "+user.reveilCurrentHour
+            viewHolder.textView_reveil.setTextColor(context.getColor(R.color.reveilUp))
+        }
 
     }
 

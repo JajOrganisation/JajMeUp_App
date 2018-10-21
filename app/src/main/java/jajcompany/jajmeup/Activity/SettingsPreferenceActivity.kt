@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceFragment
 import jajcompany.jajmeup.R
+import java.util.regex.Pattern
 
 
 class SettingsPreferenceActivity : Activity() {

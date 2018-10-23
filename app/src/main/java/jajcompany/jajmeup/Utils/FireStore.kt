@@ -27,10 +27,10 @@ object FireStore {
         get() = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
 
-    fun initCurrentUser(myname: String, onComplete: () -> Unit) {
+    fun initCurrentUser(myname: String, myprofilepicture: String, onComplete: () -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
-                val newUser = User(FirebaseAuth.getInstance().currentUser!!.uid, myname, "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "down", null)
+                val newUser = User(FirebaseAuth.getInstance().currentUser!!.uid, myname, "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "down", myprofilepicture)
                 currentUserDocRef.set(newUser).addOnSuccessListener {
                     onComplete()
                 }

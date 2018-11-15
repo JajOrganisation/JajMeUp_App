@@ -19,8 +19,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="D:\Android_Studio\Project\IMG\icons8-search-24.png" />
-                                      <entry key="outputName" value="ic_search_white_24p" />
+                                      <entry key="imageAsset" value="D:\Android_Studio\Project\IMG\engrenage.png" />
+                                      <entry key="outputName" value="ic_settings_white" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="ffffff" />
                                     </map>

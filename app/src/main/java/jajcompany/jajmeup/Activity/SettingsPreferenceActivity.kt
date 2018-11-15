@@ -7,13 +7,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceFragment
 import jajcompany.jajmeup.R
-import java.util.regex.Pattern
 
 
 class SettingsPreferenceActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.PreferencesTheme)
         fragmentManager.beginTransaction().replace(android.R.id.content,
                 PrefsFragment()).commit()
     }

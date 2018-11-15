@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:key="default_reveil"
+        android:title="Reveil par défault"
+        android:summary="Nom de la video"
+        android:dialogTitle="Lien YouTube pour te réveiller"
+        android:defaultValue="dQw4w9WgXcQ"/>
 
-    <PreferenceCategory
-        android:title="Paramètre de l'application">
+    <ListPreference
+        android:key="visibility_preference"
+        android:title="Visibilite de mon reveil"
+        android:summary="Qui peut voir mon réveil"
+        android:entries="@array/visibilitearrays"
+        android:entryValues="@array/visibilitearray_id"
+        android:dialogTitle="Selectionne la visibilite de ton réveil"
+        android:defaultValue="WORLD"/>
 
-        <EditTextPreference
-            android:key="default_reveil"
-            android:title="Reveil par défault"
-            android:summary="Nom de la video"
-            android:dialogTitle="Lien YouTube pour te réveiller"
-            android:defaultValue="dQw4w9WgXcQ"/>
-
-        <ListPreference
-            android:key="visibility_preference"
-            android:title="Visibilite de mon reveil"
-            android:summary="Qui peut voir mon réveil"
-            android:entries="@array/visibilitearrays"
-            android:entryValues="@array/visibilitearray_id"
-            android:dialogTitle="Selectionne la visibilite de ton réveil"
-            android:defaultValue="WORLD"/>
-
-        <CheckBoxPreference
-            android:key="history_preference"
-            android:title="Historique"
-            android:summary="Activer / Désactiver lhistorique"
-            android:defaultValue="true"/>
-        <EditTextPreference
-            android:key="current_link"
-            android:defaultValue="123456"
-            android:visibility="gone"/>
-        <EditTextPreference
-            android:key="profilepicture_link"
-            android:defaultValue="123456"
-            android:visibility="gone"/>
-
-    </PreferenceCategory>
-
+    <CheckBoxPreference
+        android:key="history_preference"
+        android:title="Historique"
+        android:summary="Activer / Désactiver lhistorique"
+        android:defaultValue="true"/>
+    <EditTextPreference
+        android:key="current_link"
+        android:defaultValue="123456"
+        android:visibility="gone"
+        android:enabled="false"/>
+    <EditTextPreference
+        android:key="profilepicture_link"
+        android:defaultValue="123456"
+        android:visibility="gone"
+        android:enabled="false"/>
 </PreferenceScreen>

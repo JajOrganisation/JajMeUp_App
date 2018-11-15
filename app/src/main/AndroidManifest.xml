@@ -54,6 +54,7 @@
         android:label="@string/title_activity_settings" />
         <activity
             android:name=".Activity.SettingsPreferenceActivity"
+            android:theme="@style/PreferencesTheme"
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".Activity.LoginActivity"

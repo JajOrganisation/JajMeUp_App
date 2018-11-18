@@ -26,8 +26,6 @@ object FireStore {
 
     private val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
-    private var randomUserNumber = IntArray(20)
-
     private val currentUserDocRef: DocumentReference
         get() = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
@@ -117,7 +115,7 @@ object FireStore {
                     var totaluser = querySnapshot!!.get("users_count").toString().toInt()
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                     val editor = sharedPreferences.edit()
-                    val therand = Random().nextInt((totaluser - 1))
+                    val therand = Random().nextInt((totaluser))+1
                     editor.putInt("randomUser", therand)
                     editor.apply()
                 }

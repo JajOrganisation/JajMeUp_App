@@ -34,6 +34,7 @@ import jajcompany.jajmeup.Utils.StorageUtil
 import jajcompany.jajmeup.Utils.YoutubeInformation
 import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_layout.*
+import kotlinx.android.synthetic.main.community_list_header.*
 import kotlinx.android.synthetic.main.community_list_header.view.*
 import java.lang.Exception
 import java.util.*
@@ -114,7 +115,6 @@ class CommunityFragment : Fragment() {
     override fun onResume() {
         detectPref()
         super.onResume()
-        FireStore.setRandomUserNumber(_context)
         unsetListWorld()
         unsetFriendsList()
         setUpdateListWorld()
@@ -337,6 +337,7 @@ class CommunityFragment : Fragment() {
             setUpdateListWorld()
             header_world.visibility = View.VISIBLE
             community_list.visibility = View.VISIBLE
+            header_world.setRandomImageButton.visibility = View.VISIBLE
             header_world.header_communauty.text = "Tout le monde"
             header_world.header_communauty.setOnClickListener {
 
@@ -344,6 +345,12 @@ class CommunityFragment : Fragment() {
                     community_list.visibility = View.VISIBLE
                 else
                     community_list.visibility = View.GONE
+            }
+
+            header_world.setRandomImageButton.setOnClickListener {
+                FireStore.setRandomUserNumber(_context)
+                unsetListWorld()
+                setUpdateListWorld()
             }
         }
         else {

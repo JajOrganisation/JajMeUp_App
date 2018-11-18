@@ -22,14 +22,15 @@
         android:title="Historique"
         android:summary="Activer / Désactiver lhistorique"
         android:defaultValue="true"/>
-    <EditTextPreference
-        android:key="current_link"
-        android:defaultValue="123456"
-        android:visibility="gone"
-        android:enabled="false"/>
-    <EditTextPreference
+    <!--<EditTextPreference
         android:key="profilepicture_link"
         android:defaultValue="123456"
         android:visibility="gone"
         android:enabled="false"/>
+
+    <EditTextPreference
+        android:key="current_link"
+        android:defaultValue="123456"
+        android:visibility="gone"
+        android:enabled="false"/>-->
 </PreferenceScreen>

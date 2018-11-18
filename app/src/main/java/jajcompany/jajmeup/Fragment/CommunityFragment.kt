@@ -114,6 +114,7 @@ class CommunityFragment : Fragment() {
     override fun onResume() {
         detectPref()
         super.onResume()
+        FireStore.setRandomUserNumber(_context)
         unsetListWorld()
         unsetFriendsList()
         setUpdateListWorld()
@@ -304,7 +305,8 @@ class CommunityFragment : Fragment() {
     }
 
     fun setUpdateListWorld() {
-        userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
+        userListenerRegistration = FireStore.getUsers(this.activity!!, this::updateRecyclerViewWorld)
+       // userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
     }
 
     fun setUpdateListFriends() {
@@ -391,14 +393,12 @@ class CommunityFragment : Fragment() {
                 Toast.makeText(activity, "Invalid link", Toast.LENGTH_LONG).show()
             }
         }
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-        if (sharedPreferences.getString("current_link", "123456") != "123456") {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
             val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
             val compiledPattern = Pattern.compile(pattern)
-            val matcher = compiledPattern.matcher(sharedPreferences.getString("current_link", "123456"))
+            val matcher = compiledPattern.matcher(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))
             if (matcher.find()) {
-                edityt.setText(sharedPreferences.getString("current_link", "123456"))
-
+                edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))
             }
         }
         TransitionManager.beginDelayedTransition(community_layout)

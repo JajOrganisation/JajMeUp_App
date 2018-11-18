@@ -10,11 +10,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.xwray.groupie.kotlinandroidextensions.Item
 import jajcompany.jajmeup.Models.AskingFriends
+import jajcompany.jajmeup.Models.Counters
 import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
 import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.RecycleView.item.UserItem
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
 
 object FireStore {
@@ -22,6 +25,8 @@ object FireStore {
     private var FriendsList: MutableList<User> = arrayListOf()
 
     private val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
+
+    private var randomUserNumber = IntArray(20)
 
     private val currentUserDocRef: DocumentReference
         get() = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
@@ -33,6 +38,18 @@ object FireStore {
                 val newUser = User(FirebaseAuth.getInstance().currentUser!!.uid, myname, "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "down", myprofilepicture)
                 currentUserDocRef.set(newUser).addOnSuccessListener {
                     onComplete()
+                    fireStoreInstance.document("counters/count/")
+                            .get()
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    var test = task.result.toObject(Counters::class.java)
+                                    val countersFieldMap = mutableMapOf<String, Any>()
+                                    countersFieldMap["users_count"] = test!!.usercount + 1
+                                    fireStoreInstance.document("counters/count/")
+                                            .update(countersFieldMap)
+                                    updateCurrentUser(mynumber = test.usercount + 1)
+                                }
+                            }
                 }
             }
             else{
@@ -41,11 +58,12 @@ object FireStore {
         }
     }
 
-    fun updateCurrentUser(name: String = "", reveilDefault: String = "", reveilCurrent: String = "", profilePicture: String? = null) {
+    fun updateCurrentUser(name: String = "", reveilDefault: String = "", reveilCurrent: String = "", mynumber: Int = 0, profilePicture: String? = null) {
         val userFieldMap = mutableMapOf<String, Any>()
         if (name != "") userFieldMap["name"] = name
         if (reveilDefault != "") userFieldMap["reveilDefaultLink"] = reveilDefault
         if (reveilCurrent != "") userFieldMap["reveilCurrentHour"] = reveilCurrent
+        if(mynumber != 0) userFieldMap["mynumber"] = mynumber
         if (profilePicture != null) userFieldMap["profilePicture"] = profilePicture
         currentUserDocRef.update(userFieldMap)
     }
@@ -93,8 +111,66 @@ object FireStore {
                 }
     }
 
-    fun addUsersListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+    fun setRandomUserNumber(context: Context) {
+        fireStoreInstance.document("counters/count/")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    var totaluser = querySnapshot!!.get("users_count").toString().toInt()
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    val editor = sharedPreferences.edit()
+                    val therand = Random().nextInt((totaluser - 1))
+                    editor.putInt("randomUser", therand)
+                    editor.apply()
+                }
+    }
 
+
+    fun getUsers(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+        return fireStoreInstance.document("counters/count/")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                        var totaluser = querySnapshot!!.get("users_count").toString().toInt()
+                        if (totaluser > 20) {
+                            fireStoreInstance.collection("users")
+                                    .whereGreaterThanOrEqualTo("mynumber", PreferenceManager.getDefaultSharedPreferences(context).getInt("randomUser", 1))
+                                    .limit(20)
+                                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                        if (firebaseFirestoreException != null) {
+                                            Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                            return@addSnapshotListener
+                                        }
+                                        val items = mutableListOf<Item>()
+                                        querySnapshot!!.documents.forEach {
+                                            if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+                                                if ((!FriendsList.contains(it.toObject(User::class.java)!!)) || (FriendsList.isEmpty())) {
+                                                    items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
+                                                }
+                                            }
+                                            onListen(items)
+                                        }
+                                    }
+                        }
+                        else {
+                            fireStoreInstance.collection("users")
+                                    .whereGreaterThanOrEqualTo("mynumber", 1)
+                                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                        if (firebaseFirestoreException != null) {
+                                            Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                            return@addSnapshotListener
+                                        }
+                                        val items = mutableListOf<Item>()
+                                        querySnapshot!!.documents.forEach {
+                                            if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+                                                if ((!FriendsList.contains(it.toObject(User::class.java)!!)) || (FriendsList.isEmpty())) {//NE PAS INCREMENTE I
+                                                    items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
+                                                }
+                                            }
+                                            onListen(items)
+                                        }
+                                    }
+                        }
+                    }
+    }
+
+    fun addUsersListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {

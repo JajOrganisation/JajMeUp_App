@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.settings -> {
-                //startActivity(SettingsActivity.newIntent(this))
                 startActivity(SettingsActivity.newIntent(this))
             }
             R.id.notifications -> {

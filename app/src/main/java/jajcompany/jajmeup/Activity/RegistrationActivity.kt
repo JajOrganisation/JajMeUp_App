@@ -62,8 +62,6 @@ class RegistrationActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
                                 Log.d("RegistrationActivity", "createUserWithEmail:success")
                                 StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
-                                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-                                    sharedPreferences.edit().putString("profilepicture_link", imagePath).apply()
                                     FireStore.initCurrentUser(userpseudo, imagePath) {
                                         startActivity(MainActivity.newIntent(this))
                                     }

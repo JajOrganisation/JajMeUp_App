@@ -459,6 +459,7 @@ class CommunityFragment : Fragment() {
         }
 
         labelyt.text = "Avec cette vidéo :\n"+getTitleQuietly(sharedPreferences.getString("link_wakeup", ""))
+        
         labelvotant.text = sharedPreferences.getString("user_wakeup", "")+" t'as réveillé"
         if (sharedPreferences.getString("message_wakeup", "") != "") {
             labelmess.text = sharedPreferences.getString("message_wakeup", "")

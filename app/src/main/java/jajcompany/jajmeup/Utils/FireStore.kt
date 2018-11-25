@@ -309,7 +309,7 @@ object FireStore {
                 }
     }
 
-    fun askingFriendCount(context: Context, onListen: (Int) -> Unit): ListenerRegistration {
+    fun askingFriendCount(onListen: (Int) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/askFriends")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -319,9 +319,22 @@ object FireStore {
                         return@addSnapshotListener
                     }
                         val totalasking = querySnapshot!!.size()
-                        Log.d("HELLO", totalasking.toString())
                         onListen(totalasking)
                     }
+    }
+
+    fun notificationsCount(onListen: (Int) -> Unit): ListenerRegistration {
+        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/notifications")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Count Notifications listener error.", firebaseFirestoreException)
+                        onListen(0)
+                        return@addSnapshotListener
+                    }
+                    val totalnotification = querySnapshot!!.size()
+                    onListen(totalnotification)
+                }
     }
 
     fun removeListener(registration: ListenerRegistration) = registration.remove()

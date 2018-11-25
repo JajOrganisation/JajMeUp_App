@@ -29,8 +29,10 @@ import jajcompany.jajmeup.Utils.FireStore
 class MainActivity : AppCompatActivity() {
 
     var link: String = ""
-    private lateinit var textCartItemCount: TextView
+    private lateinit var textCartItemCountFriends: TextView
+    private lateinit var textCartItemCountNotifications: TextView
     private lateinit var askingFriendsCount: ListenerRegistration
+    private lateinit var notificationsCount: ListenerRegistration
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -76,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
         checkPref()
         setCountFriendsAsking()
+        setCountNotifications()
     }
 
     override fun onResume() {
@@ -89,7 +92,8 @@ class MainActivity : AppCompatActivity() {
         val menuItem = menu.findItem(R.id.friends_notification)
 
         val actionView = MenuItemCompat.getActionView(menuItem)
-        textCartItemCount = actionView.findViewById<View>(R.id.cart_badge) as TextView
+        textCartItemCountFriends = actionView.findViewById<View>(R.id.cart_badge_friends) as TextView
+        textCartItemCountNotifications = actionView.findViewById<View>(R.id.cart_badge_notification) as TextView
 
         actionView.setOnClickListener { onOptionsItemSelected(menuItem) }
 
@@ -128,15 +132,28 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setupNotifNumber(count: Int) {
+    private fun setupNotifNumberFriends(count: Int) {
         if (count == 0) {
-            if (textCartItemCount.visibility != View.GONE) {
-                textCartItemCount.visibility = View.GONE
+            if (textCartItemCountFriends.visibility != View.GONE) {
+                textCartItemCountFriends.visibility = View.GONE
             }
         } else {
-            textCartItemCount.text = count.toString()
-            if (textCartItemCount.visibility != View.VISIBLE) {
-                textCartItemCount.visibility = View.VISIBLE
+            textCartItemCountFriends.text = count.toString()
+            if (textCartItemCountFriends.visibility != View.VISIBLE) {
+                textCartItemCountFriends.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun setupNotifNumber(count: Int) {
+        if (count == 0) {
+            if (textCartItemCountNotifications.visibility != View.GONE) {
+                textCartItemCountNotifications.visibility = View.GONE
+            }
+        } else {
+            textCartItemCountNotifications.text = count.toString()
+            if (textCartItemCountNotifications.visibility != View.VISIBLE) {
+                textCartItemCountNotifications.visibility = View.VISIBLE
             }
         }
     }
@@ -169,6 +186,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setCountFriendsAsking() {
-        askingFriendsCount = FireStore.askingFriendCount(this, this::setupNotifNumber)
+        askingFriendsCount = FireStore.askingFriendCount(this::setupNotifNumberFriends)
+    }
+
+    fun setCountNotifications() {
+        notificationsCount = FireStore.askingFriendCount(this::setupNotifNumber)
     }
 }

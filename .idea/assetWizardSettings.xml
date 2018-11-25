@@ -19,8 +19,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="D:\Android_Studio\Project\IMG\dice_white.png" />
-                                      <entry key="outputName" value="ic_dice_white" />
+                                      <entry key="imageAsset" value="D:\Android_Studio\Project\IMG\notification_white.png" />
+                                      <entry key="outputName" value="ic_notifications_white" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="ffffff" />
                                     </map>

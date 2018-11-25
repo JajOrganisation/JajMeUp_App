@@ -1,6 +1,8 @@
 package jajcompany.jajmeup.Fragment
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -26,6 +28,7 @@ import com.xwray.groupie.OnItemLongClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import jajcompany.jajmeup.Activity.YouTubeJAJActivity
 import jajcompany.jajmeup.Models.AskingFriends
 import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
@@ -34,6 +37,7 @@ import jajcompany.jajmeup.RecycleView.item.UserItem
 import jajcompany.jajmeup.Utils.FireStore
 import jajcompany.jajmeup.Utils.StorageUtil
 import jajcompany.jajmeup.Utils.YoutubeInformation
+import jajcompany.jajmeup.Utils.YoutubeInformation.getTitleQuietly
 import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_layout.*
 import kotlinx.android.synthetic.main.community_list_header.*
@@ -46,7 +50,6 @@ import java.util.regex.Pattern
 
 class CommunityFragment : Fragment() {
 
-    lateinit var databaseRef: DatabaseReference
     private lateinit var userListenerRegistration: ListenerRegistration
     private lateinit var friendsListenerRegistration: ListenerRegistration
     private lateinit var searchListenerRegistration: ListenerRegistration
@@ -65,6 +68,7 @@ class CommunityFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
         detectPref()
         header_friends.header_communauty.text = "Amis"
@@ -122,6 +126,10 @@ class CommunityFragment : Fragment() {
         unsetFriendsList()
         setUpdateListWorld()
         setUpdateListFriends()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+        if (sharedPreferences.getBoolean("on_wakeup", false)){
+            showPopOnWakeUp()
+        }
     }
 
 
@@ -411,6 +419,49 @@ class CommunityFragment : Fragment() {
             if (matcher.find()) {
                 edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))
             }
+        }
+        TransitionManager.beginDelayedTransition(community_layout)
+        popupWindow.showAtLocation(
+                community_layout,
+                Gravity.CENTER,
+                0,
+                0
+        )
+    }
+    private fun showPopOnWakeUp() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+        sharedPreferences.edit().putString("user_wakeup", YouTubeJAJActivity.votant).apply()
+        sharedPreferences.edit().putString("message_wakeup", YouTubeJAJActivity.message).apply()
+        sharedPreferences.edit().putString("link_wakeup", YouTubeJAJActivity.lien).apply()
+        sharedPreferences.edit().putBoolean("on_wakeup", false).apply()
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.wakeup_popup_layout, null)
+        val popupWindow = PopupWindow(
+                view, // Custom view to show in popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+        )
+
+        val slideIn = Slide()
+        slideIn.slideEdge = Gravity.TOP
+        popupWindow.enterTransition = slideIn
+        val slideOut = Slide()
+        slideOut.slideEdge = Gravity.RIGHT
+        popupWindow.exitTransition = slideOut
+        popupWindow.isFocusable = true
+        val closepop = view.findViewById<Button>(R.id.button_closepop_wakeup)
+        val response = view.findViewById<Button>(R.id.button_response_wakeup)
+        val labelyt = view.findViewById<TextView>(R.id.yt_wakeup)
+        val labelvotant = view.findViewById<TextView>(R.id.votant_wakeup)
+        val labelmess = view.findViewById<TextView>(R.id.message_wakeup)
+        closepop.setOnClickListener {
+            popupWindow.dismiss()
+        }
+
+        labelyt.text = "Avec cette vidéo :\n"+getTitleQuietly(sharedPreferences.getString("link_wakeup", ""))
+        labelvotant.text = sharedPreferences.getString("user_wakeup", "")+" t'as réveillé"
+        if (sharedPreferences.getString("message_wakeup", "") != "") {
+            labelmess.text = sharedPreferences.getString("message_wakeup", "")
         }
         TransitionManager.beginDelayedTransition(community_layout)
         popupWindow.showAtLocation(

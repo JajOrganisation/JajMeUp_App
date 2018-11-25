@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#bebebe"
+    android:padding="20dp"
+    >
+    <TextView
+        android:id="@+id/votant_wakeup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Écrit un message pour PSEUDO"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        />
+    <TextView
+        android:id="@+id/message_wakeup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lien Youtube"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        />
+    <TextView
+        android:id="@+id/yt_wakeup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lien Youtube"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        />
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" >
+        <Button
+            android:id="@+id/button_closepop_wakeup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            />
+        <Button
+            android:id="@+id/button_response_wakeup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Réponds lui"/>
+    </TableRow>
+</LinearLayout>

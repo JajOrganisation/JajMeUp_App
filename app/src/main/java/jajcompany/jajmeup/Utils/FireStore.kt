@@ -84,14 +84,25 @@ object FireStore {
                     if (task.isSuccessful) {
                         for (document in task.result) {
                             flag = true
-                            var test = document.toObject(Vote::class.java)
-                            val intent = Intent()
-                            intent.action = "onReveilINFO"
-                            intent.putExtra("lien", test.lien)
-                            intent.putExtra("votant", test.votant)
-                            intent.putExtra("message", test.message)
-                            intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
-                            context.sendBroadcast(intent)
+                            val tmpvote = document.toObject(Vote::class.java)
+                            fireStoreInstance.document("users/${tmpvote.votant}")
+                                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                        if (task.isSuccessful) {
+                                            val test = querySnapshot!!.get("name").toString()
+                                            Log.d("HELLO", "COUCOU"+test)
+                                            val intent = Intent()
+                                            intent.action = "onReveilINFO"
+                                            intent.putExtra("lien", tmpvote.lien)
+                                            intent.putExtra("votant", test)
+                                            intent.putExtra("message", tmpvote.message)
+                                            intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
+                                            context.sendBroadcast(intent)
+                                            Log.d("HELLO", "COUCOU")
+                                        }
+                                        else {
+                                            Log.e("FIRESTORE", "Get User Alarm error.")
+                                        }
+                            }
                         }
                         if(!flag) {
                             val intent = Intent()

@@ -3,6 +3,7 @@ package jajcompany.jajmeup.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
@@ -44,11 +45,18 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.youtube_layout)
-        userAlarm.setText(votant)
-        messageAlarm.setText(message)
+        userAlarm.text = votant
+        messageAlarm.text = message
         initUI()
         youtubeAlarm.initialize(API_KEY, youtubePlayerInit)
         stopAlarm.setOnClickListener {
+            if (votant != "Ton réveil") {
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+                sharedPreferences.edit().putString("user_wakeup", votant).apply()
+                sharedPreferences.edit().putString("message_wakeup", message).apply()
+                sharedPreferences.edit().putString("link_wakeup", lien).apply()
+                sharedPreferences.edit().putBoolean("on_wakeup", true).apply()
+            }
             finish()
         }
     }

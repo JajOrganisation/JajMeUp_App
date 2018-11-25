@@ -77,26 +77,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
         checkPref()
-        setCountFriendsAsking()
-        setCountNotifications()
     }
 
     override fun onResume() {
         checkPref()
         super.onResume()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        if (sharedPreferences.getBoolean("on_wakeup", false)){
+            replaceFragment(CommunityFragment())
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onDestroy() {
+        super.onDestroy()
+        unsetCountFriendsAsking()
+        unsetCountNotifications()
+    }
+
+        override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.app_bar_menu, menu)
-
-        val menuItem = menu.findItem(R.id.friends_notification)
-
-        val actionView = MenuItemCompat.getActionView(menuItem)
-        textCartItemCountFriends = actionView.findViewById<View>(R.id.cart_badge_friends) as TextView
-        textCartItemCountNotifications = actionView.findViewById<View>(R.id.cart_badge_notification) as TextView
-
-        actionView.setOnClickListener { onOptionsItemSelected(menuItem) }
-
+        initAppMenu(menu)
         return true
     }
 
@@ -146,6 +146,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNotifNumber(count: Int) {
+
         if (count == 0) {
             if (textCartItemCountNotifications.visibility != View.GONE) {
                 textCartItemCountNotifications.visibility = View.GONE
@@ -191,5 +192,31 @@ class MainActivity : AppCompatActivity() {
 
     fun setCountNotifications() {
         notificationsCount = FireStore.askingFriendCount(this::setupNotifNumber)
+    }
+
+    fun unsetCountFriendsAsking() {
+        FireStore.removeListener(askingFriendsCount)
+    }
+
+    fun unsetCountNotifications() {
+        FireStore.removeListener(notificationsCount)
+    }
+
+    private fun initAppMenu(menu: Menu) {
+
+        val friendsItem = menu.findItem(R.id.friends_notification)
+        val friendsActionView = MenuItemCompat.getActionView(friendsItem)
+        textCartItemCountFriends = friendsActionView.findViewById<View>(R.id.cart_badge_friends) as TextView
+
+        friendsActionView.setOnClickListener { onOptionsItemSelected(friendsItem) }
+
+        val notificationsItem = menu.findItem(R.id.notifications)
+        val notificationsActionView = MenuItemCompat.getActionView(notificationsItem)
+        textCartItemCountNotifications = notificationsActionView.findViewById<View>(R.id.cart_badge_notification) as TextView
+
+        notificationsActionView.setOnClickListener { onOptionsItemSelected(notificationsItem) }
+
+        setCountFriendsAsking()
+        setCountNotifications()
     }
 }

@@ -13,7 +13,7 @@
     <item
         android:id="@+id/friends_notification"
         android:title="Friends Notification"
-        app:actionLayout="@layout/notification_badge_layout"
+        app:actionLayout="@layout/notifications_friends_asking_badge_layout"
         app:showAsAction="always"
         android:icon="@drawable/ic_user_white"
         />

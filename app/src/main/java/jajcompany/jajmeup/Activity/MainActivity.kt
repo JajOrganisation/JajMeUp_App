@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.Activity.AskingFriendsActivity
 import jajcompany.jajmeup.Activity.ConnectRegistrationActivity
@@ -18,10 +19,18 @@ import jajcompany.jajmeup.Fragment.ClockFragment
 import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
 import kotlinx.android.synthetic.main.main_layout.*
+import android.widget.TextView
+import kotlinx.android.synthetic.main.notification_badge_layout.*
+import android.support.v4.view.MenuItemCompat
+import com.google.firebase.firestore.ListenerRegistration
+import jajcompany.jajmeup.Utils.FireStore
+
 
 class MainActivity : AppCompatActivity() {
 
     var link: String = ""
+    private lateinit var textCartItemCount: TextView
+    private lateinit var askingFriendsCount: ListenerRegistration
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -66,6 +75,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         checkPref()
+        setCountFriendsAsking()
     }
 
     override fun onResume() {
@@ -75,15 +85,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.app_bar_menu, menu)
+
+        val menuItem = menu.findItem(R.id.friends_notification)
+
+        val actionView = MenuItemCompat.getActionView(menuItem)
+        textCartItemCount = actionView.findViewById<View>(R.id.cart_badge) as TextView
+
+        actionView.setOnClickListener { onOptionsItemSelected(menuItem) }
+
         return true
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.settings -> {
                 startActivity(SettingsActivity.newIntent(this))
             }
-            R.id.notifications -> {
+            R.id.friends_notification -> {
                 startActivity(AskingFriendsActivity.newIntent(this))
             }
             else->super.onOptionsItemSelected(item)
@@ -106,8 +125,21 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(context, MainActivity::class.java)
             return intent
         }
+
     }
 
+    private fun setupNotifNumber(count: Int) {
+        if (count == 0) {
+            if (textCartItemCount.visibility != View.GONE) {
+                textCartItemCount.visibility = View.GONE
+            }
+        } else {
+            textCartItemCount.text = count.toString()
+            if (textCartItemCount.visibility != View.VISIBLE) {
+                textCartItemCount.visibility = View.VISIBLE
+            }
+        }
+    }
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
@@ -134,5 +166,9 @@ class MainActivity : AppCompatActivity() {
         }
         else
             navigation.menu.getItem(2).isEnabled = true
+    }
+
+    fun setCountFriendsAsking() {
+        askingFriendsCount = FireStore.askingFriendCount(this, this::setupNotifNumber)
     }
 }

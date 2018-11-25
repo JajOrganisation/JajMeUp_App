@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.view.MenuItemCompat
+import android.support.v4.view.MenuItemCompat.getActionView
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -36,6 +38,7 @@ import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_layout.*
 import kotlinx.android.synthetic.main.community_list_header.*
 import kotlinx.android.synthetic.main.community_list_header.view.*
+import kotlinx.android.synthetic.main.notification_badge_layout.*
 import java.lang.Exception
 import java.util.*
 import java.util.regex.Pattern
@@ -120,6 +123,7 @@ class CommunityFragment : Fragment() {
         setUpdateListWorld()
         setUpdateListFriends()
     }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

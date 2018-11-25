@@ -4,8 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/notifications"
-        android:title="Notifications"
+        android:id="@+id/friends_notification"
+        android:title="Friends Notification"
+        app:actionLayout="@layout/notification_badge_layout"
         app:showAsAction="always"
         android:icon="@drawable/ic_user_white"
         />

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/help_frame_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -11,16 +10,13 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="150"
         android:orientation="vertical">
         <LinearLayout
             android:id="@+id/picturelayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:orientation="vertical"
-            android:weightSum="100"
-            android:layout_weight="150">
+            android:orientation="vertical">
             <ImageView
                 android:id="@+id/profilePictureSettings"
                 android:layout_margin="3pt"
@@ -28,47 +24,60 @@
                 android:layout_height="100pt"
                 android:src="@drawable/ic_account_circle_black_24dp"/>
         </LinearLayout>
-         <RelativeLayout
-             android:id="@+id/layoutGeneralSettings"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:id="@+id/layoutGeneralSettings"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:weightSum="100"
-            android:layout_weight="50"
-             android:layout_marginTop="20dp">
-            <ImageView
-                android:id="@+id/imgGeneralSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_user_white"/>
-             <TextView
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_toEndOf="@id/imgGeneralSettings"
-                 android:textColor="@android:color/white"
-                 android:textSize="20sp"
-                 android:text="    Compte"/>
-         </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/layoutPreferenceSettings"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:weightSum="100"
-            android:layout_weight="50"
             android:layout_marginTop="20dp">
-            <ImageView
-                android:id="@+id/imgPreferenceSettings"
+            <fragment android:id="@+id/fragment_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_settings_white"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/imgPreferenceSettings"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:text="    Preferences"/>
-        </RelativeLayout>
+                android:name="jajcompany.jajmeup.Activity.SettingsActivity$PrefsFragmentTest" />
+        </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>
+
+    <!--  <RelativeLayout
+         android:id="@+id/layoutGeneralSettings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="100"
+        android:layout_weight="50"
+         android:layout_marginTop="20dp">
+        <ImageView
+            android:id="@+id/imgGeneralSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_user_white"/>
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_toEndOf="@id/imgGeneralSettings"
+             android:textColor="@android:color/white"
+             android:textSize="20sp"
+             android:text="    Compte"/>
+     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layoutPreferenceSettings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="100"
+        android:layout_weight="50"
+        android:layout_marginTop="20dp">
+       <ImageView
+            android:id="@+id/imgPreferenceSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_settings_white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/imgPreferenceSettings"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:text="    Preferences"/>
+    </RelativeLayout>-->

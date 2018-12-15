@@ -3,8 +3,10 @@ package jajcompany.jajmeup.Activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
@@ -26,6 +28,9 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profilepicturesettings_layout)
+        //fragmentManager.beginTransaction().replace(R.id.fragment_settings,
+       //         PrefsFragmentTest()).commit()
+        setTheme(R.style.PreferencesTheme)
         profilePictureSettings.setOnClickListener {
             val intent = Intent().apply {
                 type = "image/*"
@@ -34,9 +39,9 @@ class SettingsActivity : AppCompatActivity() {
             }
             startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
         }
-        layoutPreferenceSettings.setOnClickListener{
+       /* layoutPreferenceSettings.setOnClickListener{
             startActivity(SettingsPreferenceActivity.newIntent(this))
-        }
+        }*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -76,6 +81,31 @@ class SettingsActivity : AppCompatActivity() {
                 }
 
             }
+    }
+
+    class PrefsFragmentTest : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            addPreferencesFromResource(R.xml.preferencesettings)
+        }
+
+        override fun onResume() {
+            super.onResume()
+            preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        }
+
+        override fun onPause() {
+            super.onPause()
+            preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        }
+        override fun onSharedPreferenceChanged(sharedPref: SharedPreferences, key: String) {
+            when (key) {
+                "default_reveil" -> {
+                    findPreference("default_reveil").editor.putString("reveil_default", "").apply()
+                }
+            }
+        }
     }
 
     companion object {

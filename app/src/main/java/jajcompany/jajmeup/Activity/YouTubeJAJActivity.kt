@@ -4,14 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.Toast
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import jajcompany.jajmeup.R
-import kotlinx.android.synthetic.main.clock_layout.*
 import kotlinx.android.synthetic.main.youtube_layout.*
 
 class YouTubeJAJActivity : YouTubeBaseActivity(){

@@ -1,13 +1,9 @@
 package jajcompany.jajmeup.Fragment
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
-import android.support.v4.view.MenuItemCompat
-import android.support.v4.view.MenuItemCompat.getActionView
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -20,7 +16,6 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
@@ -29,8 +24,6 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.Activity.YouTubeJAJActivity
-import jajcompany.jajmeup.Models.AskingFriends
-import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.Models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
@@ -40,10 +33,7 @@ import jajcompany.jajmeup.Utils.YoutubeInformation
 import jajcompany.jajmeup.Utils.YoutubeInformation.getTitleQuietly
 import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_layout.*
-import kotlinx.android.synthetic.main.community_list_header.*
 import kotlinx.android.synthetic.main.community_list_header.view.*
-import kotlinx.android.synthetic.main.notification_badge_layout.*
-import java.lang.Exception
 import java.util.*
 import java.util.regex.Pattern
 

@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import jajcompany.jajmeup.MainActivity
+import jajcompany.jajmeup.Activity.PrincipalActivity
 import jajcompany.jajmeup.R
 import kotlinx.android.synthetic.main.connect_layout.*
 
@@ -26,7 +26,7 @@ class ConnectActivity : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             // Sign in success, update UI with signed-in user's information
-                            startActivity(MainActivity.newIntent(this))
+                            startActivity(PrincipalActivity.newIntent(this))
                             Log.d("LoginActivity", "signInWithEmail:success")
                         } else {
                             // If sign in fails, display a message to the user.

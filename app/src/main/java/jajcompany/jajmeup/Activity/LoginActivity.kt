@@ -23,7 +23,6 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
-import jajcompany.jajmeup.MainActivity
 import jajcompany.jajmeup.R
 
 import kotlinx.android.synthetic.main.login_layout.*

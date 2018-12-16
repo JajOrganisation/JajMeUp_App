@@ -4,15 +4,13 @@ package jajcompany.jajmeup.RecycleView.item
 import android.content.Context
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.auth.FirebaseAuth
-import jajcompany.jajmeup.glide.GlideApp
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.Models.User
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.Utils.StorageUtil
+import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_list_item.*
-import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
 
 class UserItem(val user: User, val userId: String, private val context: Context): Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {

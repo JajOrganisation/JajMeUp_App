@@ -10,7 +10,6 @@ import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jajcompany.jajmeup.R

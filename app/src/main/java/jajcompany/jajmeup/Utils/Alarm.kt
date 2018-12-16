@@ -7,12 +7,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import android.widget.Switch
 import android.widget.Toast
 import jajcompany.jajmeup.Activity.YouTubeJAJActivity
-import jajcompany.jajmeup.MainActivity
-import jajcompany.jajmeup.R.id.alarmSet
 import java.util.*
 
 @SuppressLint("StaticFieldLeak")

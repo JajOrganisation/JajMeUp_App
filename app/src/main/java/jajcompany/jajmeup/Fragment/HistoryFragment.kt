@@ -1,7 +1,7 @@
 package jajcompany.jajmeup.Fragment
 
-import android.support.v4.app.Fragment
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +15,6 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.Utils.FireStore
 import kotlinx.android.synthetic.main.history_layout.*
-import java.util.ArrayList
 
 class HistoryFragment : Fragment() {
 

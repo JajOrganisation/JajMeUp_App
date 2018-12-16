@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import android.util.Log
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -17,7 +15,6 @@ import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
 import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.RecycleView.item.UserItem
 import java.util.*
-import java.util.concurrent.ThreadLocalRandom
 
 
 object FireStore {
@@ -115,7 +112,7 @@ object FireStore {
                             context.sendBroadcast(intent)
                         }
                     } else {
-                        Log.e("FIRESTORE", "Users listener error.")
+                        Log.e("FIRESTORE", "Reveil last listener error.")
                     }
                 }
     }
@@ -205,7 +202,7 @@ object FireStore {
                 ?: throw NullPointerException("UID is null.")}/friends")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
-                        Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                        Log.e("FIRESTORE", "Friends listener error.", firebaseFirestoreException)
                         return@addSnapshotListener
                     }
                     querySnapshot!!.documents.forEach {
@@ -214,7 +211,7 @@ object FireStore {
                                     .whereEqualTo("uid", it["uid"].toString())
                                     .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                                         if (firebaseFirestoreException != null) {
-                                            Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                            Log.e("FIRESTORE", "Friends listener error.", firebaseFirestoreException)
                                             return@addSnapshotListener
                                         }
                                         val items = mutableListOf<Item>()
@@ -238,7 +235,7 @@ object FireStore {
                 .limit(20)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
-                        Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                        Log.e("FIRESTORE", "Search users listener error.", firebaseFirestoreException)
                         return@addSnapshotListener
                     }
 

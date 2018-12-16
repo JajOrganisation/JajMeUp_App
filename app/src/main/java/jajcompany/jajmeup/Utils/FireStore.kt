@@ -7,11 +7,9 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.xwray.groupie.kotlinandroidextensions.Item
-import jajcompany.jajmeup.Models.AskingFriends
-import jajcompany.jajmeup.Models.Counters
-import jajcompany.jajmeup.Models.User
-import jajcompany.jajmeup.Models.Vote
+import jajcompany.jajmeup.Models.*
 import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
+import jajcompany.jajmeup.RecycleView.item.NotifItem
 import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.RecycleView.item.UserItem
 import java.util.*
@@ -91,10 +89,10 @@ object FireStore {
                                             intent.action = "onReveilINFO"
                                             intent.putExtra("lien", tmpvote.lien)
                                             intent.putExtra("votant", test)
+                                            intent.putExtra("votantuid", tmpvote.votant)
                                             intent.putExtra("message", tmpvote.message)
                                             intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
                                             context.sendBroadcast(intent)
-                                            Log.d("HELLO", "COUCOU")
                                         }
                                         else {
                                             Log.e("FIRESTORE", "Get User Alarm error.")
@@ -317,6 +315,35 @@ object FireStore {
                 }
     }
 
+    fun addNotificationListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/notifications")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Notification listener error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+                    val items = mutableListOf<Item>()
+                    querySnapshot!!.documents.forEach {
+                        var notiftmp = it.toObject(NotifWakeUp::class.java)!!
+                        fireStoreInstance.collection("users/")
+                                .whereEqualTo("uid", it["whowokeup"].toString())
+                                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                    if (firebaseFirestoreException != null) {
+                                        Log.e("FIRESTORE", "Notification listener error.", firebaseFirestoreException)
+                                        return@addSnapshotListener
+                                    }
+                                    querySnapshot!!.documents.forEach {
+                                        val usertmp = it.toObject(User::class.java)!!
+                                        items.add(NotifItem(notiftmp, usertmp.name, usertmp.profilePicture!!, context))
+                                    }
+                                    onListen(items)
+                                }
+                    }
+                    onListen(items)
+                }
+    }
+
     fun askingFriendCount(onListen: (Int) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/askFriends")
@@ -351,6 +378,13 @@ object FireStore {
         fireStoreInstance.document("users/${otherUserId}")
                 .collection("reveilVote")
                 .add(vote)
+    }
+
+    fun sendNotifWakeUp(notif: NotifWakeUp, otherUserId: String) {
+        Log.d("HELLO", "ici")
+        fireStoreInstance.document("users/${otherUserId}")
+                .collection("notifications")
+                .add(notif)
     }
 
     fun askFriends(userAsk: String, otherUserID: String) {
@@ -414,5 +448,19 @@ object FireStore {
         fireStoreInstance.document("users/${user!!.uid}")
                 .collection("friends")
                 .add(newFriend)
+    }
+
+    fun resetVote() {
+        fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/reveilVote")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Reset Vote error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+                    for (document in querySnapshot!!.documents) {
+                        document.reference.delete()
+                    }
+                }
     }
 }

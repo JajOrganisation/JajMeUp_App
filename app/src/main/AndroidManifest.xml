@@ -77,6 +77,8 @@
         <activity android:name=".Activity.ConnectRegistrationActivity" />
 
         <activity android:name=".Activity.ConnectActivity" />
+
+        <activity android:name=".Activity.NotificationActivity" />
     </application>
 
 </manifest>

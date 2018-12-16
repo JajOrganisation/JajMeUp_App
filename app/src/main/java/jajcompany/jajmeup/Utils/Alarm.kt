@@ -9,7 +9,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.widget.Switch
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.Activity.YouTubeJAJActivity
+import jajcompany.jajmeup.Models.NotifWakeUp
+import jajcompany.jajmeup.Utils.FireStore.sendNotifWakeUp
 import java.util.*
 
 @SuppressLint("StaticFieldLeak")
@@ -54,6 +57,9 @@ object Alarm {
     class onReveilInfo : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilINFO") {
+                val user = FirebaseAuth.getInstance().currentUser
+                val notif = NotifWakeUp("Wakeup", intent?.getStringExtra("lien"), YoutubeInformation.getTitleQuietly(intent?.getStringExtra("lien")), user!!.uid, Calendar.getInstance().time)
+                sendNotifWakeUp(notif, intent?.getStringExtra("votantuid"))
                 val intent = YouTubeJAJActivity.newIntent(context, intent?.getStringExtra("votant"), intent?.getStringExtra("lien"), intent?.getStringExtra("message"))
                 switchAlarm.setChecked(false)
                 context.startActivity(intent)

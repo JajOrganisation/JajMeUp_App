@@ -20,6 +20,7 @@ import jajcompany.jajmeup.Fragment.CommunityFragment
 import jajcompany.jajmeup.Fragment.HistoryFragment
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.Utils.FireStore
+import jajcompany.jajmeup.Utils.FireStore.resetVote
 import kotlinx.android.synthetic.main.main_layout.*
 
 
@@ -106,6 +107,9 @@ class PrincipalActivity : AppCompatActivity() {
             R.id.friends_notification -> {
                 startActivity(AskingFriendsActivity.newIntent(this))
             }
+            R.id.menu_notifications -> {
+                startActivity(NotificationActivity.newIntent(this))
+            }
             else->super.onOptionsItemSelected(item)
         }
         return super.onOptionsItemSelected(item)
@@ -188,7 +192,7 @@ class PrincipalActivity : AppCompatActivity() {
     }
 
     fun setCountNotifications() {
-        notificationsCount = FireStore.askingFriendCount(this::setupNotifNumber)
+        notificationsCount = FireStore.notificationsCount(this::setupNotifNumber)
     }
 
     fun unsetCountFriendsAsking() {
@@ -207,7 +211,7 @@ class PrincipalActivity : AppCompatActivity() {
 
         friendsActionView.setOnClickListener { onOptionsItemSelected(friendsItem) }
 
-        val notificationsItem = menu.findItem(R.id.notifications)
+        val notificationsItem = menu.findItem(R.id.menu_notifications)
         val notificationsActionView = MenuItemCompat.getActionView(notificationsItem)
         textCartItemCountNotifications = notificationsActionView.findViewById<View>(R.id.cart_badge_notification) as TextView
 

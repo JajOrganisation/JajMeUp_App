@@ -326,6 +326,7 @@ object FireStore {
                     val items = mutableListOf<Item>()
                     querySnapshot!!.documents.forEach {
                         var notiftmp = it.toObject(NotifWakeUp::class.java)!!
+                        it.reference.update("status", "read")
                         fireStoreInstance.collection("users/")
                                 .whereEqualTo("uid", it["whowokeup"].toString())
                                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -361,6 +362,7 @@ object FireStore {
     fun notificationsCount(onListen: (Int) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/notifications")
+                .whereEqualTo("status", "unread")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Log.e("FIRESTORE", "Count Notifications listener error.", firebaseFirestoreException)
@@ -381,7 +383,6 @@ object FireStore {
     }
 
     fun sendNotifWakeUp(notif: NotifWakeUp, otherUserId: String) {
-        Log.d("HELLO", "ici")
         fireStoreInstance.document("users/${otherUserId}")
                 .collection("notifications")
                 .add(notif)

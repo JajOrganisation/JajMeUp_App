@@ -2,6 +2,6 @@ package jajcompany.jajmeup.Models
 
 import java.util.*
 
-data class NotifWakeUp(val notificationtype: String, val lien: String, val videoname: String, val whowokeup:String, val time: Date) {
-    constructor(): this("Wakeup", "", "", "", Date(0))
+data class NotifWakeUp(var notificationtype: String, var lien: String, var videoname: String, var whowokeup:String, var time: Date, var status: String) {
+    constructor(): this("Wakeup", "", "", "", Date(0), "")
 }

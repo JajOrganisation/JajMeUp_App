@@ -43,6 +43,7 @@ class CommunityFragment : Fragment() {
     private lateinit var userListenerRegistration: ListenerRegistration
     private lateinit var friendsListenerRegistration: ListenerRegistration
     private lateinit var searchListenerRegistration: ListenerRegistration
+    private lateinit var removeListenerRegistration: ListenerRegistration
     private var shouldInitRecyclerViewWorld = true
     private var shouldInitRecyclerViewFriends = true
     private var shouldInitRecyclerViewSearch = false
@@ -167,16 +168,16 @@ class CommunityFragment : Fragment() {
     }
 
     private fun updateRecyclerViewFriends(items:List<Item>) {
+        Log.d("HELLO", items.toString())
         fun initFriends() {
             try {
-
                 friends_list.apply {
                     layoutManager = LinearLayoutManager(_context)
                     adapter = GroupAdapter<ViewHolder>().apply {
                         friendsSection = Section(items)
                         add(friendsSection)
                         setOnItemClickListener(onItemClick)
-                        //setOnItemLongClickListener(onItemLongClick)
+                        setOnItemLongClickListener(onItemLongClickFriend)
                     }
                 }
                 shouldInitRecyclerViewFriends = false
@@ -290,6 +291,66 @@ class CommunityFragment : Fragment() {
         true
     }
 
+    private fun notifRemove() {
+        FireStore.removeListener(removeListenerRegistration)
+        testresetall()
+    }
+
+    private val onItemLongClickFriend = OnItemLongClickListener { item, view ->
+
+        if (item is UserItem) {
+            if (onSearch) {
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+                if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
+                    true
+                }
+            }
+            val inflater = LayoutInflater.from(context)
+            val view = inflater.inflate(R.layout.removefriend_popup_layout,null)
+            val popupWindow = PopupWindow(
+                    view, // Custom view to show in popup window
+                    LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+                    LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+            )
+            val slideIn = Slide()
+            slideIn.slideEdge = Gravity.TOP
+            popupWindow.enterTransition = slideIn
+            val slideOut = Slide()
+            slideOut.slideEdge = Gravity.RIGHT
+            popupWindow.exitTransition = slideOut
+            popupWindow.isFocusable = true
+            val closepop = view.findViewById<Button>(R.id.button_removefriend_closepop)
+            val usernametext = view.findViewById<TextView>(R.id.removefriend_userName)
+            val profilepicture = view.findViewById<ImageView>(R.id.removefriend_profile_picture)
+            val removefriend = view.findViewById<Button>(R.id.button_removefriendpop)
+            closepop.setOnClickListener{
+                popupWindow.dismiss()
+            }
+            removefriend.setOnClickListener {
+                FireStore.getCurrentUser {myuser ->
+                    if ( myuser.profilePicture != null) {
+                        removeListenerRegistration = FireStore.removeFriends(this.activity!!, this::notifRemove, item.userId)
+                        friendsSection.remove(item)
+                    }
+                }
+                popupWindow.dismiss()
+            }
+            if (item.user.profilePicture != null) {
+                GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
+                        .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
+                Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
+            }
+            usernametext.text = item.user.name
+            popupWindow.showAtLocation(
+                    community_layout,
+                    Gravity.CENTER,
+                    0,
+                    0
+            )
+        }
+        true
+    }
+
     private val onItemClick = OnItemClickListener { item, view ->
         if (item is UserItem) {
             var flag = true
@@ -318,7 +379,6 @@ class CommunityFragment : Fragment() {
     fun setSearch(toSearch: String) {
         searchListenerRegistration = FireStore.searchUser(this.activity!!, this::updateRecyclerViewSearch, toSearch)
     }
-
     fun unsetSearch() {
         FireStore.removeListener(searchListenerRegistration)
     }
@@ -328,7 +388,15 @@ class CommunityFragment : Fragment() {
     }
 
     fun unsetFriendsList() {
+        //friendsSection = Section()
         FireStore.removeListener(friendsListenerRegistration)
+    }
+
+    fun testresetall() {
+        unsetListWorld()
+        unsetFriendsList()
+        setUpdateListWorld()
+        setUpdateListFriends()
     }
 
     private fun detectPref() {

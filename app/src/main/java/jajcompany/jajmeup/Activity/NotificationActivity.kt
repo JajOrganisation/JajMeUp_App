@@ -26,6 +26,11 @@ class NotificationActivity : AppCompatActivity() {
         setContentView(R.layout.notification_layout)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        FireStore.removeListener(notificationRegistration)
+    }
+
     private fun updateRecyclerView(items:List<Item>) {
         fun init() {
             notification_list.apply {

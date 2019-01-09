@@ -261,7 +261,7 @@ object FireStore {
                     querySnapshot!!.documents.forEach {
                         if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
                             if (flag) {
-                                var previousresult = it.toObject(Vote::class.java)
+                                val previousresult = it.toObject(Vote::class.java)
                                 fireStoreInstance.collection("users/")
                                         .whereEqualTo("uid", previousresult!!.votant)
                                         .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -269,15 +269,15 @@ object FireStore {
                                                 Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
                                                 return@addSnapshotListener
                                             }
-                                            val items = mutableListOf<Item>()
                                             querySnapshot!!.documents.forEach {
-                                                items.add(VoteItem(previousresult!!, it.toObject(User::class.java)!!, context))
+                                                items.add(VoteItem(previousresult, it.toObject(User::class.java)!!, context))
                                             }
                                             onListen(items)
                                         }
                             }
-                            else
+                            else {
                                 flag = true
+                            }
                         }
                     }
                     onListen(items)
@@ -303,7 +303,6 @@ object FireStore {
                                             Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
                                             return@addSnapshotListener
                                         }
-                                        val items = mutableListOf<Item>()
                                         querySnapshot!!.documents.forEach {
                                             items.add(AskingFriendsItem(it.toObject(AskingFriends::class.java)!!, it.id, context))
                                         }

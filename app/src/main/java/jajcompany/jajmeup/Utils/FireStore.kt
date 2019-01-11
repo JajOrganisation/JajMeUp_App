@@ -210,7 +210,8 @@ object FireStore {
     }
 
     fun addFriendsListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
-        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid}/friends")
+        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/friends")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Log.e("FIRESTORE", "Friends listener error.", firebaseFirestoreException)
@@ -420,19 +421,23 @@ object FireStore {
         fireStoreInstance.document("users/${otherUserId}")
                 .collection("reveilVote")
                 .add(vote)
+                .addOnFailureListener { e -> Log.d("HELLO", "Error send vote", e) }
     }
 
     fun sendNotifWakeUp(notif: NotifWakeUp, otherUserId: String) {
         fireStoreInstance.document("users/${otherUserId}")
                 .collection("notifications")
                 .add(notif)
+                .addOnFailureListener { e -> Log.d("HELLO", "Error send notif", e) }
     }
 
     fun askFriends(userAsk: String, otherUserID: String) {
         val tmp: Map<String, String> = hashMapOf("uid" to userAsk)
         fireStoreInstance.document("users/${otherUserID}")
                 .collection("askFriends")
-                .add(tmp)
+                .document(userAsk)
+                .set(tmp)
+                .addOnFailureListener { e -> Log.d("HELLO", "Error ask friends", e) }
     }
 
     fun removeFriends(context: Context, onListen: () -> Unit, otherUserID: String): ListenerRegistration {
@@ -441,11 +446,11 @@ object FireStore {
                 .whereEqualTo("uid", otherUserID)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
-                        Log.e("FIRESTORE", "Count Notifications listener error.", firebaseFirestoreException)
+                        Log.e("FIRESTORE", "Get friends remove friend error.", firebaseFirestoreException)
                         return@addSnapshotListener
                     }
                     querySnapshot!!.documents.forEach {
-                        it.reference.delete()
+                        it.reference.delete().addOnFailureListener { e -> Log.d("HELLO", "Error remove friends", e) }
                        // FriendsList.remove(it.toObject(User::class.java)!!)
                         onListen()
                     }
@@ -458,14 +463,14 @@ object FireStore {
                 ?: throw NullPointerException("UID is null.")}")
                 .collection("friends")
                 .add(tmp)
-        val docRef = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
+                .addOnFailureListener { e -> Log.d("HELLO", "Error insert friends", e) }
+        fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
                 .collection("askFriends")
                 .whereEqualTo("uid", userAsk)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val document = task.result
                         task.result.forEach {
                             it.reference.delete()
                         }
@@ -478,6 +483,7 @@ object FireStore {
         fireStoreInstance.document("users/${userAsk}")
                 .collection("friends")
                 .add(tmp)
+                .addOnFailureListener { e -> Log.d("HELLO", "Error insert me inside my friend list", e) }
     }
 
     fun isFriend(context: Context, nameFriends: UserItem, onListen: (UserItem) -> Unit): ListenerRegistration {

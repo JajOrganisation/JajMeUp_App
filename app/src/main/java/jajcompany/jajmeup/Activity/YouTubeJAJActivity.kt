@@ -42,7 +42,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.youtube_layout)
-        userAlarm.text = votant
+        userAlarm.text = "Tu as été réveillé par "+votant
         messageAlarm.text = message
         initUI()
         youtubeAlarm.initialize(API_KEY, youtubePlayerInit)

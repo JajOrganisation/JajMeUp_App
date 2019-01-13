@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#bebebe"
+    android:background="@drawable/popup_drawable"
     android:padding="20dp"
     >
     <ImageView
@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Username"
+        android:textColor="@android:color/white"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <TableRow
@@ -35,7 +36,10 @@
             android:background="@drawable/button_drawable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Retirer cet ami"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:text="Supprimer"
+            android:textColor="@android:color/white"
             />
         <Button
             android:id="@+id/button_removefriend_closepop"
@@ -43,6 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="Annuler"/>
+            android:text="Annuler"
+            android:textColor="@android:color/white"/>
     </TableRow>
 </LinearLayout>

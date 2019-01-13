@@ -5,19 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#bebebe"
+    android:background="@drawable/popup_drawable"
     android:padding="20dp"
     >
     <TextView
         android:id="@+id/yt_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:text="Lien Youtube"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <EditText
         android:id="@+id/youtubelinkpop"
         android:inputType="text"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Lien Youtube"/>
@@ -25,12 +28,15 @@
         android:id="@+id/message_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:text="Écrit un message pour PSEUDO"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <EditText
         android:id="@+id/messagepop"
         android:inputType="text"
+        android:textColorHint="@android:color/white"
+        android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLength="150"
@@ -45,12 +51,16 @@
             android:id="@+id/button_votepop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:textColor="@android:color/white"
             android:text="Réveil le!"
             />
         <Button
             android:id="@+id/button_closepop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:textColor="@android:color/white"
             android:text="Annuler"/>
     </TableRow>
 </LinearLayout>

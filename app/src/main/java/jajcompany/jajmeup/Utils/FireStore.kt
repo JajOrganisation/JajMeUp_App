@@ -312,6 +312,7 @@ object FireStore {
                                                 return@addSnapshotListener
                                             }
                                             querySnapshot!!.documents.forEach {
+                                                Log.d("HELLO", "OUI")
                                                 items.add(VoteItem(previousresult, it.toObject(User::class.java)!!, context))
                                             }
                                             onListen(items)
@@ -440,7 +441,7 @@ object FireStore {
                 .addOnFailureListener { e -> Log.d("HELLO", "Error ask friends", e) }
     }
 
-    fun removeFriends(context: Context, onListen: () -> Unit, otherUserID: String): ListenerRegistration {
+    fun removeFriends(onListen: () -> Unit, otherUserID: String): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/friends")
                 .whereEqualTo("uid", otherUserID)
@@ -451,7 +452,6 @@ object FireStore {
                     }
                     querySnapshot!!.documents.forEach {
                         it.reference.delete().addOnFailureListener { e -> Log.d("HELLO", "Error remove friends", e) }
-                       // FriendsList.remove(it.toObject(User::class.java)!!)
                         onListen()
                     }
                 }

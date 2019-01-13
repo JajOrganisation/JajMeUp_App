@@ -329,7 +329,7 @@ class CommunityFragment : Fragment() {
             removefriend.setOnClickListener {
                 FireStore.getCurrentUser {myuser ->
                     if ( myuser.profilePicture != null) {
-                        removeListenerRegistration = FireStore.removeFriends(this.activity!!, this::notifRemove, item.userId)
+                        removeListenerRegistration = FireStore.removeFriends(this::notifRemove, item.userId)
                         friendsSection.remove(item)
                     }
                 }

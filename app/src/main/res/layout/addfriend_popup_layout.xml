@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#bebebe"
+    android:background="@drawable/popup_drawable"
     android:padding="20dp"
     >
     <ImageView
@@ -21,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textColor="@android:color/white"
         android:text="Username"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
@@ -35,6 +36,9 @@
             android:background="@drawable/button_drawable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
             android:text="Demander en ami"
             />
         <Button
@@ -43,6 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:textColor="@android:color/white"
             android:text="Annuler"/>
     </TableRow>
 </LinearLayout>

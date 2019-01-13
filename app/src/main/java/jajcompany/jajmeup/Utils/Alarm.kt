@@ -57,12 +57,14 @@ object Alarm {
     class onReveilInfo : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilINFO") {
-                val user = FirebaseAuth.getInstance().currentUser
-                val notif = NotifWakeUp("Wakeup", intent?.getStringExtra("lien"), YoutubeInformation.getTitleQuietly(intent?.getStringExtra("lien")), user!!.uid, Calendar.getInstance().time, "unread")
-                sendNotifWakeUp(notif, intent?.getStringExtra("votantuid"))
-                val intent = YouTubeJAJActivity.newIntent(context, intent?.getStringExtra("votant"), intent?.getStringExtra("lien"), intent?.getStringExtra("message"))
+                if (intent.getStringExtra("votant") != "Ton réveil") {
+                    val user = FirebaseAuth.getInstance().currentUser
+                    val notif = NotifWakeUp("Wakeup", intent.getStringExtra("lien"), YoutubeInformation.getTitleQuietly(intent.getStringExtra("lien")), user!!.uid, Calendar.getInstance().time, "unread")
+                    sendNotifWakeUp(notif, intent.getStringExtra("votantuid"))
+                }
+                val intentt = YouTubeJAJActivity.newIntent(context, intent.getStringExtra("votant"), intent.getStringExtra("lien"), intent.getStringExtra("message"))
                 switchAlarm.setChecked(false)
-                context.startActivity(intent)
+                context.startActivity(intentt)
             }
         }
     }

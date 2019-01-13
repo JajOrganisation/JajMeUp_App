@@ -4,83 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradientbackground"
     tools:context=".Activity.YouTubeJAJActivity"
-    android:weightSum="300"
-    android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="150"
-        android:orientation="vertical">
+    android:orientation="vertical"
+    android:baselineAligned="false">
         <com.google.android.youtube.player.YouTubePlayerView
             android:id="@+id/youtubeAlarm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="150"
-        android:orientation="vertical"
-        android:weightSum="100">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="70"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:weightSum="2">
-                    <TextView
-                        android:id="@+id/userAlarm"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="USER_NAME"
-                        android:layout_weight="1"/>
-                    <TextView
-                        android:id="@+id/messageAlarm"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="BONJOUR TOI ALORS" />
-            </LinearLayout>
-        </RelativeLayout>
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="30"
-            android:orientation="vertical">
-            <LinearLayout
+        <TextView
+                android:id="@+id/userAlarm"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:background="@color/colorPrimary"
-                android:layout_weight="200"
-                android:weightSum="2">
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:weightSum="1">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_weight="1"
-                        android:gravity="bottom"
-                        android:weightSum="1">
-                        <ImageButton
-                            android:id="@+id/stopAlarm"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:background="@android:drawable/ic_lock_power_off" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:text="USER_NAME"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"/>
+        <TextView
+                android:id="@+id/messageAlarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:text="BONJOUR TOI ALORS"
+                android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/stopAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/button_drawable"
+            android:padding="12dp"
+            android:text="Arrêt"
+            android:textColor="@android:color/white"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:layout_weight="1"/>
 </LinearLayout>

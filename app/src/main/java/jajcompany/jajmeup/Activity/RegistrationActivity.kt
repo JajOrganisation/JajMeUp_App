@@ -61,7 +61,7 @@ class RegistrationActivity : AppCompatActivity() {
                                 }
                             } else {
                                 Log.w("RegistrationActivity", "createUserWithEmail:failure", task.exception)
-                                Toast.makeText(this, "Authentication failed.",
+                                Toast.makeText(this, "Registration failed.",
                                         Toast.LENGTH_SHORT).show()
                             }
                         }

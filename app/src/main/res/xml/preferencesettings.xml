@@ -5,6 +5,7 @@
         android:key="default_reveil"
         android:title="Reveil par défault"
         android:summary="Nom de la video"
+        android:textColor="@android:color/white"
         android:dialogTitle="Lien YouTube pour te réveiller"
         android:defaultValue="dQw4w9WgXcQ"/>
 
@@ -15,6 +16,7 @@
         android:entries="@array/visibilitearrays"
         android:entryValues="@array/visibilitearray_id"
         android:dialogTitle="Selectionne la visibilite de ton réveil"
+        android:textColor="@android:color/white"
         android:defaultValue="WORLD"/>
 
     <CheckBoxPreference

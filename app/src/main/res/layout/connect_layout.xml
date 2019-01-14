@@ -17,23 +17,32 @@
 
         <EditText
             android:id="@+id/userNameConnect"
-            android:layout_width="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Pseudo"
-            android:textColorHint="@android:color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Courriel"
             android:textColor="@android:color/white"
+            android:textColorHint="@color/hintColor"
             android:textSize="20dp"
+            android:padding="5sp"
             android:layout_gravity="center_horizontal"/>
 
         <EditText
             android:id="@+id/passwordConnect"
-            android:layout_width="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:textColor="@android:color/white"
             android:hint="Motdepasse"
-            android:textColorHint="@android:color/white"
+            android:textColorHint="@color/hintColor"
             android:inputType="textPassword"
             android:textSize="20dp"
+            android:padding="5sp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"/>
 
         <Button

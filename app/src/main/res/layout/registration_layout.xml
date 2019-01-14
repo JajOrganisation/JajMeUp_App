@@ -19,49 +19,70 @@
             android:layout_gravity="center_horizontal"
             android:layout_width="100pt"
             android:layout_height="100pt"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_account_circle_black_24dp" />
 
         <EditText
             android:id="@+id/emailRegistration"
-            android:layout_width="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_gravity="center_horizontal"
             android:textColor="@android:color/white"
-            android:text="bonjour@bonjour.fr"
-            android:hint="Pseudo"
-            android:textSize="20dp"/>
+            android:textColorHint="@color/hintColor"
+            android:padding="5sp"
+            android:layout_marginTop="10dp"
+            android:hint="Courriel"
+            android:textSize="20sp"/>
 
        <EditText
-            android:id="@+id/pseudoRegistration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+           android:id="@+id/pseudoRegistration"
+           android:background="@drawable/button_drawable"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp"
            android:layout_gravity="center_horizontal"
            android:textColor="@android:color/white"
-            android:text="Bob"
-            android:hint="Pseudo"
-           android:textSize="20dp"/>
+           android:textColorHint="@color/hintColor"
+           android:padding="5sp"
+           android:layout_marginTop="10dp"
+           android:hint="Pseudo"
+           android:textSize="20sp"/>
 
         <EditText
-        android:id="@+id/passwordRegistration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+            android:id="@+id/passwordRegistration"
+            android:background="@drawable/button_drawable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_gravity="center_horizontal"
-        android:textColor="@android:color/white"
-        android:text="123456"
-        android:hint="Motdepasse"
-        android:inputType="textPassword"
-        android:textSize="20dp"/>
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/hintColor"
+            android:padding="5sp"
+            android:layout_marginTop="10dp"
+            android:hint="Motdepasse"
+            android:inputType="textPassword"
+            android:textSize="20sp"/>
 
         <EditText
             android:id="@+id/passwordRegistrationConfirm"
-            android:layout_width="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_gravity="center_horizontal"
-            android:text="123456"
-            android:hint="Motdepasse"
             android:textColor="@android:color/white"
+            android:textColorHint="@color/hintColor"
+            android:padding="5sp"
+            android:layout_marginTop="10dp"
+            android:hint="Motdepasse"
             android:inputType="textPassword"
-            android:textSize="20dp"/>
+            android:textSize="20sp"/>
 
         <Button
             android:id="@+id/registrationButtonRegister"

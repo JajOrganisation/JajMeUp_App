@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.util.Patterns
 import android.widget.Toast
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -43,11 +44,17 @@ class RegistrationActivity : AppCompatActivity() {
             val userpseudo: String = pseudoRegistration.text.toString()
             val password: String = passwordRegistration.text.toString()
             val passwordconfirm: String = passwordRegistrationConfirm.text.toString()
-            if (password != passwordconfirm) {
+            if (password != passwordconfirm || password.replace("\\s".toRegex(), "") == "") {
                 Toast.makeText(this, "Mots de passe differents", Toast.LENGTH_LONG).show()
+            }
+            else if (userpseudo.replace("\\s".toRegex(), "") == "") {
+                Toast.makeText(this, "Pseudo incorrect", Toast.LENGTH_LONG).show()
             }
             else if (selectedImageBytes.isEmpty()) {
                 Toast.makeText(this, "Ajoute une photo", Toast.LENGTH_LONG).show()
+            }
+            else if (!Patterns.EMAIL_ADDRESS.matcher(usermail).matches() || usermail.replace("\\s".toRegex(), "") == ""){
+                Toast.makeText(this, "Courriel incorrect", Toast.LENGTH_LONG).show()
             }
             else {
                 mAuth?.createUserWithEmailAndPassword(usermail, password)

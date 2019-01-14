@@ -62,9 +62,6 @@
             android:name=".Activity.SettingsPreferenceActivity"
             android:theme="@style/PreferencesTheme"
             android:label="@string/title_activity_settings" />
-        <activity
-            android:name=".Activity.LoginActivity"
-            android:label="@string/title_activity_login"/>
 
         <activity
             android:name=".Activity.AskingFriendsActivity"
@@ -72,7 +69,7 @@
 
         <activity
             android:name=".Activity.RegistrationActivity"
-            android:label="Sign up"/>
+            android:label="Inscription"/>
 
         <activity android:name=".Activity.ConnectRegistrationActivity" />
 

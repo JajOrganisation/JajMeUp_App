@@ -43,15 +43,13 @@
 
         <receiver android:name=".utils.Alarm$onReveilInfo" >
             <intent-filter>
-                <action android:name="onReveilINFO" >
-                </action>
+                <action android:name="onReveilINFO"/>
             </intent-filter>
         </receiver>
 
         <receiver android:name=".utils.Alarm$onAlarm" >
             <intent-filter>
-                <action android:name="onReveilRing" >
-                </action>
+                <action android:name="onReveilRing" />
             </intent-filter>
         </receiver>
 

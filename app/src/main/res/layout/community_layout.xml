@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="jajcompany.jajmeup.Fragment.CommunityFragment"
+    tools:context="jajcompany.jajmeup.fragment.CommunityFragment"
     android:background="@drawable/gradientbackground">
     <!--<ExpandableListView
         android:id="@+id/community_list"

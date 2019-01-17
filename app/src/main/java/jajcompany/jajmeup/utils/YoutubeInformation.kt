@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Utils
+package jajcompany.jajmeup.utils
 
 import android.util.Log
 import org.json.JSONObject

@@ -33,7 +33,7 @@
             <fragment android:id="@+id/fragment_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:name="jajcompany.jajmeup.Activity.SettingsActivity$PrefsFragmentTest" />
+                android:name="jajcompany.jajmeup.activity.SettingsActivity$PrefsFragment" />
         </LinearLayout>
     </LinearLayout>
 

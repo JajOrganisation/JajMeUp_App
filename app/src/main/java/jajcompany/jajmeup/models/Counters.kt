@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Models
+package jajcompany.jajmeup.models
 
 data class Counters (val usercount: Int) {
     constructor(): this(0)

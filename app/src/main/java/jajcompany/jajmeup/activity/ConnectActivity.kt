@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Activity
+package jajcompany.jajmeup.activity
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,6 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import jajcompany.jajmeup.Activity.PrincipalActivity
 import jajcompany.jajmeup.R
 import kotlinx.android.synthetic.main.connect_layout.*
 

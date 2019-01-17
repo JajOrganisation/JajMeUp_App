@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradientbackground"
-    tools:context=".Activity.YouTubeJAJActivity"
+    tools:context=".activity.YouTubeJAJActivity"
     android:orientation="vertical"
     android:baselineAligned="false">
         <com.google.android.youtube.player.YouTubePlayerView

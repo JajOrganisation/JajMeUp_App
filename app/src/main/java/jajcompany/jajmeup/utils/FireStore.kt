@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Utils
+package jajcompany.jajmeup.utils
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.xwray.groupie.kotlinandroidextensions.Item
-import jajcompany.jajmeup.Models.*
+import jajcompany.jajmeup.models.*
 import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
 import jajcompany.jajmeup.RecycleView.item.NotifItem
 import jajcompany.jajmeup.RecycleView.item.VoteItem

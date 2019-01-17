@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Utils
+package jajcompany.jajmeup.utils
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage

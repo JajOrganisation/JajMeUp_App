@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Fragment
+package jajcompany.jajmeup.fragment
 
 import android.app.AlarmManager
 import android.content.Context
@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.Utils.Alarm
-import jajcompany.jajmeup.Utils.Alarm.alarmManager
-import jajcompany.jajmeup.Utils.FireStore
+import jajcompany.jajmeup.utils.Alarm
+import jajcompany.jajmeup.utils.Alarm.alarmManager
+import jajcompany.jajmeup.utils.FireStore
 import kotlinx.android.synthetic.main.clock_layout.*
 
 

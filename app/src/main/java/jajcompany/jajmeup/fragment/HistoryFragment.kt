@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Fragment
+package jajcompany.jajmeup.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,7 +13,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.Utils.FireStore
+import jajcompany.jajmeup.utils.FireStore
 import kotlinx.android.synthetic.main.history_layout.*
 
 class HistoryFragment : Fragment() {

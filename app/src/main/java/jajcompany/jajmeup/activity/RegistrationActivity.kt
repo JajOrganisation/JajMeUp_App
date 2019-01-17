@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Activity
+package jajcompany.jajmeup.activity
 
 import android.app.Activity
 import android.content.Context
@@ -13,8 +13,8 @@ import android.widget.Toast
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.Utils.FireStore
-import jajcompany.jajmeup.Utils.StorageUtil
+import jajcompany.jajmeup.utils.FireStore
+import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.registration_layout.*
 import java.io.ByteArrayOutputStream

@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Activity
+package jajcompany.jajmeup.activity
 
 
 import android.content.Context
@@ -15,12 +15,11 @@ import android.view.View
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ListenerRegistration
-import jajcompany.jajmeup.Fragment.ClockFragment
-import jajcompany.jajmeup.Fragment.CommunityFragment
-import jajcompany.jajmeup.Fragment.HistoryFragment
+import jajcompany.jajmeup.fragment.ClockFragment
+import jajcompany.jajmeup.fragment.CommunityFragment
+import jajcompany.jajmeup.fragment.HistoryFragment
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.Utils.FireStore
-import jajcompany.jajmeup.Utils.FireStore.resetVote
+import jajcompany.jajmeup.utils.FireStore
 import kotlinx.android.synthetic.main.main_layout.*
 
 

@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Activity
+package jajcompany.jajmeup.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Fragment
+package jajcompany.jajmeup.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -23,14 +23,14 @@ import com.xwray.groupie.OnItemLongClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import jajcompany.jajmeup.Activity.YouTubeJAJActivity
-import jajcompany.jajmeup.Models.Vote
+import jajcompany.jajmeup.activity.YouTubeJAJActivity
+import jajcompany.jajmeup.models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
-import jajcompany.jajmeup.Utils.FireStore
-import jajcompany.jajmeup.Utils.StorageUtil
-import jajcompany.jajmeup.Utils.YoutubeInformation
-import jajcompany.jajmeup.Utils.YoutubeInformation.getTitleQuietly
+import jajcompany.jajmeup.utils.FireStore
+import jajcompany.jajmeup.utils.StorageUtil
+import jajcompany.jajmeup.utils.YoutubeInformation
+import jajcompany.jajmeup.utils.YoutubeInformation.getTitleQuietly
 import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_layout.*
 import kotlinx.android.synthetic.main.community_list_header.view.*

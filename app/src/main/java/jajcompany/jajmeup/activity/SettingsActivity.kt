@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Activity
+package jajcompany.jajmeup.activity
 
 import android.app.Activity
 import android.content.Context
@@ -13,8 +13,8 @@ import android.support.v7.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.Utils.FireStore
-import jajcompany.jajmeup.Utils.StorageUtil
+import jajcompany.jajmeup.utils.FireStore
+import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
 import java.io.ByteArrayOutputStream
@@ -82,7 +82,7 @@ class SettingsActivity : AppCompatActivity() {
             }
     }
 
-    class PrefsFragmentTest : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+    class PrefsFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/gradientbackground"
-    tools:context=".Activity.AskingFriendsActivity">
+    tools:context=".activity.AskingFriendsActivity">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/askingfriends_list"
             android:layout_width="match_parent"

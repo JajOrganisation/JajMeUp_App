@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Models
+package jajcompany.jajmeup.models
 
 import java.util.*
 

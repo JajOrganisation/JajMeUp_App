@@ -1,4 +1,4 @@
-package jajcompany.jajmeup.Utils
+package jajcompany.jajmeup.utils
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
@@ -7,16 +7,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.view.Window
 import android.widget.Switch
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import jajcompany.jajmeup.Activity.YouTubeJAJActivity
-import jajcompany.jajmeup.Models.NotifWakeUp
-import jajcompany.jajmeup.Utils.FireStore.sendNotifWakeUp
+import jajcompany.jajmeup.activity.YouTubeJAJActivity
+import jajcompany.jajmeup.models.NotifWakeUp
+import jajcompany.jajmeup.utils.FireStore.sendNotifWakeUp
 import java.util.*
-import android.view.WindowManager
-
 
 
 @SuppressLint("StaticFieldLeak")

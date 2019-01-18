@@ -24,6 +24,11 @@
         android:title="Historique"
         android:summary="Activer / Désactiver lhistorique"
         android:defaultValue="true"/>
+
+    <Preference
+        android:key="changepassword"
+        android:title="Changer de mot de passe"/>
+
     <!--<EditTextPreference
         android:key="profilepicture_link"
         android:defaultValue="123456"

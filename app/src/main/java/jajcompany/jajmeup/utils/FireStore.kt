@@ -35,7 +35,7 @@ object FireStore {
                             .get()
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    var test = task.result.toObject(Counters::class.java)
+                                    var test = task.result!!.toObject(Counters::class.java)
                                     val countersFieldMap = mutableMapOf<String, Any>()
                                     countersFieldMap["users_count"] = test!!.usercount + 1
                                     fireStoreInstance.document("counters/count/")
@@ -77,7 +77,7 @@ object FireStore {
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        for (document in task.result) {
+                        for (document in task.result!!) {
                             flag = true
                             val tmpvote = document.toObject(Vote::class.java)
                             fireStoreInstance.document("users/${tmpvote.votant}")
@@ -471,7 +471,7 @@ object FireStore {
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        task.result.forEach {
+                        task.result!!.forEach {
                             it.reference.delete()
                         }
                     } else {

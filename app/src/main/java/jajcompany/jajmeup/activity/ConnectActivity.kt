@@ -26,7 +26,7 @@ class ConnectActivity : AppCompatActivity() {
                 Toast.makeText(this, "Courriel incorrect", Toast.LENGTH_LONG).show()
             }
             else {
-                mAuth!!.signInWithEmailAndPassword(username!!, password!!)
+                mAuth!!.signInWithEmailAndPassword(username, password)
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
                                 // Sign in success, update UI with signed-in user's information

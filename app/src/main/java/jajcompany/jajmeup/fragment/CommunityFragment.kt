@@ -235,7 +235,7 @@ class CommunityFragment : Fragment() {
             showPopVote(result)
     }
 
-    private val onItemLongClick = OnItemLongClickListener { item, view ->
+    private val onItemLongClick = OnItemLongClickListener { item, _ ->
 
         if (item is UserItem) {
             if (onSearch) {
@@ -296,7 +296,7 @@ class CommunityFragment : Fragment() {
         testresetall()
     }
 
-    private val onItemLongClickFriend = OnItemLongClickListener { item, view ->
+    private val onItemLongClickFriend = OnItemLongClickListener { item, _ ->
 
         if (item is UserItem) {
             if (onSearch) {
@@ -508,7 +508,6 @@ class CommunityFragment : Fragment() {
         popupWindow.exitTransition = slideOut
         popupWindow.isFocusable = true
         val closepop = view.findViewById<Button>(R.id.button_closepop_wakeup)
-        val response = view.findViewById<Button>(R.id.button_response_wakeup)
         val labelyt = view.findViewById<TextView>(R.id.yt_wakeup)
         val labelvotant = view.findViewById<TextView>(R.id.votant_wakeup)
         val labelmess = view.findViewById<TextView>(R.id.message_wakeup)

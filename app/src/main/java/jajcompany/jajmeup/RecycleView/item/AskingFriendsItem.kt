@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.askingfriends_item.*
 
 class AskingFriendsItem(val user: AskingFriends, val userId: String, private val context: Context): Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        val auth = FirebaseAuth.getInstance()
         if (user.profilePicture != null) {
             GlideApp.with(context).load(StorageUtil.pathToReference(user.profilePicture))
                     .placeholder(R.drawable.ic_account_circle_black_24dp).into(viewHolder.imageViewAskingFriends)

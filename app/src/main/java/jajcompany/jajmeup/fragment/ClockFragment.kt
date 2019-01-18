@@ -21,7 +21,7 @@ class ClockFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         alarm.setIs24HourView(true)
-        alarmSet.setOnCheckedChangeListener{ buttonView, isChecked ->
+        alarmSet.setOnCheckedChangeListener{ _, isChecked ->
             if (isChecked) {
                 alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 Alarm.setAlarm(this.activity!!, alarm.hour, alarm.minute, alarmSet)

@@ -60,7 +60,7 @@ class AskingFriendsActivity : AppCompatActivity() {
             updateItems()
     }
 
-    private val onItemClick = OnItemClickListener { item, view ->
+    private val onItemClick = OnItemClickListener { item, _ ->
         if (item is AskingFriendsItem) {
             val inflater = LayoutInflater.from(this)
             val view = inflater.inflate(R.layout.accept_refuse_popup,null)

@@ -29,6 +29,10 @@
         android:key="changepassword"
         android:title="Changer de mot de passe"/>
 
+    <Preference
+        android:key="deconnect"
+        android:title="Déconnexion"/>
+
     <!--<EditTextPreference
         android:key="profilepicture_link"
         android:defaultValue="123456"

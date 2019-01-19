@@ -1,9 +1,13 @@
 package jajcompany.jajmeup.fragment
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -27,6 +31,7 @@ import jajcompany.jajmeup.activity.YouTubeJAJActivity
 import jajcompany.jajmeup.models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
+import jajcompany.jajmeup.activity.ConnectRegistrationActivity
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.utils.YoutubeInformation
@@ -54,7 +59,6 @@ class CommunityFragment : Fragment() {
     private lateinit var _context: Context
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         return inflater?.inflate(R.layout.community_layout, container, false)
     }
 
@@ -131,6 +135,8 @@ class CommunityFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        setUpdateListFriends()
+        setUpdateListWorld()
         unsetFriendsList()
         unsetListWorld()
         shouldInitRecyclerViewFriends = true
@@ -293,7 +299,7 @@ class CommunityFragment : Fragment() {
 
     private fun notifRemove() {
         FireStore.removeListener(removeListenerRegistration)
-        testresetall()
+        resetall()
     }
 
     private val onItemLongClickFriend = OnItemLongClickListener { item, _ ->
@@ -368,6 +374,7 @@ class CommunityFragment : Fragment() {
     }
 
     fun setUpdateListWorld() {
+        Log.d("HELLO", "set world")
         userListenerRegistration = FireStore.getUsers(this.activity!!, this::updateRecyclerViewWorld)
        // userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
     }
@@ -392,7 +399,7 @@ class CommunityFragment : Fragment() {
         FireStore.removeListener(friendsListenerRegistration)
     }
 
-    fun testresetall() {
+    fun resetall() {
         unsetListWorld()
         unsetFriendsList()
         setUpdateListWorld()

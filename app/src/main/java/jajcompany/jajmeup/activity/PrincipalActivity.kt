@@ -1,11 +1,15 @@
 package jajcompany.jajmeup.activity
 
 
+import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -101,6 +105,18 @@ class PrincipalActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.settings -> {
+                val receiveDeconnect = LocalBroadcastManager.getInstance(this)
+                receiveDeconnect.registerReceiver(object : BroadcastReceiver() {
+                    override fun onReceive(context: Context, intent: Intent) {
+                        Log.d("HELLO", "signout receive")
+                        receiveDeconnect.unregisterReceiver(this)
+                        unsetCountFriendsAsking()
+                        unsetCountNotifications()
+                        finish()
+                        startActivity(ConnectRegistrationActivity.newIntent(context))
+                    }
+                }, IntentFilter("deconnectUser"))
+                finish()
                 startActivity(SettingsActivity.newIntent(this))
             }
             R.id.friends_notification -> {

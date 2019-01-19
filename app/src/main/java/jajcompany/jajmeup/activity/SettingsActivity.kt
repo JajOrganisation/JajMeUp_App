@@ -23,6 +23,7 @@ import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
 import java.io.ByteArrayOutputStream
 import android.app.AlertDialog
+import android.support.v4.content.LocalBroadcastManager
 import android.transition.Slide
 import android.util.Log
 import android.view.Gravity
@@ -182,6 +183,12 @@ class SettingsActivity : AppCompatActivity() {
                         0,
                         0
                 )
+            }
+            else if (preference!!.key == "deconnect") {
+                val sendDeconnect = LocalBroadcastManager.getInstance(context)
+                sendDeconnect
+                        .sendBroadcast(Intent("deconnectUser"))
+                activity.finish()
             }
            return super.onPreferenceTreeClick(preferenceScreen, preference)
         }

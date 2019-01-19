@@ -118,6 +118,10 @@ object FireStore {
     fun setRandomUserNumber(context: Context) {
         fireStoreInstance.document("counters/count/")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Error setRandomUser", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
                     var totaluser = querySnapshot!!.get("users_count").toString().toInt()
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                     val editor = sharedPreferences.edit()
@@ -131,61 +135,68 @@ object FireStore {
     fun getUsers(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.document("counters/count/")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                        var totaluser = querySnapshot!!.get("users_count").toString().toInt()
-                        if (totaluser > 20) {
-                            fireStoreInstance.collection("users")
-                                    .whereGreaterThanOrEqualTo("mynumber", PreferenceManager.getDefaultSharedPreferences(context).getInt("randomUser", 1))
-                                    .limit(20)
-                                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                                        if (firebaseFirestoreException != null) {
-                                            Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
-                                            return@addSnapshotListener
-                                        }
-                                        val items = mutableListOf<Item>()
-                                        querySnapshot!!.documents.forEach {
-                                            val saveit = it
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+                    var totaluser = querySnapshot!!.get("users_count").toString().toInt()
+                    if (totaluser > 20) {
+                        fireStoreInstance.collection("users")
+                                .whereGreaterThanOrEqualTo("mynumber", PreferenceManager.getDefaultSharedPreferences(context).getInt("randomUser", 1))
+                                .limit(20)
+                                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                    if (firebaseFirestoreException != null) {
+                                        Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                        return@addSnapshotListener
+                                    }
+                                    val items = mutableListOf<Item>()
+                                    querySnapshot!!.documents.forEach {
+                                        val saveit = it
+                                        fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
+                                                ?: throw NullPointerException("UID is null.")}")
+                                                .collection("friends")
+                                                .whereEqualTo("uid", saveit["uid"])
+                                                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                                    if (querySnapshot!!.documents.size == 0) {
+                                                        items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
+                                                        onListen(items)
+                                                    }
+                                                }
+                                        onListen(items)
+                                    }
+                                }
+                    } else {
+                        fireStoreInstance.collection("users")
+                                .whereGreaterThanOrEqualTo("mynumber", 1)
+                                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                    if (firebaseFirestoreException != null) {
+                                        Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                        return@addSnapshotListener
+                                    }
+                                    val items = mutableListOf<Item>()
+                                    querySnapshot!!.documents.forEach {
+                                        val saveit = it
+                                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
                                             fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                                                     ?: throw NullPointerException("UID is null.")}")
                                                     .collection("friends")
                                                     .whereEqualTo("uid", saveit["uid"])
                                                     .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                                        if (firebaseFirestoreException != null) {
+                                                            Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
+                                                            return@addSnapshotListener
+                                                        }
                                                         if (querySnapshot!!.documents.size == 0) {
                                                             items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
                                                             onListen(items)
                                                         }
                                                     }
-                                            onListen(items)
                                         }
+                                        onListen(items)
                                     }
-                        }
-                        else {
-                            fireStoreInstance.collection("users")
-                                    .whereGreaterThanOrEqualTo("mynumber", 1)
-                                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                                        if (firebaseFirestoreException != null) {
-                                            Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
-                                            return@addSnapshotListener
-                                        }
-                                        val items = mutableListOf<Item>()
-                                        querySnapshot!!.documents.forEach {
-                                            val saveit = it
-                                            if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
-                                                fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
-                                                        ?: throw NullPointerException("UID is null.")}")
-                                                        .collection("friends")
-                                                        .whereEqualTo("uid", saveit["uid"])
-                                                        .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                                                            if (querySnapshot!!.documents.size == 0) {
-                                                                items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
-                                                                onListen(items)
-                                                            }
-                                                        }
-                                            }
-                                            onListen(items)
-                                        }
-                                    }
-                        }
+                                }
                     }
+                }
     }
 
     fun addUsersListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {

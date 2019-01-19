@@ -1,7 +1,12 @@
 package jajcompany.jajmeup.fragment
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +28,18 @@ class HistoryFragment : Fragment() {
     private lateinit var voteSection: Section
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val receiveDeconnect = LocalBroadcastManager.getInstance(this@HistoryFragment.context!!)
+        receiveDeconnect.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                Log.d("HELLO", "signout receive community fragment")
+                receiveDeconnect.unregisterReceiver(this)
+                try {
+                    FireStore.removeListener(voteListenerRegistration)
+                } catch (e: Exception) {
+                    Log.d("HELLO", "History unset "+e)
+                }
+            }
+        }, IntentFilter("deconnectUser"))
         voteListenerRegistration = FireStore.addReveilListener(this.activity!!, this::updateRecyclerView)
         return inflater?.inflate(R.layout.history_layout, container, false)
     }

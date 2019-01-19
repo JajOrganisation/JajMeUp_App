@@ -31,6 +31,7 @@ import android.widget.*
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -230,16 +231,22 @@ class SettingsActivity : AppCompatActivity() {
                                         val user = FirebaseAuth.getInstance().currentUser
                                         val cred = EmailAuthProvider.getCredential(user!!.email.toString(), firstpass.text.toString())
                                         user.reauthenticate(cred)?.addOnCompleteListener {
-                                            user.delete()
-                                                    .addOnCompleteListener {task ->
-                                                        if (task.isSuccessful) {
-                                                            val sendDeconnect = LocalBroadcastManager.getInstance(context)
-                                                            sendDeconnect
-                                                                    .sendBroadcast(Intent("deconnectUser"))
-                                                            activity.finish()
+                                            val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
+                                            fireStoreInstance.collection("users")
+                                                    .document(user.uid).delete()
+                                                    .addOnCompleteListener {
+                                                        user.delete()
+                                                        .addOnCompleteListener {task ->
+                                                            if (task.isSuccessful) {
+                                                                val sendDeconnect = LocalBroadcastManager.getInstance(context)
+                                                                sendDeconnect
+                                                                        .sendBroadcast(Intent("deconnectUser"))
+                                                                activity.finish()
+                                                            }
                                                         }
+                                                        .addOnFailureListener { e -> Log.d("HELLO", "Error delete account", e) }
                                                     }
-                                                    .addOnFailureListener { e -> Log.d("HELLO", "Error delete account", e) }
+                                                    .addOnFailureListener { e-> Log.d("HELLO", "Error delete account data", e) }
                                         }
                                     } else {
                                         Log.e("HELLO", "Erreur ancien mot de passe", task.exception)

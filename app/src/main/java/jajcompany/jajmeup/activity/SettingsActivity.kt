@@ -123,9 +123,9 @@ class SettingsActivity : AppCompatActivity() {
                 val inflater = LayoutInflater.from(context)
                 val view = inflater.inflate(R.layout.changepassword_popup_layout,null)
                 val popupWindow = PopupWindow(
-                        view, // Custom view to show in popup window
-                        LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
-                        LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+                        view,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 val slideIn = Slide()
                 slideIn.slideEdge = Gravity.TOP
@@ -184,11 +184,76 @@ class SettingsActivity : AppCompatActivity() {
                         0
                 )
             }
-            else if (preference!!.key == "deconnect") {
+            else if (preference.key == "deconnect") {
                 val sendDeconnect = LocalBroadcastManager.getInstance(context)
                 sendDeconnect
                         .sendBroadcast(Intent("deconnectUser"))
                 activity.finish()
+            }
+            else if (preference.key == "deleteaccount") {
+                val inflater = LayoutInflater.from(context)
+                val view = inflater.inflate(R.layout.deleteaccount_popup_layout,null)
+                val popupWindow = PopupWindow(
+                        view,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                val slideIn = Slide()
+                slideIn.slideEdge = Gravity.TOP
+                popupWindow.enterTransition = slideIn
+                val slideOut = Slide()
+                slideOut.slideEdge = Gravity.RIGHT
+                popupWindow.exitTransition = slideOut
+                popupWindow.isFocusable = true
+                val closepop = view.findViewById<Button>(R.id.button_closepop_password)
+                val changepass = view.findViewById<Button>(R.id.button_change_password)
+                closepop.setOnClickListener{
+                    popupWindow.dismiss()
+                }
+                changepass.setOnClickListener {
+                    val firstpass = view.findViewById<EditText>(R.id.fistpassword)
+                    val secondpass = view.findViewById<EditText>(R.id.secondpassword)
+                    if (firstpass.text.toString() == "" || secondpass.text.toString() == "") {
+                        Toast.makeText(activity, "Champs vide", Toast.LENGTH_LONG).show()
+                    }
+                    else if (firstpass.text.toString() != secondpass.text.toString()) {
+                        Toast.makeText(activity, "Mot de passe différent", Toast.LENGTH_LONG).show()
+                    }
+                    else {
+                        var mAuth: FirebaseAuth? = null
+                        mAuth = FirebaseAuth.getInstance()
+                        val user = FirebaseAuth.getInstance().currentUser
+                        mAuth!!.signInWithEmailAndPassword(user!!.email.toString(), firstpass.text.toString())
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        Log.d("HELLO", "Connecte new")
+                                        val user = FirebaseAuth.getInstance().currentUser
+                                        val cred = EmailAuthProvider.getCredential(user!!.email.toString(), firstpass.text.toString())
+                                        user.reauthenticate(cred)?.addOnCompleteListener {
+                                            user.delete()
+                                                    .addOnCompleteListener {task ->
+                                                        if (task.isSuccessful) {
+                                                            val sendDeconnect = LocalBroadcastManager.getInstance(context)
+                                                            sendDeconnect
+                                                                    .sendBroadcast(Intent("deconnectUser"))
+                                                            activity.finish()
+                                                        }
+                                                    }
+                                                    .addOnFailureListener { e -> Log.d("HELLO", "Error delete account", e) }
+                                        }
+                                    } else {
+                                        Log.e("HELLO", "Erreur ancien mot de passe", task.exception)
+                                        Toast.makeText(activity, "Ancien mot de passe incorrect", Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                    }
+                }
+                popupWindow.showAtLocation(
+                        view,
+                        Gravity.CENTER,
+                        0,
+                        0
+                )
             }
            return super.onPreferenceTreeClick(preferenceScreen, preference)
         }

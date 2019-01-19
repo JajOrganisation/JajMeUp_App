@@ -33,6 +33,10 @@
         android:key="deconnect"
         android:title="Déconnexion"/>
 
+    <Preference
+        android:key="deleteaccount"
+        android:title="Supprimer mon compte"/>
+
     <!--<EditTextPreference
         android:key="profilepicture_link"
         android:defaultValue="123456"

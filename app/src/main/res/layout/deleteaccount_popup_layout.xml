@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/popup_drawable"
+    android:padding="20dp"
+    >
+    <TextView
+        android:id="@+id/title_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:text="Confirmes ton mot de passe pour supprimer ton compte"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        />
+    <TextView
+        android:id="@+id/first_pass_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:text="Mot de passe :"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        />
+    <EditText
+        android:id="@+id/fistpassword"
+        android:inputType="textPassword"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/hintColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Mot de passe"/>
+    <TextView
+        android:id="@+id/second_pass_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:text="Confirmation :"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        />
+    <EditText
+        android:id="@+id/secondpassword"
+        android:inputType="textPassword"
+        android:textColorHint="@color/hintColor"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLength="150"
+        android:hint="Mot de passe"/>
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" >
+        <Button
+            android:id="@+id/button_change_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:textColor="@android:color/white"
+            android:text="Supprimer"
+            />
+        <Button
+            android:id="@+id/button_closepop_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="5dp"
+            android:text="Annuler"/>
+    </TableRow>
+</LinearLayout>

@@ -116,7 +116,6 @@ class PrincipalActivity : AppCompatActivity() {
                         startActivity(ConnectRegistrationActivity.newIntent(context))
                     }
                 }, IntentFilter("deconnectUser"))
-                finish()
                 startActivity(SettingsActivity.newIntent(this))
             }
             R.id.friends_notification -> {

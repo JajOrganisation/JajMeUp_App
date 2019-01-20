@@ -333,8 +333,8 @@ object FireStore {
                                             Log.e("FIRESTORE", "Users listener error.", firebaseFirestoreException)
                                             return@addSnapshotListener
                                         }
-                                        querySnapshot!!.documents.forEach {
-                                            items.add(AskingFriendsItem(it.toObject(AskingFriends::class.java)!!, it.id, context))
+                                        querySnapshot!!.documents.forEach {toadd ->
+                                            items.add(AskingFriendsItem(toadd.toObject(AskingFriends::class.java)!!, toadd.id, context))
                                         }
                                         onListen(items)
                                     }
@@ -485,6 +485,23 @@ object FireStore {
                 .collection("friends")
                 .add(tmp)
                 .addOnFailureListener { e -> Log.d("HELLO", "Error insert me inside my friend list", e) }
+    }
+
+    fun refuseFriend(userAsk: String) {
+        fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}")
+                .collection("askFriends")
+                .whereEqualTo("uid", userAsk)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        task.result!!.forEach {
+                            it.reference.delete()
+                        }
+                    } else {
+                        Log.d("LOGGER", "get failed with ", task.exception)
+                    }
+                }
     }
 
     fun isFriend(context: Context, nameFriends: UserItem, onListen: (UserItem) -> Unit): ListenerRegistration {

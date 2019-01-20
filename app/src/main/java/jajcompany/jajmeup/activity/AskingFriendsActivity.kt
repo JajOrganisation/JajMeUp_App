@@ -28,7 +28,6 @@ import kotlinx.android.synthetic.main.askingfriends_layout.*
 
 class AskingFriendsActivity : AppCompatActivity() {
 
-    lateinit var databaseRef: DatabaseReference
     private lateinit var friendsListenerRegistration: ListenerRegistration
     private var shouldInitRecyclerView = true
     private lateinit var askingFriendsSection: Section
@@ -88,6 +87,12 @@ class AskingFriendsActivity : AppCompatActivity() {
             accept.setOnClickListener {
                 popupWindow.dismiss()
                FireStore.addFriends(item.user.uid)
+                askingFriendsSection.remove(item)
+            }
+            refuse.setOnClickListener {
+                popupWindow.dismiss()
+                FireStore.refuseFriend(item.user.uid)
+                askingFriendsSection.remove(item)
             }
             if (item.user.profilePicture != null) {
                 GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))

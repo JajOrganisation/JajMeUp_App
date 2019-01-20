@@ -436,7 +436,6 @@ class CommunityFragment : Fragment() {
         }
         removefriend.setOnClickListener {
             FireStore.getCurrentUser {myuser ->
-                    Log.d("HELLO", "suppr"+item.userId.toString())
                     removeListenerRegistration = FireStore.removeFriends(this::notifRemove, item.userId)
                     friendsSection.remove(item)
             }

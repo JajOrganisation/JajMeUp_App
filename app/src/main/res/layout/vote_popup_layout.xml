@@ -28,7 +28,7 @@
         android:id="@+id/message_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/hintColor"
+        android:textColor="@android:color/white"
         android:text="Écrit un message pour PSEUDO"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/popup_drawable"
+    android:padding="20dp"
+    >
+    <ImageView
+        android:id="@+id/search_profile_picture_pop"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="2pt"
+        tools:src="@drawable/ic_account_circle_black_24dp"/>
+    <Button
+        android:id="@+id/button_votepop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_drawable"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="5dp"
+        android:text="Réveil le!"
+        />
+    <Button
+        android:id="@+id/button_addfriendpop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_drawable"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:visibility="gone"
+        android:text="Demander en ami"
+        />
+    <Button
+        android:id="@+id/button_closepop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_drawable"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="5dp"
+        android:text="Annuler"/>
+</LinearLayout>

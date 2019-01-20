@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.Image
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -31,6 +32,7 @@ import jajcompany.jajmeup.activity.YouTubeJAJActivity
 import jajcompany.jajmeup.models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
+import jajcompany.jajmeup.RecycleView.item.UserItemSearch
 import jajcompany.jajmeup.activity.ConnectRegistrationActivity
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.StorageUtil
@@ -74,7 +76,6 @@ class CommunityFragment : Fragment() {
             else
                 friends_list.visibility = View.GONE
         }
-
         searchusers.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
@@ -210,26 +211,25 @@ class CommunityFragment : Fragment() {
     }
 
     private fun updateRecyclerViewSearch(items:List<Item>) {
-        fun initWorld() {
+        fun initSearch() {
             search_list.apply {
                 layoutManager = LinearLayoutManager(_context)
                 adapter = GroupAdapter<ViewHolder>().apply {
                     userSection = Section(items)
                     add(userSection)
-                    setOnItemClickListener(onItemClick)
-                    setOnItemLongClickListener(onItemLongClick)
+                    setOnItemClickListener(onItemSearchClick)
                 }
             }
             shouldInitRecyclerViewSearch = false
         }
-        fun updateItemsWorld() = userSection.update(items)
+        fun updateItemsSearch() = userSection.update(items)
 
         if (shouldInitRecyclerViewSearch)
-            initWorld()
+            initSearch()
         else
         {
             try {
-                updateItemsWorld()
+                updateItemsSearch()
             } catch (e: Exception) {
                 Log.e("Error", "Error update search")
             }
@@ -244,55 +244,7 @@ class CommunityFragment : Fragment() {
     private val onItemLongClick = OnItemLongClickListener { item, _ ->
 
         if (item is UserItem) {
-            if (onSearch) {
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-                if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
-                    true
-                }
-            }
-            val inflater = LayoutInflater.from(context)
-            val view = inflater.inflate(R.layout.addfriend_popup_layout,null)
-            val popupWindow = PopupWindow(
-                    view, // Custom view to show in popup window
-                    LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
-                    LinearLayout.LayoutParams.WRAP_CONTENT // Window height
-            )
-            val slideIn = Slide()
-            slideIn.slideEdge = Gravity.TOP
-            popupWindow.enterTransition = slideIn
-            val slideOut = Slide()
-            slideOut.slideEdge = Gravity.RIGHT
-            popupWindow.exitTransition = slideOut
-            popupWindow.isFocusable = true
-            val closepop = view.findViewById<Button>(R.id.button_addfriend_closepop)
-            val usernametext = view.findViewById<TextView>(R.id.addfriend_userName)
-            val profilepicture = view.findViewById<ImageView>(R.id.addfriend_profile_picture)
-            val askfriend = view.findViewById<Button>(R.id.button_addfriendpop)
-            closepop.setOnClickListener{
-                popupWindow.dismiss()
-            }
-            askfriend.setOnClickListener {
-                val myuser = FireStore.getCurrentUser {myuser ->
-                    if ( myuser.profilePicture != null) {
-                        val user = FirebaseAuth.getInstance()
-                        FireStore.askFriends(user!!.uid.toString(), item.userId)
-
-                    }
-                }
-                popupWindow.dismiss()
-            }
-            if (item.user.profilePicture != null) {
-                GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
-                        .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
-                Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
-            }
-            usernametext.text = item.user.name
-            popupWindow.showAtLocation(
-                    community_layout,
-                    Gravity.CENTER,
-                    0,
-                    0
-            )
+            showPopAddFriend(item)
         }
         true
     }
@@ -305,54 +257,7 @@ class CommunityFragment : Fragment() {
     private val onItemLongClickFriend = OnItemLongClickListener { item, _ ->
 
         if (item is UserItem) {
-            if (onSearch) {
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-                if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
-                    true
-                }
-            }
-            val inflater = LayoutInflater.from(context)
-            val view = inflater.inflate(R.layout.removefriend_popup_layout,null)
-            val popupWindow = PopupWindow(
-                    view, // Custom view to show in popup window
-                    LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
-                    LinearLayout.LayoutParams.WRAP_CONTENT // Window height
-            )
-            val slideIn = Slide()
-            slideIn.slideEdge = Gravity.TOP
-            popupWindow.enterTransition = slideIn
-            val slideOut = Slide()
-            slideOut.slideEdge = Gravity.RIGHT
-            popupWindow.exitTransition = slideOut
-            popupWindow.isFocusable = true
-            val closepop = view.findViewById<Button>(R.id.button_removefriend_closepop)
-            val usernametext = view.findViewById<TextView>(R.id.removefriend_userName)
-            val profilepicture = view.findViewById<ImageView>(R.id.removefriend_profile_picture)
-            val removefriend = view.findViewById<Button>(R.id.button_removefriendpop)
-            closepop.setOnClickListener{
-                popupWindow.dismiss()
-            }
-            removefriend.setOnClickListener {
-                FireStore.getCurrentUser {myuser ->
-                    if ( myuser.profilePicture != null) {
-                        removeListenerRegistration = FireStore.removeFriends(this::notifRemove, item.userId)
-                        friendsSection.remove(item)
-                    }
-                }
-                popupWindow.dismiss()
-            }
-            if (item.user.profilePicture != null) {
-                GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
-                        .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
-                Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
-            }
-            usernametext.text = item.user.name
-            popupWindow.showAtLocation(
-                    community_layout,
-                    Gravity.CENTER,
-                    0,
-                    0
-            )
+            showPopRemove(item)
         }
         true
     }
@@ -369,6 +274,18 @@ class CommunityFragment : Fragment() {
             }
             if (flag) {
                 showPopVote(item)
+            }
+        }
+    }
+
+    private val onItemSearchClick = OnItemClickListener { item, view ->
+        if (item is UserItem) {
+            val textTest = view.findViewById<TextView>(R.id.isFriendSearch)
+            if (textTest.text == "false") {
+                showPopSearch(item, false)
+            }
+            else {
+                showPopSearch(item, true)
             }
         }
     }
@@ -435,6 +352,108 @@ class CommunityFragment : Fragment() {
             community_list.visibility = View.GONE
             unsetListWorld()
         }
+    }
+
+    private fun showPopAddFriend(item:UserItem) {
+        if (onSearch) {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+            if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
+                true
+            }
+        }
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.addfriend_popup_layout,null)
+        val popupWindow = PopupWindow(
+                view, // Custom view to show in popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+        )
+        val slideIn = Slide()
+        slideIn.slideEdge = Gravity.TOP
+        popupWindow.enterTransition = slideIn
+        val slideOut = Slide()
+        slideOut.slideEdge = Gravity.RIGHT
+        popupWindow.exitTransition = slideOut
+        popupWindow.isFocusable = true
+        val closepop = view.findViewById<Button>(R.id.button_addfriend_closepop)
+        val usernametext = view.findViewById<TextView>(R.id.addfriend_userName)
+        val profilepicture = view.findViewById<ImageView>(R.id.addfriend_profile_picture)
+        val askfriend = view.findViewById<Button>(R.id.button_addfriendpop)
+        closepop.setOnClickListener{
+            popupWindow.dismiss()
+        }
+        askfriend.setOnClickListener {
+            val myuser = FireStore.getCurrentUser {myuser ->
+                if ( myuser.profilePicture != null) {
+                    val user = FirebaseAuth.getInstance()
+                    FireStore.askFriends(user!!.uid.toString(), item.userId)
+
+                }
+            }
+            popupWindow.dismiss()
+        }
+        if (item.user.profilePicture != null) {
+            GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
+                    .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
+            Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
+        }
+        usernametext.text = item.user.name
+        popupWindow.showAtLocation(
+                community_layout,
+                Gravity.CENTER,
+                0,
+                0
+        )
+    }
+
+    private fun showPopRemove(item: UserItem) {
+        if (onSearch) {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+            if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
+                true
+            }
+        }
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.removefriend_popup_layout,null)
+        val popupWindow = PopupWindow(
+                view, // Custom view to show in popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+        )
+        val slideIn = Slide()
+        slideIn.slideEdge = Gravity.TOP
+        popupWindow.enterTransition = slideIn
+        val slideOut = Slide()
+        slideOut.slideEdge = Gravity.RIGHT
+        popupWindow.exitTransition = slideOut
+        popupWindow.isFocusable = true
+        val closepop = view.findViewById<Button>(R.id.button_removefriend_closepop)
+        val usernametext = view.findViewById<TextView>(R.id.removefriend_userName)
+        val profilepicture = view.findViewById<ImageView>(R.id.removefriend_profile_picture)
+        val removefriend = view.findViewById<Button>(R.id.button_removefriendpop)
+        closepop.setOnClickListener{
+            popupWindow.dismiss()
+        }
+        removefriend.setOnClickListener {
+            FireStore.getCurrentUser {myuser ->
+                    Log.d("HELLO", "suppr"+item.userId.toString())
+                    removeListenerRegistration = FireStore.removeFriends(this::notifRemove, item.userId)
+                    friendsSection.remove(item)
+            }
+            popupWindow.dismiss()
+        }
+        if (item.user.profilePicture != null) {
+            GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
+                    .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
+            Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
+        }
+        usernametext.text = item.user.name
+        popupWindow.showAtLocation(
+                community_layout,
+                Gravity.CENTER,
+                0,
+                0
+        )
     }
 
     private fun showPopVote(item: UserItem) {
@@ -527,6 +546,60 @@ class CommunityFragment : Fragment() {
         labelvotant.text = sharedPreferences.getString("user_wakeup", "")+" t'as réveillé"
         if (sharedPreferences.getString("message_wakeup", "") != "") {
             labelmess.text = sharedPreferences.getString("message_wakeup", "")
+        }
+        TransitionManager.beginDelayedTransition(community_layout)
+        popupWindow.showAtLocation(
+                community_layout,
+                Gravity.CENTER,
+                0,
+                0
+        )
+    }
+
+    fun showPopSearch(item: UserItem, isFriend: Boolean) {
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.search_popup_layout, null)
+        val popupWindow = PopupWindow(
+                view,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        val slideIn = Slide()
+        slideIn.slideEdge = Gravity.TOP
+        popupWindow.enterTransition = slideIn
+        val slideOut = Slide()
+        slideOut.slideEdge = Gravity.RIGHT
+        popupWindow.exitTransition = slideOut
+        popupWindow.isFocusable = true
+        val closepop = view.findViewById<Button>(R.id.button_closepop)
+        val votepop = view.findViewById<Button>(R.id.button_votepop)
+        val addfriend = view.findViewById<Button>(R.id.button_addfriendpop)
+        val profilepicture = view.findViewById<ImageView>(R.id.search_profile_picture_pop)
+
+        votepop.setOnClickListener {
+            popupWindow.dismiss()
+            showPopVote(item)
+        }
+        if (!isFriend) {
+            addfriend.visibility = View.VISIBLE
+            addfriend.setOnClickListener {
+                FireStore.getCurrentUser {myuser ->
+                    if ( myuser.profilePicture != null) {
+                        val user = FirebaseAuth.getInstance()
+                        FireStore.askFriends(user!!.uid.toString(), item.userId)
+
+                    }
+                }
+                popupWindow.dismiss()
+            }
+        }
+        closepop.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        if (item.user.profilePicture != null) {
+            GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
+                    .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
+            Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
         }
         TransitionManager.beginDelayedTransition(community_layout)
         popupWindow.showAtLocation(

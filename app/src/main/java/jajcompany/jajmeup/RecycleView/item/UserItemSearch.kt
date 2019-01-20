@@ -12,7 +12,8 @@ import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_list_item.*
 
-class UserItem(val user: User, val userId: String, private val context: Context): Item() {
+class UserItemSearch(val user: User, val userId: String, private val context: Context): Item() {
+
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.textView_name.text = user.name
         if (user.profilePicture != null) {

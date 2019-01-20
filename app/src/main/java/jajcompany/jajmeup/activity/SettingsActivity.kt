@@ -91,10 +91,6 @@ class SettingsActivity : AppCompatActivity() {
             }
     }
 
-    private fun test() {
-        Toast.makeText(this, "Bonjour", Toast.LENGTH_LONG).show()
-    }
-
     class PrefsFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,6 +111,14 @@ class SettingsActivity : AppCompatActivity() {
             when (key) {
                 "default_reveil" -> {
                     findPreference("default_reveil").editor.putString("reveil_default", "").apply()
+                }
+                "visibility_preference" -> {
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    when(sharedPreferences.getString("visibility_preference", "WORLD")) {
+                        "WORLD" -> FireStore.updateCurrentUser(authorization = 2)
+                        "FRIENDS" -> FireStore.updateCurrentUser(authorization = 1)
+                        "PRIVATE" -> FireStore.updateCurrentUser(authorization = 0)
+                    }
                 }
             }
         }

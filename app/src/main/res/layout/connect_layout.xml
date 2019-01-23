@@ -25,7 +25,7 @@
             android:hint="Courriel"
             android:textColor="@android:color/white"
             android:textColorHint="@color/hintColor"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:padding="5sp"
             android:layout_gravity="center_horizontal"/>
 
@@ -40,7 +40,7 @@
             android:hint="Motdepasse"
             android:textColorHint="@color/hintColor"
             android:inputType="textPassword"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:padding="5sp"
             android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"/>
@@ -52,10 +52,22 @@
             android:background="@drawable/button_drawable"
             android:text="Connexion"
             android:textColor="@android:color/white"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:padding="12dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/connectForgotPass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:text="Mot de passe oublié"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:padding="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"/>
 
     </LinearLayout>
 

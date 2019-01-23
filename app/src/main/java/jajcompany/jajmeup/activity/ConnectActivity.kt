@@ -41,6 +41,23 @@ class ConnectActivity : AppCompatActivity() {
                         }
             }
         }
+
+        connectForgotPass.setOnClickListener {
+            val username: String = userNameConnect.text.toString()
+            if (!Patterns.EMAIL_ADDRESS.matcher(username).matches() || username.replace("\\s".toRegex(), "") == ""){
+                Toast.makeText(this, "Courriel incorrect", Toast.LENGTH_LONG).show()
+            }
+            else {
+                mAuth!!.sendPasswordResetEmail(username)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(this, "Un courriel vient d'être envoyé", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(this, "Courriel introuvable", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+            }
+        }
     }
 
     companion object {

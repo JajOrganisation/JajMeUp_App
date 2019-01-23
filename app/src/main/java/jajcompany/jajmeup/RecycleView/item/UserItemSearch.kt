@@ -26,7 +26,7 @@ class UserItemSearch(val user: User, val userId: String, private val context: Co
             viewHolder.textView_reveil.setTextColor(context.getColor(R.color.reveilDown))
         }
         else {
-            viewHolder.textView_reveil.text = "Se réveil à "+user.reveilCurrentHour
+            viewHolder.textView_reveil.text = "A mis un réveil !"//+user.reveilCurrentHour
             viewHolder.textView_reveil.setTextColor(context.getColor(R.color.reveilUp))
         }
         if(user.isFriend){

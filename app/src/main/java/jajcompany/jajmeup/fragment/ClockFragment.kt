@@ -25,7 +25,7 @@ class ClockFragment : Fragment() {
             if (isChecked) {
                 alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 Alarm.setAlarm(this.activity!!, alarm.hour, alarm.minute, alarmSet)
-                var myhours = alarm.hour.toString()
+                /*var myhours = alarm.hour.toString()
                 var myminutes = alarm.minute.toString()
                 if (alarm.hour < 10) {
                     myhours = "0"+myhours
@@ -33,8 +33,8 @@ class ClockFragment : Fragment() {
                 if (alarm.minute < 10) {
                     myminutes = "0"+myminutes
                 }
-                val myreveil = myhours+":"+myminutes
-                FireStore.updateCurrentUser(reveilCurrent =  myreveil)
+                val myreveil = myhours+":"+myminutes*/
+                FireStore.updateCurrentUser(reveilCurrent =  "up")
             }
             else {
                 FireStore.updateCurrentUser(reveilCurrent = "down")

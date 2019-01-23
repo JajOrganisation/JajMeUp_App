@@ -14,8 +14,6 @@ import java.util.*
 
 object FireStore {
 
-    //private var FriendsList: MutableList<User> = arrayListOf()
-
     private val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
     private val currentUserDocRef: DocumentReference
@@ -25,21 +23,26 @@ object FireStore {
     fun initCurrentUser(myname: String, myprofilepicture: String, onComplete: () -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
-                val newUser = User(FirebaseAuth.getInstance().currentUser!!.uid, myname, "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "down", myprofilepicture)
+                val newUser = UserRegister(FirebaseAuth.getInstance().currentUser!!.uid, myname, "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "down", myprofilepicture)
                 currentUserDocRef.set(newUser).addOnSuccessListener {
-                    onComplete()
-                    fireStoreInstance.document("counters/count/")
+                    fireStoreInstance.document("counters/count")
                             .get()
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     var test = task.result!!.toObject(Counters::class.java)
                                     val countersFieldMap = mutableMapOf<String, Any>()
-                                    countersFieldMap["users_count"] = test!!.usercount + 1
+                                    countersFieldMap["users_count"] = test!!.users_count + 1
+                                    Log.d("HELLO", "My number "+test.users_count)
                                     fireStoreInstance.document("counters/count/")
                                             .update(countersFieldMap)
-                                    updateCurrentUser(mynumber = test.usercount + 1)
+                                            .addOnCompleteListener {
+                                                updateCurrentUser(mynumber = test.users_count + 1)
+                                                onComplete()
+                                            }
+                                            .addOnFailureListener { e -> Log.d("HELLO", "Error set number", e) }
                                 }
                             }
+                            .addOnFailureListener { e -> Log.d("HELLO", "Error ici set number", e) }
                 }
             }
             else{

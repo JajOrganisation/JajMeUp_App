@@ -29,11 +29,9 @@ class ConnectActivity : AppCompatActivity() {
                 mAuth!!.signInWithEmailAndPassword(username, password)
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
-                                // Sign in success, update UI with signed-in user's information
                                 startActivity(PrincipalActivity.newIntent(this))
                                 Log.d("LoginActivity", "signInWithEmail:success")
                             } else {
-                                // If sign in fails, display a message to the user.
                                 Log.e("LoginActivity", "signInWithEmail:failure", task.exception)
                                 Toast.makeText(this@ConnectActivity, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show()

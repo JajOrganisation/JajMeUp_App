@@ -144,7 +144,7 @@ class CommunityFragment : Fragment() {
         shouldInitRecyclerViewWorld = true
     }
 
-    fun updateRecyclerViewWorld(items:List<Item>) {
+    private fun updateRecyclerViewWorld(items:List<Item>) {
         fun initWorld() {
             try {
                 community_list.apply {

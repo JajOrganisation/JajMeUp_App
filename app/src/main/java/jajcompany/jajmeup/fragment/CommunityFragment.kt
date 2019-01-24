@@ -49,6 +49,8 @@ class CommunityFragment : Fragment() {
 
     private lateinit var userListenerRegistration: ListenerRegistration
     private lateinit var friendsListenerRegistration: ListenerRegistration
+    private var listListenerRegistration: MutableList<ListenerRegistration> = mutableListOf()
+    private lateinit var listFriendsListenerRegistration: ListenerRegistration
     private lateinit var searchListenerRegistration: ListenerRegistration
     private lateinit var removeListenerRegistration: ListenerRegistration
     private var shouldInitRecyclerViewWorld = true
@@ -59,6 +61,18 @@ class CommunityFragment : Fragment() {
     private lateinit var friendsSection: Section
     private lateinit var isFriend: ListenerRegistration
     private lateinit var _context: Context
+    private var listFriends: MutableList<String> = mutableListOf()
+    private var listFriendsSection: MutableList<Item> = mutableListOf()
+    private var broadCastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(contxt: Context?, intent: Intent?) {
+            Log.d("HELLO", "Dans le receiver")
+            if (intent!!.action == "onAllFriends") {
+                Log.d("HELLO", "recu "+intent.getStringArrayListExtra("uidList"))
+                if (intent.getStringArrayListExtra("uidList") != null)
+                    setTest(intent.getStringArrayListExtra("uidList"))
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.community_layout, container, false)
@@ -158,7 +172,7 @@ class CommunityFragment : Fragment() {
                 }
                 shouldInitRecyclerViewWorld = false
             } catch (e: Exception) {
-                Log.e("Error", "Error update world")
+                Log.d("HELLO", "Error update world", e)
             }
         }
         fun updateItemsWorld() = userSection.update(items)
@@ -169,15 +183,16 @@ class CommunityFragment : Fragment() {
             try {
                 updateItemsWorld()
             } catch (e: Exception) {
-                Log.e("Error", "Error update world")
+                Log.d("HELLO", "Error update world", e)
             }
         }
     }
 
-    private fun updateRecyclerViewFriends(items:List<Item>) {
-        Log.d("HELLO", items.toString())
+    private fun updateRecyclerViewFriends(items:List<Item>, uid: String) {
         fun initFriends() {
             try {
+                listFriends.add(uid)
+                listFriendsSection.add(items[0])
                 friends_list.apply {
                     layoutManager = LinearLayoutManager(_context)
                     adapter = GroupAdapter<ViewHolder>().apply {
@@ -192,7 +207,19 @@ class CommunityFragment : Fragment() {
                 Log.e("Error", "Error update friends")
             }
         }
-        fun updateItemsFriends() = friendsSection.update(items)
+        fun updateItemsFriends() {
+            Log.d("HELLO", "on check "+friendsSection.getPosition(items[0]))
+            var flag = false
+            if (listFriends.indexOf(uid) == -1) {
+                listFriends.add(uid)
+                listFriendsSection.add(items[0])
+                return friendsSection.update(listFriendsSection)
+            }
+            else {
+                listFriendsSection[listFriends.indexOf(uid)] = items[0]
+                return friendsSection.update(listFriendsSection)
+            }
+        }
 
         if (shouldInitRecyclerViewFriends)
             initFriends()
@@ -208,6 +235,13 @@ class CommunityFragment : Fragment() {
                 Log.e("Error", "Error update friends")
             }
         }
+    }
+
+    private fun updateListFriends(items:List<String>) {
+        Log.d("HELLO", "Belle liste"+items)
+        setUpdateFriends()
+        //unsetFriends()
+        //setUpdateFriends()
     }
 
     private fun updateRecyclerViewSearch(items:List<Item>) {
@@ -296,13 +330,30 @@ class CommunityFragment : Fragment() {
        // userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
     }
 
+    fun setUpdateFriends() {
+        val filter = IntentFilter()
+        filter.addAction("onAllFriendsTest")
+        context!!.registerReceiver(broadCastReceiver, IntentFilter("onAllFriends"))
+        FireStore.getAllFriendUID(this.activity!!)
+        //friendsListenerRegistration = FireStore.getAllFriendUID(this.activity!!, this::updateRecyclerViewFriends)
+    }
+
+    fun setTest(test: List<String>) {
+        context!!.unregisterReceiver(broadCastReceiver)
+        for (current in test) {
+            //friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, test, this::updateRecyclerViewFriends)
+            listListenerRegistration.add(FireStore.addFriendsListener(this.activity!!, current, this::updateRecyclerViewFriends))
+        }
+    }
+
     fun setUpdateListFriends() {
-        friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, this::updateRecyclerViewFriends)
+        listFriendsListenerRegistration = FireStore.newFriendsListener(this::updateListFriends)
     }
 
     fun setSearch(toSearch: String) {
         searchListenerRegistration = FireStore.searchUser(this.activity!!, this::updateRecyclerViewSearch, toSearch)
     }
+
     fun unsetSearch() {
         FireStore.removeListener(searchListenerRegistration)
     }
@@ -313,6 +364,10 @@ class CommunityFragment : Fragment() {
 
     fun unsetFriendsList() {
         //friendsSection = Section()
+        FireStore.removeListener(listFriendsListenerRegistration)
+    }
+
+    fun unsetFriends() {
         FireStore.removeListener(friendsListenerRegistration)
     }
 
@@ -608,4 +663,5 @@ class CommunityFragment : Fragment() {
                 0
         )
     }
+
 }

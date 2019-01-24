@@ -53,6 +53,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".fragment.CommunityFragment$onAllFriends" >
+            <intent-filter>
+                <action android:name="onAllFriendsTest" />
+            </intent-filter>
+        </receiver>
+
         <activity
         android:name=".activity.SettingsActivity"
         android:label="@string/title_activity_settings" />

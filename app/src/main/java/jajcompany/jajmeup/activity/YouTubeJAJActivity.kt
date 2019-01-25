@@ -11,6 +11,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import jajcompany.jajmeup.R
 import kotlinx.android.synthetic.main.youtube_layout.*
+import android.os.Handler
+
 
 class YouTubeJAJActivity : YouTubeBaseActivity(){
 
@@ -41,6 +43,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
     lateinit var youtubePlayerInit: YouTubePlayer.OnInitializedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.youtube_layout)
         userAlarm.text = "Tu as été réveillé par "+votant
@@ -65,6 +68,22 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        if (votant != "Ton réveil") {
+            val handler = Handler()
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+            var timebeforequit = sharedPreferences.getString("time_before_my_alarm_preference", "3").toInt()
+            if (timebeforequit == 75) {
+                timebeforequit = 45000
+            }
+            else {
+                timebeforequit *= 60000
+            }
+            handler.postDelayed({
+                finish()
+                val intentt = YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "dQw4w9WgXcQ"), "Celui qui a voté pour toi n'a pas été assez bon...")
+                this.startActivity(intentt)
+            }, timebeforequit.toLong())
+        }
     }
 
     private fun initUI() {

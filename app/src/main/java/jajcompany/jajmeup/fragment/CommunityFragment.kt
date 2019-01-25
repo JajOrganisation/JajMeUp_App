@@ -65,17 +65,15 @@ class CommunityFragment : Fragment() {
     private var listFriendsSection: MutableList<Item> = mutableListOf()
     private var broadCastReceiver = object : BroadcastReceiver() {
         override fun onReceive(contxt: Context?, intent: Intent?) {
-            Log.d("HELLO", "Dans le receiver")
             if (intent!!.action == "onAllFriends") {
-                Log.d("HELLO", "recu "+intent.getStringArrayListExtra("uidList"))
                 if (intent.getStringArrayListExtra("uidList") != null)
-                    setTest(intent.getStringArrayListExtra("uidList"))
+                    setAllFriendsListener(intent.getStringArrayListExtra("uidList"))
             }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.community_layout, container, false)
+        return inflater.inflate(R.layout.community_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -332,17 +330,15 @@ class CommunityFragment : Fragment() {
     }
 
     fun setUpdateFriends() {
-        val filter = IntentFilter()
-        filter.addAction("onAllFriendsTest")
         context!!.registerReceiver(broadCastReceiver, IntentFilter("onAllFriends"))
         FireStore.getAllFriendUID(this.activity!!)
         //friendsListenerRegistration = FireStore.getAllFriendUID(this.activity!!, this::updateRecyclerViewFriends)
     }
 
-    fun setTest(test: List<String>) {
+    fun setAllFriendsListener(test: List<String>) {
         context!!.unregisterReceiver(broadCastReceiver)
+        listListenerRegistration = mutableListOf()
         for (current in test) {
-            //friendsListenerRegistration = FireStore.addFriendsListener(this.activity!!, test, this::updateRecyclerViewFriends)
             listListenerRegistration.add(FireStore.addFriendsListener(this.activity!!, current, this::updateRecyclerViewFriends))
         }
     }

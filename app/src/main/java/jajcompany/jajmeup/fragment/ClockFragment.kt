@@ -25,6 +25,7 @@ class ClockFragment : Fragment() {
             if (isChecked) {
                 alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 Alarm.setAlarm(this.activity!!, alarm.hour, alarm.minute, alarmSet)
+                //A GARDER AU CAS OU
                 /*var myhours = alarm.hour.toString()
                 var myminutes = alarm.minute.toString()
                 if (alarm.hour < 10) {

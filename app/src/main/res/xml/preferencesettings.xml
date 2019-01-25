@@ -19,6 +19,16 @@
         android:textColor="@android:color/white"
         android:defaultValue="WORLD"/>
 
+    <ListPreference
+        android:key="time_before_my_alarm_preference"
+        android:title="Temps avant de passer à ton réveil"
+        android:summary="Si jamais le vote n'est pas assez bon pour te réveiller, on passera à ton réveil"
+        android:entries="@array/timebeforemyalarm"
+        android:entryValues="@array/timebeforemyalarm_id"
+        android:dialogTitle="Selectionne la visibilite de ton réveil"
+        android:textColor="@android:color/white"
+        android:defaultValue="3"/>
+
     <CheckBoxPreference
         android:key="history_preference"
         android:title="Historique"

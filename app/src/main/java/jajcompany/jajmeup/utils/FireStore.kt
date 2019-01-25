@@ -460,9 +460,11 @@ object FireStore {
     }
 
     fun askFriends(userAsk: String, otherUserID: String) {
-        //val tmp: Map<String, String> = hashMapOf("uid" to userAsk)
+        val tmp: Map<String, String> = hashMapOf("uid" to userAsk)
         fireStoreInstance.document("users/${otherUserID}/")
-                .update("askingFriends", FieldValue.arrayUnion(userAsk))
+                .collection("askFriends")
+                .document(userAsk)
+                .set(tmp)
                 .addOnFailureListener { e -> Log.d("HELLO", "Error ask friends", e) }
     }
 

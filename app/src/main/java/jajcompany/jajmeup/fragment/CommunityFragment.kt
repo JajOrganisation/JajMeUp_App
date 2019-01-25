@@ -209,15 +209,16 @@ class CommunityFragment : Fragment() {
         }
         fun updateItemsFriends() {
             Log.d("HELLO", "on check "+friendsSection.getPosition(items[0]))
-            var flag = false
-            if (listFriends.indexOf(uid) == -1) {
-                listFriends.add(uid)
-                listFriendsSection.add(items[0])
-                return friendsSection.update(listFriendsSection)
-            }
-            else {
-                listFriendsSection[listFriends.indexOf(uid)] = items[0]
-                return friendsSection.update(listFriendsSection)
+            if (items.isNotEmpty()) {
+                if (listFriends.indexOf(uid) == -1) {
+                    listFriends.add(uid)
+                    listFriendsSection.add(items[0])
+                    return friendsSection.update(listFriendsSection)
+                }
+                else {
+                    listFriendsSection[listFriends.indexOf(uid)] = items[0]
+                    return friendsSection.update(listFriendsSection)
+                }
             }
         }
 

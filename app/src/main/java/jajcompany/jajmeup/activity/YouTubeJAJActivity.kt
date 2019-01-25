@@ -28,16 +28,6 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
             val intent = Intent(context, YouTubeJAJActivity::class.java)
             return intent
         }
-
-        fun Intent.setVotant(votantset: String){
-            votant = votantset
-        }
-        fun Intent.setLien(lienset: String){
-            lien = lienset
-        }
-        fun Intent.setMessage(messageset: String){
-            message = messageset
-        }
     }
 
     lateinit var youtubePlayerInit: YouTubePlayer.OnInitializedListener

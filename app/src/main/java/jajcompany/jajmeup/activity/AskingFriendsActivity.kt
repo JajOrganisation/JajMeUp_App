@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
@@ -21,9 +20,9 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
+import jajcompany.jajmeup.glide.GlideApp
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.StorageUtil
-import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.askingfriends_layout.*
 
 class AskingFriendsActivity : AppCompatActivity() {
@@ -64,16 +63,16 @@ class AskingFriendsActivity : AppCompatActivity() {
             val inflater = LayoutInflater.from(this)
             val view = inflater.inflate(R.layout.accept_refuse_popup,null)
             val popupWindow = PopupWindow(
-                    view, // Custom view to show in popup window
-                    LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
-                    LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+                    view,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
             )
 
             val slideIn = Slide()
             slideIn.slideEdge = Gravity.TOP
             popupWindow.enterTransition = slideIn
             val slideOut = Slide()
-            slideOut.slideEdge = Gravity.RIGHT
+            slideOut.slideEdge = Gravity.END
             popupWindow.exitTransition = slideOut
             popupWindow.isFocusable = true
             val refuse = view.findViewById<Button>(R.id.button_refuse)

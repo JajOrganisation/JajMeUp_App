@@ -23,7 +23,8 @@
             android:layout_height="60dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
-            tools:src="@drawable/ic_account_circle_black_24dp" />
+            tools:src="@drawable/ic_account_circle_black_24dp"
+            android:contentDescription="@string/description_img_string"/>
 
         <TextView
             android:id="@+id/usernameHistory"

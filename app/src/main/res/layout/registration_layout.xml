@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -20,7 +19,8 @@
             android:layout_width="100pt"
             android:layout_height="100pt"
             android:layout_marginTop="10dp"
-            android:src="@drawable/ic_account_circle_black_24dp" />
+            android:src="@drawable/ic_account_circle_black_24dp"
+            android:contentDescription="@string/description_img_string"/>
 
         <EditText
             android:id="@+id/emailRegistration"
@@ -34,7 +34,7 @@
             android:textColorHint="@color/hintColor"
             android:padding="5sp"
             android:layout_marginTop="10dp"
-            android:hint="Courriel"
+            android:hint="@string/hint_mail_string"
             android:textSize="20sp"/>
 
        <EditText
@@ -49,7 +49,7 @@
            android:textColorHint="@color/hintColor"
            android:padding="5sp"
            android:layout_marginTop="10dp"
-           android:hint="Pseudo"
+           android:hint="@string/hint_pseudo_string"
            android:textSize="20sp"/>
 
         <EditText
@@ -64,7 +64,7 @@
             android:textColorHint="@color/hintColor"
             android:padding="5sp"
             android:layout_marginTop="10dp"
-            android:hint="Motdepasse"
+            android:hint="@string/hint_password_string"
             android:inputType="textPassword"
             android:textSize="20sp"/>
 
@@ -80,7 +80,7 @@
             android:textColorHint="@color/hintColor"
             android:padding="5sp"
             android:layout_marginTop="10dp"
-            android:hint="Motdepasse"
+            android:hint="@string/hint_password_string"
             android:inputType="textPassword"
             android:textSize="20sp"/>
 
@@ -89,9 +89,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_drawable"
-            android:text="Inscription"
+            android:text="@string/button_register_string"
             android:textColor="@android:color/white"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:layout_gravity="center_horizontal"
             android:padding="12dp"
             android:layout_marginTop="20dp"/>

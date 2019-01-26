@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -25,9 +24,9 @@
             android:layout_marginTop="182dp"
             android:padding="12dp"
             android:background="@drawable/button_drawable"
-            android:text="Connexion"
+            android:text="@string/button_connect_string"
             android:textColor="@android:color/white"
-            android:textSize="35dp"
+            android:textSize="35sp"
             android:textStyle="bold" />
 
         <Button
@@ -39,9 +38,9 @@
             android:layout_marginEnd="69dp"
             android:layout_marginBottom="147dp"
             android:background="@drawable/button_drawable"
-            android:text="Inscription"
+            android:text="@string/button_register_string"
             android:textColor="@android:color/white"
-            android:textSize="35dp"
+            android:textSize="35sp"
             android:textStyle="bold"
             android:padding="12dp"/>
     </RelativeLayout>

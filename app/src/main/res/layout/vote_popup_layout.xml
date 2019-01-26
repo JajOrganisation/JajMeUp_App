@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:text="Lien Youtube"
+        android:text="@string/label_youtube_link_string"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <EditText
@@ -23,13 +23,13 @@
         android:textColorHint="@color/hintColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Lien Youtube"/>
+        android:hint="@string/hint_youtube_link_string"/>
     <TextView
         android:id="@+id/message_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:text="Écrit un message pour PSEUDO"
+        android:text="@string/label_write_message_string"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <EditText
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLength="150"
-        android:hint="Message"/>
+        android:hint="@string/hint_message_string"/>
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_gravity="center"
@@ -53,7 +53,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_drawable"
             android:textColor="@android:color/white"
-            android:text="Réveil le!"
+            android:text="@string/button_wake_up_string"
+            style="?android:attr/buttonBarButtonStyle"
             />
         <Button
             android:id="@+id/button_closepop"
@@ -61,6 +62,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_drawable"
             android:textColor="@android:color/white"
-            android:text="Annuler"/>
+            android:text="@string/button_cancel_string"
+            style="?android:attr/buttonBarButtonStyle"/>
     </TableRow>
 </LinearLayout>

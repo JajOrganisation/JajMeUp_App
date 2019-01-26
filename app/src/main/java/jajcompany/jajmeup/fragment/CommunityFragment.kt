@@ -4,11 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.media.Image
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -28,17 +26,15 @@ import com.xwray.groupie.OnItemLongClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import jajcompany.jajmeup.activity.YouTubeJAJActivity
-import jajcompany.jajmeup.models.Vote
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
-import jajcompany.jajmeup.RecycleView.item.UserItemSearch
-import jajcompany.jajmeup.activity.ConnectRegistrationActivity
+import jajcompany.jajmeup.activity.YouTubeJAJActivity
+import jajcompany.jajmeup.glide.GlideApp
+import jajcompany.jajmeup.models.Vote
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.utils.YoutubeInformation
 import jajcompany.jajmeup.utils.YoutubeInformation.getTitleQuietly
-import jajcompany.jajmeup.glide.GlideApp
 import kotlinx.android.synthetic.main.community_layout.*
 import kotlinx.android.synthetic.main.community_list_header.view.*
 import java.util.*
@@ -80,7 +76,7 @@ class CommunityFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
         detectPref()
-        header_friends.header_communauty.text = "Amis"
+        header_friends.header_communauty.text = getString(R.string.label_header_friends_list_community_string)
 
         header_friends.header_communauty.setOnClickListener {
             if(friends_list.visibility == View.GONE)
@@ -384,7 +380,7 @@ class CommunityFragment : Fragment() {
             header_world.visibility = View.VISIBLE
             community_list.visibility = View.VISIBLE
             header_world.setRandomImageButton.visibility = View.VISIBLE
-            header_world.header_communauty.text = "Tout le monde"
+            header_world.header_communauty.text = getString(R.string.label_header_world_list_community_string)
             header_world.header_communauty.setOnClickListener {
 
                 if (community_list.visibility == View.GONE)
@@ -407,24 +403,18 @@ class CommunityFragment : Fragment() {
     }
 
     private fun showPopAddFriend(item:UserItem) {
-        if (onSearch) {
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-            if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
-                true
-            }
-        }
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.addfriend_popup_layout,null)
         val popupWindow = PopupWindow(
-                view, // Custom view to show in popup window
-                LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
-                LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+                view,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
         )
         val slideIn = Slide()
         slideIn.slideEdge = Gravity.TOP
         popupWindow.enterTransition = slideIn
         val slideOut = Slide()
-        slideOut.slideEdge = Gravity.RIGHT
+        slideOut.slideEdge = Gravity.END
         popupWindow.exitTransition = slideOut
         popupWindow.isFocusable = true
         val closepop = view.findViewById<Button>(R.id.button_addfriend_closepop)
@@ -435,7 +425,7 @@ class CommunityFragment : Fragment() {
             popupWindow.dismiss()
         }
         askfriend.setOnClickListener {
-            val myuser = FireStore.getCurrentUser {myuser ->
+            FireStore.getCurrentUser {myuser ->
                 if ( myuser.profilePicture != null) {
                     val user = FirebaseAuth.getInstance()
                     FireStore.askFriends(user!!.uid.toString(), item.userId)
@@ -459,12 +449,6 @@ class CommunityFragment : Fragment() {
     }
 
     private fun showPopRemove(item: UserItem) {
-        if (onSearch) {
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-            if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
-                true
-            }
-        }
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.removefriend_popup_layout,null)
         val popupWindow = PopupWindow(
@@ -476,7 +460,7 @@ class CommunityFragment : Fragment() {
         slideIn.slideEdge = Gravity.TOP
         popupWindow.enterTransition = slideIn
         val slideOut = Slide()
-        slideOut.slideEdge = Gravity.RIGHT
+        slideOut.slideEdge = Gravity.END
         popupWindow.exitTransition = slideOut
         popupWindow.isFocusable = true
         val closepop = view.findViewById<Button>(R.id.button_removefriend_closepop)
@@ -520,7 +504,7 @@ class CommunityFragment : Fragment() {
         slideIn.slideEdge = Gravity.TOP
         popupWindow.enterTransition = slideIn
         val slideOut = Slide()
-        slideOut.slideEdge = Gravity.RIGHT
+        slideOut.slideEdge = Gravity.END
         popupWindow.exitTransition = slideOut
         popupWindow.isFocusable = true
         val closepop = view.findViewById<Button>(R.id.button_closepop)
@@ -528,7 +512,8 @@ class CommunityFragment : Fragment() {
         val edityt = view.findViewById<EditText>(R.id.youtubelinkpop)
         val editmess = view.findViewById<EditText>(R.id.messagepop)
         val labelmess = view.findViewById<TextView>(R.id.message_label)
-        labelmess.setText("Écrit un message pour " + item.user.name)
+        labelmess.text = getString(R.string.label_write_message_string)+" "+item.user.name
+       // labelmess.setText(getString(R.string.label_write_message_string)+ item.user.name)
         closepop.setOnClickListener {
             popupWindow.dismiss()
         }
@@ -581,7 +566,7 @@ class CommunityFragment : Fragment() {
         slideIn.slideEdge = Gravity.TOP
         popupWindow.enterTransition = slideIn
         val slideOut = Slide()
-        slideOut.slideEdge = Gravity.RIGHT
+        slideOut.slideEdge = Gravity.END
         popupWindow.exitTransition = slideOut
         popupWindow.isFocusable = true
         val closepop = view.findViewById<Button>(R.id.button_closepop_wakeup)
@@ -619,7 +604,7 @@ class CommunityFragment : Fragment() {
         slideIn.slideEdge = Gravity.TOP
         popupWindow.enterTransition = slideIn
         val slideOut = Slide()
-        slideOut.slideEdge = Gravity.RIGHT
+        slideOut.slideEdge = Gravity.END
         popupWindow.exitTransition = slideOut
         popupWindow.isFocusable = true
         val closepop = view.findViewById<Button>(R.id.button_closepop)

@@ -15,13 +15,14 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:layout_marginStart="2pt"
-        tools:src="@drawable/ic_account_circle_black_24dp"/>
+        tools:src="@drawable/ic_account_circle_black_24dp"
+        android:contentDescription="@string/description_img_string"/>
     <TextView
         android:id="@+id/removefriend_userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Username"
+        android:text="@string/hidden_username_string"
         android:textColor="@android:color/white"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
@@ -38,16 +39,17 @@
             android:layout_height="wrap_content"
             android:paddingRight="5dp"
             android:paddingLeft="5dp"
-            android:text="Supprimer"
+            android:text="@string/button_delete_string"
             android:textColor="@android:color/white"
-            />
+            style="?android:attr/buttonBarButtonStyle"/>
         <Button
             android:id="@+id/button_removefriend_closepop"
             android:background="@drawable/button_drawable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="Annuler"
-            android:textColor="@android:color/white"/>
+            android:layout_marginStart="5dp"
+            android:text="@string/button_cancel_string"
+            android:textColor="@android:color/white"
+            style="?android:attr/buttonBarButtonStyle"/>
     </TableRow>
 </LinearLayout>

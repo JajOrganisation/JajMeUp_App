@@ -11,27 +11,24 @@ import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.preference.PreferenceScreen
 import android.provider.MediaStore
-import android.support.v7.app.AppCompatActivity
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import jajcompany.jajmeup.R
-import jajcompany.jajmeup.utils.FireStore
-import jajcompany.jajmeup.utils.StorageUtil
-import jajcompany.jajmeup.glide.GlideApp
-import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
-import java.io.ByteArrayOutputStream
-import android.app.AlertDialog
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v7.app.AppCompatActivity
 import android.transition.Slide
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import jajcompany.jajmeup.R
+import jajcompany.jajmeup.glide.GlideApp
+import jajcompany.jajmeup.utils.FireStore
+import jajcompany.jajmeup.utils.StorageUtil
+import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
+import java.io.ByteArrayOutputStream
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -136,7 +133,7 @@ class SettingsActivity : AppCompatActivity() {
                 slideIn.slideEdge = Gravity.TOP
                 popupWindow.enterTransition = slideIn
                 val slideOut = Slide()
-                slideOut.slideEdge = Gravity.RIGHT
+                slideOut.slideEdge = Gravity.END
                 popupWindow.exitTransition = slideOut
                 popupWindow.isFocusable = true
                 val closepop = view.findViewById<Button>(R.id.button_closepop_password)
@@ -155,15 +152,13 @@ class SettingsActivity : AppCompatActivity() {
                         Toast.makeText(activity, "Mot de passe différent", Toast.LENGTH_LONG).show()
                     }
                     else {
-                        var mAuth: FirebaseAuth? = null
-                        mAuth = FirebaseAuth.getInstance()
+                        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
                         val user = FirebaseAuth.getInstance().currentUser
-                        mAuth!!.signInWithEmailAndPassword(user!!.email.toString(), oldpass.text.toString())
+                        mAuth.signInWithEmailAndPassword(user!!.email.toString(), oldpass.text.toString())
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         Log.d("HELLO", "Connecte new")
-                                        val user = FirebaseAuth.getInstance().currentUser
-                                        val cred = EmailAuthProvider.getCredential(user!!.email.toString(), oldpass.text.toString())
+                                        val cred = EmailAuthProvider.getCredential(user.email.toString(), oldpass.text.toString())
                                         user.reauthenticate(cred)?.addOnCompleteListener {
                                             user.updatePassword(firstpass.text.toString()).addOnCompleteListener { task ->
                                                 if (task.isSuccessful) {
@@ -207,7 +202,7 @@ class SettingsActivity : AppCompatActivity() {
                 slideIn.slideEdge = Gravity.TOP
                 popupWindow.enterTransition = slideIn
                 val slideOut = Slide()
-                slideOut.slideEdge = Gravity.RIGHT
+                slideOut.slideEdge = Gravity.END
                 popupWindow.exitTransition = slideOut
                 popupWindow.isFocusable = true
                 val closepop = view.findViewById<Button>(R.id.button_closepop_password)
@@ -225,15 +220,13 @@ class SettingsActivity : AppCompatActivity() {
                         Toast.makeText(activity, "Mot de passe différent", Toast.LENGTH_LONG).show()
                     }
                     else {
-                        var mAuth: FirebaseAuth? = null
-                        mAuth = FirebaseAuth.getInstance()
+                        val mAuth: FirebaseAuth? = FirebaseAuth.getInstance()
                         val user = FirebaseAuth.getInstance().currentUser
                         mAuth!!.signInWithEmailAndPassword(user!!.email.toString(), firstpass.text.toString())
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         Log.d("HELLO", "Connecte new")
-                                        val user = FirebaseAuth.getInstance().currentUser
-                                        val cred = EmailAuthProvider.getCredential(user!!.email.toString(), firstpass.text.toString())
+                                        val cred = EmailAuthProvider.getCredential(user.email.toString(), firstpass.text.toString())
                                         user.reauthenticate(cred)?.addOnCompleteListener {
                                             val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
                                             fireStoreInstance.collection("users")

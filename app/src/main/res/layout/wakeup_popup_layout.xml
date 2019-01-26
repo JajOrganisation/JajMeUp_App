@@ -12,7 +12,7 @@
         android:id="@+id/votant_wakeup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Écrit un message pour PSEUDO"
+        android:text="@string/hidden_username_string"
         android:textColor="@android:color/white"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
@@ -20,7 +20,7 @@
         android:id="@+id/message_wakeup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lien Youtube"
+        android:text="@string/hidden_message_string"
         android:textColor="@android:color/white"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
@@ -28,7 +28,7 @@
         android:id="@+id/yt_wakeup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lien Youtube"
+        android:text="@string/hidden_youtube_link_string"
         android:textColor="@android:color/white"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
@@ -44,8 +44,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_drawable"
             android:textColor="@android:color/white"
-            android:text="OK"
-            />
+            android:text="@string/button_ok_string"
+            style="?android:attr/buttonBarButtonStyle"/>
         <Button
             android:id="@+id/button_response_wakeup"
             android:layout_width="wrap_content"
@@ -54,6 +54,7 @@
             android:textColor="@android:color/white"
             android:paddingRight="5dp"
             android:paddingLeft="5dp"
-            android:text="Réponds lui"/>
+            android:text="@string/button_answer_string"
+            style="?android:attr/buttonBarButtonStyle"/>
     </TableRow>
 </LinearLayout>

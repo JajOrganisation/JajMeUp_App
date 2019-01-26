@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:text="Confirmes ton mot de passe pour supprimer ton compte"
+        android:text="@string/label_confirm_password_delete_account_string"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <TextView
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:text="Mot de passe :"
+        android:text="@string/label_password_string"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <EditText
@@ -31,13 +31,13 @@
         android:textColorHint="@color/hintColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Mot de passe"/>
+        android:hint="@string/hint_password_string"/>
     <TextView
         android:id="@+id/second_pass_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:text="Confirmation :"
+        android:text="@string/label_confirm_string"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <EditText
@@ -48,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLength="150"
-        android:hint="Mot de passe"/>
+        android:hint="@string/hint_password_string"/>
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_gravity="center"
@@ -61,15 +61,16 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_drawable"
             android:textColor="@android:color/white"
-            android:text="Supprimer"
-            />
+            android:text="@string/button_delete_string"
+            style="?android:attr/buttonBarButtonStyle" />
         <Button
             android:id="@+id/button_closepop_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_drawable"
             android:textColor="@android:color/white"
-            android:layout_marginLeft="5dp"
-            android:text="Annuler"/>
+            android:layout_marginStart="5dp"
+            android:text="@string/button_cancel_string"
+            style="?android:attr/buttonBarButtonStyle"/>
     </TableRow>
 </LinearLayout>

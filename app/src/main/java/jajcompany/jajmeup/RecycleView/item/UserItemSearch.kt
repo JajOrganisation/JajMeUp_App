@@ -2,6 +2,7 @@ package jajcompany.jajmeup.RecycleView.item
 
 
 import android.content.Context
+import android.content.res.Resources
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -22,15 +23,15 @@ class UserItemSearch(val user: User, val userId: String, private val context: Co
             Glide.with(context).load(StorageUtil.pathToReference(user.profilePicture)).apply(RequestOptions.circleCropTransform()).into(viewHolder.imageView_profile_picture)
         }
         if (user.reveilCurrentHour == "down") {
-            viewHolder.textView_reveil.text = "N'a pas mis de réveil"
+            viewHolder.textView_reveil.text = Resources.getSystem().getString(R.string.label_state_off_clock_list_user_string)
             viewHolder.textView_reveil.setTextColor(context.getColor(R.color.reveilDown))
         }
         else {
-            viewHolder.textView_reveil.text = "A mis un réveil !"//+user.reveilCurrentHour
+            viewHolder.textView_reveil.text = Resources.getSystem().getString(R.string.label_state_on_clock_list_user_string)//+user.reveilCurrentHour
             viewHolder.textView_reveil.setTextColor(context.getColor(R.color.reveilUp))
         }
         if(user.isFriend){
-            viewHolder.isFriendSearch.text = "true"
+            viewHolder.isFriendSearch.text = Resources.getSystem().getString(R.string.hidden_isfriend_true_search_string)
         }
 
     }

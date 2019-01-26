@@ -15,14 +15,15 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:layout_marginStart="2pt"
-        tools:src="@drawable/ic_account_circle_black_24dp"/>
+        tools:src="@drawable/ic_account_circle_black_24dp"
+        android:contentDescription="@string/description_img_string"/>
     <TextView
         android:id="@+id/addfriend_userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@android:color/white"
-        android:text="Username"
+        android:text="@string/hidden_username_string"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
     <TableRow
@@ -30,7 +31,8 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp" >
+        android:layout_marginTop="15dp"
+        style="?android:attr/buttonBarStyle">
         <Button
             android:id="@+id/button_addfriendpop"
             android:background="@drawable/button_drawable"
@@ -39,15 +41,17 @@
             android:textColor="@android:color/white"
             android:paddingRight="5dp"
             android:paddingLeft="5dp"
-            android:text="Demander en ami"
+            android:text="@string/button_ask_friend_string"
+            style="?android:attr/buttonBarButtonStyle"
             />
         <Button
             android:id="@+id/button_addfriend_closepop"
             android:background="@drawable/button_drawable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:textColor="@android:color/white"
-            android:text="Annuler"/>
+            android:text="@string/button_cancel_string"
+            style="?android:attr/buttonBarButtonStyle"/>
     </TableRow>
 </LinearLayout>

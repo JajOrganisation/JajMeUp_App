@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
                 android:textStyle="bold"
-                android:text="USER_NAME"
+                android:text="@string/hidden_username_string"
                 android:textColor="@android:color/white"
                 android:layout_weight="1"/>
         <TextView
@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="30sp"
-                android:text="BONJOUR TOI ALORS"
+                android:text="@string/hidden_message_string"
                 android:layout_weight="1"/>
 
         <Button
@@ -38,7 +38,7 @@
             android:layout_gravity="bottom"
             android:background="@drawable/button_drawable"
             android:padding="12dp"
-            android:text="Arrêt"
+            android:text="@string/button_stop_string"
             android:textColor="@android:color/white"
             android:textSize="35sp"
             android:textStyle="bold"

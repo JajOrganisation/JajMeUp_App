@@ -89,4 +89,53 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Valeur par défault des text view qui changeront en fonction de la base de données-->
+    <string name="hidden_username_string">Username</string>
+    <string name="hidden_message_string">Message</string>
+    <string name="hidden_youtube_link_string">Lien YouTube</string>
+    <string name="hidden_isfriend_search_string">false</string>
+    <string name="hidden_isfriend_true_search_string">true</string>
+
+    <!-- Différent label -->
+    <string name="label_password_string">Mot de passe :</string>
+    <string name="label_old_password_string">Ancien mot de passe :</string>
+    <string name="label_new_password_string">Nouveau mot de passe :</string>
+    <string name="label_confirm_string">Confirmer :</string>
+    <string name="label_header_world_list_community_string">Tout le monde</string>
+    <string name="label_header_friends_list_community_string">Amis</string>
+    <string name="label_confirm_password_delete_account_string">Confirmes ton mot de passe pour supprimer ton compte</string>
+    <string name="label_youtube_link_string">Lien Youtube</string>
+    <string name="label_write_message_string">Écrit un message pour</string>
+    <string name="label_state_on_clock_list_user_string">A mis un réveil !</string>
+    <string name="label_state_off_clock_list_user_string">N\'a pas mis de réveil</string>
+
+    <!-- Différent hint -->
+    <string name="hint_password_string">Mot de passe</string>
+    <string name="hint_mail_string">Courriel</string>
+    <string name="hint_pseudo_string">Pseudo</string>
+    <string name="hint_youtube_link_string">Lien Youtube</string>
+    <string name="hint_message_string">Message</string>
+
+    <!-- Boutton -->
+    <string name="button_accept_string">Accepter</string>
+    <string name="button_refuse_string">Refuser</string>
+    <string name="button_cancel_string">Annuler</string>
+    <string name="button_ask_friend_string">Demander en ami</string>
+    <string name="button_change_string">Changer</string>
+    <string name="button_connect_string">Connexion</string>
+    <string name="button_forget_password_string">Mot de passe oublié</string>
+    <string name="button_register_string">Inscription</string>
+    <string name="button_delete_string">Supprimer</string>
+    <string name="button_wake_up_string">JajMeUp!</string>
+    <string name="button_ok_string">OK</string>
+    <string name="button_answer_string">Réponds lui</string>
+    <string name="button_stop_string">Arrêt</string>
+
+    <!-- Description -->
+    <string name="description_img_string">Photo de profil</string>
+    <string name="description_img_header_string">Dès</string>
+
+    <!-- Badge -->
+    <string name="badge_default_number_string">0</string>
 </resources>

@@ -4,13 +4,12 @@ import android.content.Context
 import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.auth.FirebaseAuth
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import jajcompany.jajmeup.models.AskingFriends
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.glide.GlideApp
+import jajcompany.jajmeup.models.AskingFriends
+import jajcompany.jajmeup.utils.StorageUtil
 import kotlinx.android.synthetic.main.askingfriends_item.*
 
 class AskingFriendsItem(val user: AskingFriends, val userId: String, private val context: Context): Item() {

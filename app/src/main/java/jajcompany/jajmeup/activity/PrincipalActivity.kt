@@ -1,7 +1,6 @@
 package jajcompany.jajmeup.activity
 
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -19,10 +18,10 @@ import android.view.View
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ListenerRegistration
+import jajcompany.jajmeup.R
 import jajcompany.jajmeup.fragment.ClockFragment
 import jajcompany.jajmeup.fragment.CommunityFragment
 import jajcompany.jajmeup.fragment.HistoryFragment
-import jajcompany.jajmeup.R
 import jajcompany.jajmeup.utils.FireStore
 import kotlinx.android.synthetic.main.main_layout.*
 
@@ -67,7 +66,7 @@ class PrincipalActivity : AppCompatActivity() {
         navigation.selectedItemId = R.id.navigation_community
         val intent: Intent = intent
         val action: String? = intent.action
-        var type: String? = intent.type
+        val type: String? = intent.type
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {

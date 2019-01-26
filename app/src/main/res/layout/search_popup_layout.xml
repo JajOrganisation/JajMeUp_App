@@ -15,7 +15,8 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:layout_marginStart="2pt"
-        tools:src="@drawable/ic_account_circle_black_24dp"/>
+        tools:src="@drawable/ic_account_circle_black_24dp"
+        android:contentDescription="@string/description_img_string"/>
     <Button
         android:id="@+id/button_votepop"
         android:layout_width="wrap_content"
@@ -24,7 +25,7 @@
         android:background="@drawable/button_drawable"
         android:textColor="@android:color/white"
         android:layout_marginTop="5dp"
-        android:text="Réveil le!"
+        android:text="@string/button_wake_up_string"
         />
     <Button
         android:id="@+id/button_addfriendpop"
@@ -37,7 +38,7 @@
         android:paddingRight="5dp"
         android:paddingLeft="5dp"
         android:visibility="gone"
-        android:text="Demander en ami"
+        android:text="@string/button_ask_friend_string"
         />
     <Button
         android:id="@+id/button_closepop"
@@ -47,5 +48,5 @@
         android:background="@drawable/button_drawable"
         android:textColor="@android:color/white"
         android:layout_marginTop="5dp"
-        android:text="Annuler"/>
+        android:text="@string/button_cancel_string"/>
 </LinearLayout>

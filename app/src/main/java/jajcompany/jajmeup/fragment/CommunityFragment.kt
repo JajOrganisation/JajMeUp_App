@@ -32,6 +32,7 @@ import jajcompany.jajmeup.activity.YouTubeJAJActivity
 import jajcompany.jajmeup.glide.GlideApp
 import jajcompany.jajmeup.models.Vote
 import jajcompany.jajmeup.utils.FireStore
+import jajcompany.jajmeup.utils.Jajinternet
 import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.utils.YoutubeInformation
 import jajcompany.jajmeup.utils.YoutubeInformation.getTitleQuietly
@@ -133,6 +134,9 @@ class CommunityFragment : Fragment() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
         if (sharedPreferences.getBoolean("on_wakeup", false)){
             showPopOnWakeUp()
+        }
+        if (!Jajinternet.getStatusInternet(context)) {
+            Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -273,7 +277,12 @@ class CommunityFragment : Fragment() {
     private val onItemLongClick = OnItemLongClickListener { item, _ ->
 
         if (item is UserItem) {
-            showPopAddFriend(item)
+            if (Jajinternet.getStatusInternet(context)) {
+                showPopAddFriend(item)
+            }
+            else {
+                Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+            }
         }
         true
     }
@@ -286,35 +295,49 @@ class CommunityFragment : Fragment() {
     private val onItemLongClickFriend = OnItemLongClickListener { item, _ ->
 
         if (item is UserItem) {
-            showPopRemove(item)
+            if (Jajinternet.getStatusInternet(context)) {
+                showPopRemove(item)
+            }
+            else{
+                Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+            }
         }
         true
     }
 
     private val onItemClick = OnItemClickListener { item, view ->
         if (item is UserItem) {
-            var flag = true
-            if (onSearch) {
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-                if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
-                    flag = false
-                    isFriend = FireStore.isFriend(this.activity!!, item, this::getIsMyFriend)
+            if (Jajinternet.getStatusInternet(context)) {
+                var flag = true
+                if (onSearch) {
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+                    if (sharedPreferences.getString("visibility_preference", "WORLD") == "FRIENDS") {
+                        flag = false
+                        isFriend = FireStore.isFriend(this.activity!!, item, this::getIsMyFriend)
+                    }
+                }
+                if (flag) {
+                    showPopVote(item)
                 }
             }
-            if (flag) {
-                showPopVote(item)
+            else{
+                Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private val onItemSearchClick = OnItemClickListener { item, view ->
         if (item is UserItem) {
-            val textTest = view.findViewById<TextView>(R.id.isFriendSearch)
-            if (textTest.text == "false") {
-                showPopSearch(item, false)
+            if (Jajinternet.getStatusInternet(context)) {
+                val textTest = view.findViewById<TextView>(R.id.isFriendSearch)
+                if (textTest.text == "false") {
+                    showPopSearch(item, false)
+                } else {
+                    showPopSearch(item, true)
+                }
             }
             else {
-                showPopSearch(item, true)
+                Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -577,7 +600,7 @@ class CommunityFragment : Fragment() {
             popupWindow.dismiss()
         }
 
-        labelyt.text = "Avec cette vidéo :\n"+getTitleQuietly(sharedPreferences.getString("link_wakeup", ""))
+        labelyt.text = getString(R.string.quelle_video)+getTitleQuietly(sharedPreferences.getString("link_wakeup", ""))
 
         labelvotant.text = sharedPreferences.getString("user_wakeup", "")+" t'as réveillé"
         if (sharedPreferences.getString("message_wakeup", "") != "") {

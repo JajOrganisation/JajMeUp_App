@@ -138,4 +138,14 @@
 
     <!-- Badge -->
     <string name="badge_default_number_string">0</string>
+
+    <!-- YoutubeJAJActivity -->
+    <string name="qui_m_a_reveille">Tu as été réveillé par </string>
+
+    <!-- Community Fragment -->
+    <string name="quelle_video">Avec cette vidéo :
+    </string>
+
+    <!-- Message Erreur -->
+    <string name="erreur_internet">Pas de connexion internet!</string>
 </resources>

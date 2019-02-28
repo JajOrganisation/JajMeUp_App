@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.glide.GlideApp
 import jajcompany.jajmeup.utils.FireStore
+import jajcompany.jajmeup.utils.Jajinternet
 import jajcompany.jajmeup.utils.StorageUtil
 import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
 import java.io.ByteArrayOutputStream
@@ -48,6 +49,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             startActivityForResult(Intent.createChooser(intent, "Select Image"), RCSELECTIMAGE)
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -97,6 +99,9 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onResume() {
             super.onResume()
+            if (!Jajinternet.getStatusInternet(context)) {
+                Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+            }
             preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         }
 
@@ -105,161 +110,165 @@ class SettingsActivity : AppCompatActivity() {
             preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         }
         override fun onSharedPreferenceChanged(sharedPref: SharedPreferences, key: String) {
-            when (key) {
-                "default_reveil" -> {
-                    findPreference("default_reveil").editor.putString("reveil_default", "").apply()
-                }
-                "visibility_preference" -> {
-                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                    when(sharedPreferences.getString("visibility_preference", "WORLD")) {
-                        "WORLD" -> FireStore.updateCurrentUser(authorization = 2)
-                        "FRIENDS" -> FireStore.updateCurrentUser(authorization = 1)
-                        "PRIVATE" -> FireStore.updateCurrentUser(authorization = 0)
+            if (Jajinternet.getStatusInternet(context)) {
+                when (key) {
+                    "default_reveil" -> {
+                        findPreference("default_reveil").editor.putString("reveil_default", "").apply()
+                    }
+                    "visibility_preference" -> {
+                        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                        when (sharedPreferences.getString("visibility_preference", "WORLD")) {
+                            "WORLD" -> FireStore.updateCurrentUser(authorization = 2)
+                            "FRIENDS" -> FireStore.updateCurrentUser(authorization = 1)
+                            "PRIVATE" -> FireStore.updateCurrentUser(authorization = 0)
+                        }
                     }
                 }
+            }
+            else {
+                Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
         }
 
         override fun onPreferenceTreeClick(preferenceScreen: PreferenceScreen?, preference: Preference?): Boolean {
-            if (preference!!.key == "changepassword"){
-                val inflater = LayoutInflater.from(context)
-                val view = inflater.inflate(R.layout.changepassword_popup_layout,null)
-                val popupWindow = PopupWindow(
-                        view,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                val slideIn = Slide()
-                slideIn.slideEdge = Gravity.TOP
-                popupWindow.enterTransition = slideIn
-                val slideOut = Slide()
-                slideOut.slideEdge = Gravity.END
-                popupWindow.exitTransition = slideOut
-                popupWindow.isFocusable = true
-                val closepop = view.findViewById<Button>(R.id.button_closepop_password)
-                val changepass = view.findViewById<Button>(R.id.button_change_password)
-                closepop.setOnClickListener{
-                    popupWindow.dismiss()
-                }
-                changepass.setOnClickListener {
-                    val oldpass = view.findViewById<EditText>(R.id.oldpassword)
-                    val firstpass = view.findViewById<EditText>(R.id.fistpassword)
-                    val secondpass = view.findViewById<EditText>(R.id.secondpassword)
-                    if (firstpass.text.toString() == "" || secondpass.text.toString() == "" || oldpass.text.toString() == "") {
-                        Toast.makeText(activity, "Champs vide", Toast.LENGTH_LONG).show()
+            if (Jajinternet.getStatusInternet(context)) {
+                if (preference!!.key == "changepassword") {
+                    val inflater = LayoutInflater.from(context)
+                    val view = inflater.inflate(R.layout.changepassword_popup_layout, null)
+                    val popupWindow = PopupWindow(
+                            view,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    val slideIn = Slide()
+                    slideIn.slideEdge = Gravity.TOP
+                    popupWindow.enterTransition = slideIn
+                    val slideOut = Slide()
+                    slideOut.slideEdge = Gravity.END
+                    popupWindow.exitTransition = slideOut
+                    popupWindow.isFocusable = true
+                    val closepop = view.findViewById<Button>(R.id.button_closepop_password)
+                    val changepass = view.findViewById<Button>(R.id.button_change_password)
+                    closepop.setOnClickListener {
+                        popupWindow.dismiss()
                     }
-                    else if (firstpass.text.toString() != secondpass.text.toString()) {
-                        Toast.makeText(activity, "Mot de passe différent", Toast.LENGTH_LONG).show()
-                    }
-                    else {
-                        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-                        val user = FirebaseAuth.getInstance().currentUser
-                        mAuth.signInWithEmailAndPassword(user!!.email.toString(), oldpass.text.toString())
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        Log.d("HELLO", "Connecte new")
-                                        val cred = EmailAuthProvider.getCredential(user.email.toString(), oldpass.text.toString())
-                                        user.reauthenticate(cred)?.addOnCompleteListener {
-                                            user.updatePassword(firstpass.text.toString()).addOnCompleteListener { task ->
-                                                if (task.isSuccessful) {
-                                                    Toast.makeText(activity, "Mot de passe changé", Toast.LENGTH_LONG).show()
-                                                    popupWindow.dismiss()
-                                                } else {
-                                                    Toast.makeText(activity, "Erreur lors du changement de mot de passe", Toast.LENGTH_LONG).show()
-                                                }
-                                            }
-                                                    .addOnFailureListener { e -> Log.d("HELLO", "Error change password", e) }
-                                        }
-                                    } else {
-                                        Log.e("HELLO", "Erreur ancien mot de passe", task.exception)
-                                        Toast.makeText(activity, "Ancien mot de passe incorrect", Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                    }
-                }
-                popupWindow.showAtLocation(
-                        view,
-                        Gravity.CENTER,
-                        0,
-                        0
-                )
-            }
-            else if (preference.key == "deconnect") {
-                val sendDeconnect = LocalBroadcastManager.getInstance(context)
-                sendDeconnect
-                        .sendBroadcast(Intent("deconnectUser"))
-                activity.finish()
-            }
-            else if (preference.key == "deleteaccount") {
-                val inflater = LayoutInflater.from(context)
-                val view = inflater.inflate(R.layout.deleteaccount_popup_layout,null)
-                val popupWindow = PopupWindow(
-                        view,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                val slideIn = Slide()
-                slideIn.slideEdge = Gravity.TOP
-                popupWindow.enterTransition = slideIn
-                val slideOut = Slide()
-                slideOut.slideEdge = Gravity.END
-                popupWindow.exitTransition = slideOut
-                popupWindow.isFocusable = true
-                val closepop = view.findViewById<Button>(R.id.button_closepop_password)
-                val changepass = view.findViewById<Button>(R.id.button_change_password)
-                closepop.setOnClickListener{
-                    popupWindow.dismiss()
-                }
-                changepass.setOnClickListener {
-                    val firstpass = view.findViewById<EditText>(R.id.fistpassword)
-                    val secondpass = view.findViewById<EditText>(R.id.secondpassword)
-                    if (firstpass.text.toString() == "" || secondpass.text.toString() == "") {
-                        Toast.makeText(activity, "Champs vide", Toast.LENGTH_LONG).show()
-                    }
-                    else if (firstpass.text.toString() != secondpass.text.toString()) {
-                        Toast.makeText(activity, "Mot de passe différent", Toast.LENGTH_LONG).show()
-                    }
-                    else {
-                        val mAuth: FirebaseAuth? = FirebaseAuth.getInstance()
-                        val user = FirebaseAuth.getInstance().currentUser
-                        mAuth!!.signInWithEmailAndPassword(user!!.email.toString(), firstpass.text.toString())
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        Log.d("HELLO", "Connecte new")
-                                        val cred = EmailAuthProvider.getCredential(user.email.toString(), firstpass.text.toString())
-                                        user.reauthenticate(cred)?.addOnCompleteListener {
-                                            val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
-                                            fireStoreInstance.collection("users")
-                                                    .document(user.uid).delete()
-                                                    .addOnCompleteListener {
-                                                        user.delete()
-                                                        .addOnCompleteListener {task ->
-                                                            if (task.isSuccessful) {
-                                                                val sendDeconnect = LocalBroadcastManager.getInstance(context)
-                                                                sendDeconnect
-                                                                        .sendBroadcast(Intent("deconnectUser"))
-                                                                activity.finish()
-                                                            }
-                                                        }
-                                                        .addOnFailureListener { e -> Log.d("HELLO", "Error delete account", e) }
+                    changepass.setOnClickListener {
+                        val oldpass = view.findViewById<EditText>(R.id.oldpassword)
+                        val firstpass = view.findViewById<EditText>(R.id.fistpassword)
+                        val secondpass = view.findViewById<EditText>(R.id.secondpassword)
+                        if (firstpass.text.toString() == "" || secondpass.text.toString() == "" || oldpass.text.toString() == "") {
+                            Toast.makeText(activity, "Champs vide", Toast.LENGTH_LONG).show()
+                        } else if (firstpass.text.toString() != secondpass.text.toString()) {
+                            Toast.makeText(activity, "Mot de passe différent", Toast.LENGTH_LONG).show()
+                        } else {
+                            val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+                            val user = FirebaseAuth.getInstance().currentUser
+                            mAuth.signInWithEmailAndPassword(user!!.email.toString(), oldpass.text.toString())
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            Log.d("HELLO", "Connecte new")
+                                            val cred = EmailAuthProvider.getCredential(user.email.toString(), oldpass.text.toString())
+                                            user.reauthenticate(cred)?.addOnCompleteListener {
+                                                user.updatePassword(firstpass.text.toString()).addOnCompleteListener { task ->
+                                                    if (task.isSuccessful) {
+                                                        Toast.makeText(activity, "Mot de passe changé", Toast.LENGTH_LONG).show()
+                                                        popupWindow.dismiss()
+                                                    } else {
+                                                        Toast.makeText(activity, "Erreur lors du changement de mot de passe", Toast.LENGTH_LONG).show()
                                                     }
-                                                    .addOnFailureListener { e-> Log.d("HELLO", "Error delete account data", e) }
+                                                }
+                                                        .addOnFailureListener { e -> Log.d("HELLO", "Error change password", e) }
+                                            }
+                                        } else {
+                                            Log.e("HELLO", "Erreur ancien mot de passe", task.exception)
+                                            Toast.makeText(activity, "Ancien mot de passe incorrect", Toast.LENGTH_LONG).show()
                                         }
-                                    } else {
-                                        Log.e("HELLO", "Erreur ancien mot de passe", task.exception)
-                                        Toast.makeText(activity, "Ancien mot de passe incorrect", Toast.LENGTH_LONG).show()
                                     }
-                                }
+                        }
                     }
+                    popupWindow.showAtLocation(
+                            view,
+                            Gravity.CENTER,
+                            0,
+                            0
+                    )
+                } else if (preference.key == "deconnect") {
+                    val sendDeconnect = LocalBroadcastManager.getInstance(context)
+                    sendDeconnect
+                            .sendBroadcast(Intent("deconnectUser"))
+                    activity.finish()
+                } else if (preference.key == "deleteaccount") {
+                    val inflater = LayoutInflater.from(context)
+                    val view = inflater.inflate(R.layout.deleteaccount_popup_layout, null)
+                    val popupWindow = PopupWindow(
+                            view,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    val slideIn = Slide()
+                    slideIn.slideEdge = Gravity.TOP
+                    popupWindow.enterTransition = slideIn
+                    val slideOut = Slide()
+                    slideOut.slideEdge = Gravity.END
+                    popupWindow.exitTransition = slideOut
+                    popupWindow.isFocusable = true
+                    val closepop = view.findViewById<Button>(R.id.button_closepop_password)
+                    val changepass = view.findViewById<Button>(R.id.button_change_password)
+                    closepop.setOnClickListener {
+                        popupWindow.dismiss()
+                    }
+                    changepass.setOnClickListener {
+                        val firstpass = view.findViewById<EditText>(R.id.fistpassword)
+                        val secondpass = view.findViewById<EditText>(R.id.secondpassword)
+                        if (firstpass.text.toString() == "" || secondpass.text.toString() == "") {
+                            Toast.makeText(activity, "Champs vide", Toast.LENGTH_LONG).show()
+                        } else if (firstpass.text.toString() != secondpass.text.toString()) {
+                            Toast.makeText(activity, "Mot de passe différent", Toast.LENGTH_LONG).show()
+                        } else {
+                            val mAuth: FirebaseAuth? = FirebaseAuth.getInstance()
+                            val user = FirebaseAuth.getInstance().currentUser
+                            mAuth!!.signInWithEmailAndPassword(user!!.email.toString(), firstpass.text.toString())
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            Log.d("HELLO", "Connecte new")
+                                            val cred = EmailAuthProvider.getCredential(user.email.toString(), firstpass.text.toString())
+                                            user.reauthenticate(cred)?.addOnCompleteListener {
+                                                val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
+                                                fireStoreInstance.collection("users")
+                                                        .document(user.uid).delete()
+                                                        .addOnCompleteListener {
+                                                            user.delete()
+                                                                    .addOnCompleteListener { task ->
+                                                                        if (task.isSuccessful) {
+                                                                            val sendDeconnect = LocalBroadcastManager.getInstance(context)
+                                                                            sendDeconnect
+                                                                                    .sendBroadcast(Intent("deconnectUser"))
+                                                                            activity.finish()
+                                                                        }
+                                                                    }
+                                                                    .addOnFailureListener { e -> Log.d("HELLO", "Error delete account", e) }
+                                                        }
+                                                        .addOnFailureListener { e -> Log.d("HELLO", "Error delete account data", e) }
+                                            }
+                                        } else {
+                                            Log.e("HELLO", "Erreur ancien mot de passe", task.exception)
+                                            Toast.makeText(activity, "Ancien mot de passe incorrect", Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                        }
+                    }
+                    popupWindow.showAtLocation(
+                            view,
+                            Gravity.CENTER,
+                            0,
+                            0
+                    )
                 }
-                popupWindow.showAtLocation(
-                        view,
-                        Gravity.CENTER,
-                        0,
-                        0
-                )
             }
-           return super.onPreferenceTreeClick(preferenceScreen, preference)
+            else{
+                Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+            }
+            return super.onPreferenceTreeClick(preferenceScreen, preference)
         }
     }
 

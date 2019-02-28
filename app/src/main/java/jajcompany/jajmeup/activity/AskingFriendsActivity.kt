@@ -22,6 +22,7 @@ import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
 import jajcompany.jajmeup.glide.GlideApp
 import jajcompany.jajmeup.utils.FireStore
+import jajcompany.jajmeup.utils.Jajinternet
 import jajcompany.jajmeup.utils.StorageUtil
 import kotlinx.android.synthetic.main.askingfriends_layout.*
 
@@ -60,52 +61,57 @@ class AskingFriendsActivity : AppCompatActivity() {
 
     private val onItemClick = OnItemClickListener { item, _ ->
         if (item is AskingFriendsItem) {
-            val inflater = LayoutInflater.from(this)
-            val view = inflater.inflate(R.layout.accept_refuse_popup,null)
-            val popupWindow = PopupWindow(
-                    view,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            if (Jajinternet.getStatusInternet(this)) {
+                val inflater = LayoutInflater.from(this)
+                val view = inflater.inflate(R.layout.accept_refuse_popup, null)
+                val popupWindow = PopupWindow(
+                        view,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
 
-            val slideIn = Slide()
-            slideIn.slideEdge = Gravity.TOP
-            popupWindow.enterTransition = slideIn
-            val slideOut = Slide()
-            slideOut.slideEdge = Gravity.END
-            popupWindow.exitTransition = slideOut
-            popupWindow.isFocusable = true
-            val refuse = view.findViewById<Button>(R.id.button_refuse)
-            val accept = view.findViewById<Button>(R.id.button_accept)
-            val usernametext = view.findViewById<TextView>(R.id.addfriend_userName)
-            val profilepicture = view.findViewById<ImageView>(R.id.addfriend_profile_picture)
-            refuse.setOnClickListener{
-                popupWindow.dismiss()
-            }
+                val slideIn = Slide()
+                slideIn.slideEdge = Gravity.TOP
+                popupWindow.enterTransition = slideIn
+                val slideOut = Slide()
+                slideOut.slideEdge = Gravity.END
+                popupWindow.exitTransition = slideOut
+                popupWindow.isFocusable = true
+                val refuse = view.findViewById<Button>(R.id.button_refuse)
+                val accept = view.findViewById<Button>(R.id.button_accept)
+                val usernametext = view.findViewById<TextView>(R.id.addfriend_userName)
+                val profilepicture = view.findViewById<ImageView>(R.id.addfriend_profile_picture)
+                refuse.setOnClickListener {
+                    popupWindow.dismiss()
+                }
 
-            accept.setOnClickListener {
-                popupWindow.dismiss()
-               FireStore.addFriends(item.user.uid)
-                askingFriendsSection.remove(item)
+                accept.setOnClickListener {
+                    popupWindow.dismiss()
+                    FireStore.addFriends(item.user.uid)
+                    askingFriendsSection.remove(item)
+                }
+                refuse.setOnClickListener {
+                    popupWindow.dismiss()
+                    FireStore.refuseFriend(item.user.uid)
+                    askingFriendsSection.remove(item)
+                }
+                if (item.user.profilePicture != null) {
+                    GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
+                            .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
+                    Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
+                }
+                usernametext.text = item.user.name
+                TransitionManager.beginDelayedTransition(askingfriends_layout)
+                popupWindow.showAtLocation(
+                        askingfriends_layout,
+                        Gravity.CENTER,
+                        0,
+                        0
+                )
             }
-            refuse.setOnClickListener {
-                popupWindow.dismiss()
-                FireStore.refuseFriend(item.user.uid)
-                askingFriendsSection.remove(item)
+            else {
+                Toast.makeText(this, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
-            if (item.user.profilePicture != null) {
-                GlideApp.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString()))
-                        .placeholder(R.drawable.ic_account_circle_black_24dp).into(profilepicture)
-                Glide.with(this).load(StorageUtil.pathToReference(item.user.profilePicture.toString())).apply(RequestOptions.circleCropTransform()).into(profilepicture)
-            }
-            usernametext.text = item.user.name
-            TransitionManager.beginDelayedTransition(askingfriends_layout)
-            popupWindow.showAtLocation(
-                    askingfriends_layout,
-                    Gravity.CENTER,
-                    0,
-                    0
-            )
         }
     }
 

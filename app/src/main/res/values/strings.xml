@@ -142,6 +142,8 @@
     <!-- YoutubeJAJActivity -->
     <string name="qui_m_a_reveille">Tu as été réveillé par </string>
 
+    <!-- LastAlarmActivity -->
+    <string name="lastAlarmText">C\'est ton beau réveil de secours</string>
     <!-- Community Fragment -->
     <string name="quelle_video">Avec cette vidéo :
     </string>

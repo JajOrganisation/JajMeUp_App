@@ -11,6 +11,7 @@ import android.widget.Switch
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.activity.YouTubeJAJActivity
+import jajcompany.jajmeup.activity.LastAlarmActivity
 import jajcompany.jajmeup.models.NotifWakeUp
 import jajcompany.jajmeup.utils.FireStore.sendNotifWakeUp
 import java.util.*
@@ -50,7 +51,15 @@ object Alarm {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilRing") {
                 Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_SHORT).show()
-                FireStore.getLastReveil(context)
+                if (Jajinternet.getStatusInternet(context)) {
+                    FireStore.getLastReveil(context)
+                }
+                else {
+                    val intentt = LastAlarmActivity.newIntent(context)
+                    //intentt.addFlags(Intent.ACTION_OPEN_DOCUMENT)
+                    switchAlarm.setChecked(false)
+                    context.startActivity(intentt)
+                }
             }
         }
     }

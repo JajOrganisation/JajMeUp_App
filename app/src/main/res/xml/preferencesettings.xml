@@ -9,6 +9,10 @@
         android:dialogTitle="Lien YouTube pour te réveiller"
         android:defaultValue="dQw4w9WgXcQ"/>
 
+    <Preference
+        android:key="last_alarm"
+        android:title="Réveil de secours"/>
+
     <ListPreference
         android:key="visibility_preference"
         android:title="Visibilite de mon reveil"

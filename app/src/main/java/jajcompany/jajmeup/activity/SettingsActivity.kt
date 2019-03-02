@@ -109,11 +109,21 @@ class SettingsActivity : AppCompatActivity() {
             super.onPause()
             preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         }
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            if(requestCode == 3 && resultCode == Activity.RESULT_OK &&
+                    data != null && data.data != null){
+                val audioFilePath = data.data
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putString("last_alarm", audioFilePath.toString()).apply()
+            }
+        }
+
         override fun onSharedPreferenceChanged(sharedPref: SharedPreferences, key: String) {
             if (Jajinternet.getStatusInternet(context)) {
                 when (key) {
                     "default_reveil" -> {
-                        findPreference("default_reveil").editor.putString("reveil_default", "").apply()
+                        //findPreference("default_reveil").editor.putString("reveil_default", "").apply()
+                        FireStore.updateCurrentUser(reveilDefault = PreferenceManager.getDefaultSharedPreferences(context).getString("default_reveil", "dQw4w9WgXcQ"))
                     }
                     "visibility_preference" -> {
                         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -263,6 +273,13 @@ class SettingsActivity : AppCompatActivity() {
                             0,
                             0
                     )
+                }else if(preference.key == "last_alarm") {
+                    val intent = Intent().apply {
+                        type = "audio/*"
+                        action = Intent.ACTION_OPEN_DOCUMENT
+                        putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("audio/mpeg"))
+                    }
+                    startActivityForResult(Intent.createChooser(intent, "Select Audio"), 3)
                 }
             }
             else{

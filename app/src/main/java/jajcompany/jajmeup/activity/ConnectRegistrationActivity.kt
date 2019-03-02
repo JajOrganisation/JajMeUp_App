@@ -1,8 +1,12 @@
 package jajcompany.jajmeup.activity
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +30,44 @@ class ConnectRegistrationActivity : AppCompatActivity() {
             startActivity(RegistrationActivity.newIntent(this))
             finish()
         }
+        val permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.i("HELLO", "Permission to record denied")
+            makeRequest()
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        val permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.i("HELLO", "Permission to record denied")
+            makeRequest()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            142 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Log.d("HELLO", "Permission OK")
+                } else {
+                    finish()
+                }
+                return
+            }
+        }
+    }
+
+    private fun makeRequest() {
+        ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                142)
+    }
+
 
     companion object {
         fun newIntent(context: Context): Intent {

@@ -98,10 +98,24 @@ class PrincipalActivity : AppCompatActivity() {
         }
      }
 
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            142 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Log.d("HELLO", "Permission OK")
+                } else {
+                    finish()
+                }
+                return
+            }
+        }
+    }
+
     private fun makeRequest() {
         ActivityCompat.requestPermissions(this,
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                1)
+                142)
     }
 
     override fun onDestroy() {

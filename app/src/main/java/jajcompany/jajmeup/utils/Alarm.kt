@@ -57,7 +57,7 @@ object Alarm {
                 else {
                     val intentt = LastAlarmActivity.newIntent(context)
                     //intentt.addFlags(Intent.ACTION_OPEN_DOCUMENT)
-                    switchAlarm.setChecked(false)
+                    switchAlarm.isChecked = false
                     context.startActivity(intentt)
                 }
             }
@@ -73,7 +73,7 @@ object Alarm {
                     sendNotifWakeUp(notif, intent.getStringExtra("votantuid"))
                 }
                 val intentt = YouTubeJAJActivity.newIntent(context, intent.getStringExtra("votant"), intent.getStringExtra("lien"), intent.getStringExtra("message"))
-                switchAlarm.setChecked(false)
+                switchAlarm.isChecked = false
                 context.startActivity(intentt)
             }
         }

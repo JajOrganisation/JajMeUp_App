@@ -16,6 +16,7 @@ import jajcompany.jajmeup.R
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.glide.GlideApp
+import jajcompany.jajmeup.utils.Jajinternet
 import kotlinx.android.synthetic.main.registration_layout.*
 import java.io.ByteArrayOutputStream
 
@@ -32,46 +33,52 @@ class RegistrationActivity : AppCompatActivity() {
         setContentView(R.layout.registration_layout)
         mAuth = FirebaseAuth.getInstance()
         profilePictureRegistration.setOnClickListener {
-            val intent = Intent().apply {
-                type = "image/*"
-                action = Intent.ACTION_GET_CONTENT
-                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
-            }
-            startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
-        }
-        registrationButtonRegister.setOnClickListener {
-            val usermail: String = emailRegistration.text.toString()
-            val userpseudo: String = pseudoRegistration.text.toString()
-            val password: String = passwordRegistration.text.toString()
-            val passwordconfirm: String = passwordRegistrationConfirm.text.toString()
-            if (password != passwordconfirm || password.replace("\\s".toRegex(), "") == "") {
-                Toast.makeText(this, "Mots de passe differents", Toast.LENGTH_LONG).show()
-            }
-            else if (userpseudo.replace("\\s".toRegex(), "") == "") {
-                Toast.makeText(this, "Pseudo incorrect", Toast.LENGTH_LONG).show()
-            }
-            else if (selectedImageBytes.isEmpty()) {
-                Toast.makeText(this, "Ajoute une photo", Toast.LENGTH_LONG).show()
-            }
-            else if (!Patterns.EMAIL_ADDRESS.matcher(usermail).matches() || usermail.replace("\\s".toRegex(), "") == ""){
-                Toast.makeText(this, "Courriel incorrect", Toast.LENGTH_LONG).show()
+            if (Jajinternet.getStatusInternet(this)) {
+                val intent = Intent().apply {
+                    type = "image/*"
+                    action = Intent.ACTION_GET_CONTENT
+                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
+                }
+                startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
             }
             else {
-                mAuth?.createUserWithEmailAndPassword(usermail, password)
-                        ?.addOnCompleteListener(this) { task ->
-                            if (task.isSuccessful) {
-                                Log.d("RegistrationActivity", "createUserWithEmail:success")
-                                StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
-                                    FireStore.initCurrentUser(userpseudo, imagePath) {
-                                        startActivity(PrincipalActivity.newIntent(this))
+                Toast.makeText(this, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+            }
+        }
+        registrationButtonRegister.setOnClickListener {
+            if (Jajinternet.getStatusInternet(this)) {
+                val usermail: String = emailRegistration.text.toString()
+                val userpseudo: String = pseudoRegistration.text.toString()
+                val password: String = passwordRegistration.text.toString()
+                val passwordconfirm: String = passwordRegistrationConfirm.text.toString()
+                if (password != passwordconfirm || password.replace("\\s".toRegex(), "") == "") {
+                    Toast.makeText(this, getString(R.string.mot_de_passe_differents), Toast.LENGTH_LONG).show()
+                } else if (userpseudo.replace("\\s".toRegex(), "") == "") {
+                    Toast.makeText(this, getString(R.string.pseudo_incorrect), Toast.LENGTH_LONG).show()
+                } else if (selectedImageBytes.isEmpty()) {
+                    Toast.makeText(this, getString(R.string.ajout_photo), Toast.LENGTH_LONG).show()
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(usermail).matches() || usermail.replace("\\s".toRegex(), "") == "") {
+                    Toast.makeText(this, getString(R.string.courriel_incorrect), Toast.LENGTH_LONG).show()
+                } else {
+                    mAuth?.createUserWithEmailAndPassword(usermail, password)
+                            ?.addOnCompleteListener(this) { task ->
+                                if (task.isSuccessful) {
+                                    Log.d("RegistrationActivity", "createUserWithEmail:success")
+                                    StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
+                                        FireStore.initCurrentUser(userpseudo, imagePath) {
+                                            startActivity(PrincipalActivity.newIntent(this))
+                                        }
                                     }
+                                } else {
+                                    Log.w("RegistrationActivity", "createUserWithEmail:failure", task.exception)
+                                    Toast.makeText(this, getString(R.string.erreur_inscription),
+                                            Toast.LENGTH_SHORT).show()
                                 }
-                            } else {
-                                Log.w("RegistrationActivity", "createUserWithEmail:failure", task.exception)
-                                Toast.makeText(this, "Registration failed.",
-                                        Toast.LENGTH_SHORT).show()
                             }
-                        }
+                }
+            }
+            else {
+                Toast.makeText(this, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
         }
     }

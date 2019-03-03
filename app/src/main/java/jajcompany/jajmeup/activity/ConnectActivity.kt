@@ -9,6 +9,7 @@ import android.util.Patterns
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.R
+import jajcompany.jajmeup.utils.Jajinternet
 import kotlinx.android.synthetic.main.connect_layout.*
 
 class ConnectActivity : AppCompatActivity() {
@@ -20,40 +21,48 @@ class ConnectActivity : AppCompatActivity() {
         setContentView(R.layout.connect_layout)
         mAuth = FirebaseAuth.getInstance()
         connectButtonLogin.setOnClickListener {
-            val username: String = userNameConnect.text.toString()
-            val password: String = passwordConnect.text.toString()
-            if (!Patterns.EMAIL_ADDRESS.matcher(username).matches() || username.replace("\\s".toRegex(), "") == ""){
-                Toast.makeText(this, "Courriel incorrect", Toast.LENGTH_LONG).show()
+            if (Jajinternet.getStatusInternet(this)) {
+                val username: String = userNameConnect.text.toString()
+                val password: String = passwordConnect.text.toString()
+                if (!Patterns.EMAIL_ADDRESS.matcher(username).matches() || username.replace("\\s".toRegex(), "") == "") {
+                    Toast.makeText(this, getString(R.string.courriel_incorrect), Toast.LENGTH_LONG).show()
+                } else {
+                    mAuth!!.signInWithEmailAndPassword(username, password)
+                            .addOnCompleteListener(this) { task ->
+                                if (task.isSuccessful) {
+                                    startActivity(PrincipalActivity.newIntent(this))
+                                    Log.d("LoginActivity", "signInWithEmail:success")
+                                } else {
+                                    Log.e("LoginActivity", "signInWithEmail:failure", task.exception)
+                                    Toast.makeText(this@ConnectActivity, getString(R.string.erreur_identification),
+                                            Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                }
             }
             else {
-                mAuth!!.signInWithEmailAndPassword(username, password)
-                        .addOnCompleteListener(this) { task ->
-                            if (task.isSuccessful) {
-                                startActivity(PrincipalActivity.newIntent(this))
-                                Log.d("LoginActivity", "signInWithEmail:success")
-                            } else {
-                                Log.e("LoginActivity", "signInWithEmail:failure", task.exception)
-                                Toast.makeText(this@ConnectActivity, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                Toast.makeText(this, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
         }
 
         connectForgotPass.setOnClickListener {
-            val username: String = userNameConnect.text.toString()
-            if (!Patterns.EMAIL_ADDRESS.matcher(username).matches() || username.replace("\\s".toRegex(), "") == ""){
-                Toast.makeText(this, "Courriel incorrect", Toast.LENGTH_LONG).show()
+            if (Jajinternet.getStatusInternet(this)) {
+                val username: String = userNameConnect.text.toString()
+                if (!Patterns.EMAIL_ADDRESS.matcher(username).matches() || username.replace("\\s".toRegex(), "") == "") {
+                    Toast.makeText(this, getString(R.string.courriel_incorrect), Toast.LENGTH_LONG).show()
+                } else {
+                    mAuth!!.sendPasswordResetEmail(username)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Toast.makeText(this, getString(R.string.courriel_envoye), Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(this, getString(R.string.courriel_introuvable), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                }
             }
             else {
-                mAuth!!.sendPasswordResetEmail(username)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Toast.makeText(this, "Un courriel vient d'être envoyé", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(this, "Courriel introuvable", Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                Toast.makeText(this, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
         }
     }

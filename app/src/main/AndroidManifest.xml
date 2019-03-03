@@ -45,13 +45,13 @@
             android:name=".activity.LastAlarmActivity"
             android:label="@string/app_name" />
 
-        <receiver android:name=".utils.Alarm$onReveilInfo" >
+        <receiver android:name=".utils.Alarm$OnReveilInfo" >
             <intent-filter>
                 <action android:name="onReveilINFO"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".utils.Alarm$onAlarm" >
+        <receiver android:name=".utils.Alarm$OnAlarm" >
             <intent-filter>
                 <action android:name="onReveilRing" />
             </intent-filter>

@@ -144,10 +144,23 @@
 
     <!-- LastAlarmActivity -->
     <string name="lastAlarmText">C\'est ton beau réveil de secours</string>
+
     <!-- Community Fragment -->
     <string name="quelle_video">Avec cette vidéo :
     </string>
 
+    <!-- Information divers -->
+    <string name="courriel_envoye">Un courriel vient d\'être envoyé</string>
+    <string name="ajout_photo">Ajoutes une photo!</string>
+    <string name="vote_pour">Tu as voté pour </string>
+
     <!-- Message Erreur -->
     <string name="erreur_internet">Pas de connexion internet!</string>
+    <string name="erreur_identification">Erreur lors de la connexion</string>
+    <string name="courriel_introuvable">Compte non trouvé</string>
+    <string name="courriel_incorrect">Format du courriel incorrect</string>
+    <string name="pseudo_incorrect">Pseudo incorrect</string>
+    <string name="mot_de_passe_differents">Mot de passe différents</string>
+    <string name="erreur_inscription">Erreur lors de l\'inscription</string>
+    <string name="lien_yt_invalide">Lien YouTube invalide</string>
 </resources>

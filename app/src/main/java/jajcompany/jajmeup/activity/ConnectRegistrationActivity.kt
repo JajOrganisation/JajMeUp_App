@@ -9,8 +9,10 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.R
+import jajcompany.jajmeup.utils.Jajinternet
 import kotlinx.android.synthetic.main.connectregistration_layout.*
 
 class ConnectRegistrationActivity : AppCompatActivity() {
@@ -23,12 +25,23 @@ class ConnectRegistrationActivity : AppCompatActivity() {
             Log.d("HELLO", "Erreur deconnect Firebase : "+e)
         }
         connectButton.setOnClickListener {
-            startActivity(ConnectActivity.newIntent(this))
-            finish()
+            if (Jajinternet.getStatusInternet(this)) {
+                startActivity(ConnectActivity.newIntent(this))
+                finish()
+            }
+            else {
+                Toast.makeText(this, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+            }
+
         }
         registrationButton.setOnClickListener {
-            startActivity(RegistrationActivity.newIntent(this))
-            finish()
+            if (Jajinternet.getStatusInternet(this)) {
+                startActivity(RegistrationActivity.newIntent(this))
+                finish()
+            }
+            else {
+                Toast.makeText(this, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+            }
         }
         val permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)

@@ -550,9 +550,9 @@ class CommunityFragment : Fragment() {
                 val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.uid.toString(), editmess.text.toString(), Calendar.getInstance().time)
                 FireStore.sendVote(vote, item.user.uid)
                 popupWindow.dismiss()
-                Toast.makeText(activity, "Tu as voté pour " + item.user.name, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, getString(R.string.vote_pour) + item.user.name, Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(activity, "Invalid link", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()
             }
         }
         if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {

@@ -21,10 +21,10 @@ import java.util.*
 object Alarm {
     lateinit var alarmManager: AlarmManager
     lateinit var switchAlarm: Switch
-    lateinit var onReveilInfoReceiver: onReveilInfo
+    lateinit var onReveilInfoReceiver: OnReveilInfo
 
     fun setAlarm(context: Context, hours: Int, minutes: Int, switchA: Switch) {
-        val intent = Intent(context, onAlarm::class.java)
+        val intent = Intent(context, OnAlarm::class.java)
         intent.action = "onReveilRing"
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val cal: Calendar = Calendar.getInstance()
@@ -35,19 +35,19 @@ object Alarm {
         switchAlarm = switchA
         val filter = IntentFilter()
         filter.addAction("onReveilINFO")
-        onReveilInfoReceiver = onReveilInfo()
+        onReveilInfoReceiver = OnReveilInfo()
         context.registerReceiver(onReveilInfoReceiver, filter)
     }
 
     fun deleteAlarm(context: Context) {
-        val intent = Intent(context, onAlarm::class.java)
+        val intent = Intent(context, OnAlarm::class.java)
         intent.action = "onReveilRing"
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
         context.unregisterReceiver(onReveilInfoReceiver)
     }
 
-    class onAlarm : BroadcastReceiver() {
+    class OnAlarm : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilRing") {
                 Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_SHORT).show()
@@ -64,7 +64,7 @@ object Alarm {
         }
     }
 
-    class onReveilInfo : BroadcastReceiver() {
+    class OnReveilInfo : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilINFO") {
                 if (intent.getStringExtra("votant") != "Ton réveil") {

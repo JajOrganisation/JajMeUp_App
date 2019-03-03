@@ -504,7 +504,8 @@ object FireStore {
         fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
                 .collection("friends")
-                .add(tmp)
+                .document(userAsk)
+                .set(tmp)
                 .addOnFailureListener { e -> Log.d("HELLO", "Error insert friends", e) }
         fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
@@ -524,7 +525,8 @@ object FireStore {
         tmp = hashMapOf("uid" to user!!.uid.toString())
         fireStoreInstance.document("users/${userAsk}")
                 .collection("friends")
-                .add(tmp)
+                .document(user!!.uid.toString())
+                .set(tmp)
                 .addOnFailureListener { e -> Log.d("HELLO", "Error insert me inside my friend list", e) }
     }
 

@@ -58,22 +58,33 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        val handler = Handler()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        var timebeforequit = sharedPreferences.getString("time_before_my_alarm_preference", "3").toInt()
+        if (timebeforequit == 75) {
+            timebeforequit = 45000
+        }
+        else {
+            timebeforequit *= 60000
+        }
         if (votant != "Ton réveil") {
-            val handler = Handler()
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-            var timebeforequit = sharedPreferences.getString("time_before_my_alarm_preference", "3").toInt()
-            if (timebeforequit == 75) {
-                timebeforequit = 45000
-            }
-            else {
-                timebeforequit *= 60000
-            }
             handler.postDelayed({
                 finish()
                 val intentt = YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "dQw4w9WgXcQ"), "Celui qui a voté pour toi n'a pas été assez bon...")
                 this.startActivity(intentt)
             }, timebeforequit.toLong())
         }
+        else {
+            handler.postDelayed({
+                startLastAlarm()
+            }, timebeforequit.toLong())
+        }
+    }
+
+    private fun startLastAlarm() {
+        finish()
+        val intentt = LastAlarmActivity.newIntent(this)
+        this.startActivity(intentt)
     }
 
     private fun initUI() {
@@ -84,6 +95,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
             }
 
             override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
+                startLastAlarm()
                 Toast.makeText(applicationContext, "Probleme YouTUBE", Toast.LENGTH_SHORT).show()
             }
 

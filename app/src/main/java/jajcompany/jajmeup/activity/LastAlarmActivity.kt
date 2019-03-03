@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import jajcompany.jajmeup.R
 import kotlinx.android.synthetic.main.last_alarm_layout.*
+import java.io.File
 
 
 class LastAlarmActivity : AppCompatActivity() {
@@ -35,7 +36,12 @@ class LastAlarmActivity : AppCompatActivity() {
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", "defaultalarm") != "defaultalarm") {
             urisound = Uri.parse(PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", ""))
-            mediaPlayer = MediaPlayer.create(this, urisound)
+            if (File(urisound.path).exists()){
+                mediaPlayer = MediaPlayer.create(this, urisound)
+            }
+            else {
+                mediaPlayer = MediaPlayer.create(this, R.raw.defaultalarm)
+            }
         }
         else {
             mediaPlayer = MediaPlayer.create(this, R.raw.defaultalarm)

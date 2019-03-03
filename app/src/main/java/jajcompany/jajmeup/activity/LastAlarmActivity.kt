@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.last_alarm_layout.*
 
 class LastAlarmActivity : AppCompatActivity() {
     private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var urisound: Uri
 
     companion object IntentOptions{
         fun newIntent(context: Context): Intent {
@@ -31,12 +32,16 @@ class LastAlarmActivity : AppCompatActivity() {
             mediaPlayer.stop()
             finish()
         }
-        val urisound = Uri.parse(PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", ""))
+
+        if (PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", "defaultalarm") != "defaultalarm") {
+            urisound = Uri.parse(PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", ""))
+            mediaPlayer = MediaPlayer.create(this, urisound)
+        }
+        else {
+            mediaPlayer = MediaPlayer.create(this, R.raw.defaultalarm)
+        }
         Log.d("HELLO", "Mon reveil "+PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", ""))
-        val data = Uri.parse (Environment.getExternalStorageDirectory ().path.toString() + "/nevergonna.mp3")
-        mediaPlayer = MediaPlayer.create(this, urisound)
-        //mediaPlayer.setOnPreparedListener( { mp ->  mp.start() })
-        //mediaPlayer.setOnPreparedListener(MediaPlayer.OnPreparedListener { mp -> mp.start() })
+
         mediaPlayer.start()
     }
 }

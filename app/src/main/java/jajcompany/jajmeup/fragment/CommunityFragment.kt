@@ -547,10 +547,17 @@ class CommunityFragment : Fragment() {
             val matcher = compiledPattern.matcher(edityt.text.toString())
             if (matcher.find()) {
                 val user = FirebaseAuth.getInstance().currentUser
-                val vote = Vote(matcher.group(), YoutubeInformation.getTitleQuietly(matcher.group()), user?.uid.toString(), editmess.text.toString(), Calendar.getInstance().time)
-                FireStore.sendVote(vote, item.user.uid)
-                popupWindow.dismiss()
-                Toast.makeText(activity, getString(R.string.vote_pour) + item.user.name, Toast.LENGTH_LONG).show()
+                val titlevideo = YoutubeInformation.getTitleQuietly(matcher.group())
+                if (titlevideo != "ERROR") {
+                    val vote = Vote(matcher.group(), titlevideo, user?.uid.toString(), editmess.text.toString(), Calendar.getInstance().time)
+                    FireStore.sendVote(vote, item.user.uid)
+                    popupWindow.dismiss()
+                    Toast.makeText(activity, getString(R.string.vote_pour) +" "+item.user.name, Toast.LENGTH_LONG).show()
+                }
+                else {
+                    Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()
+                }
+
             } else {
                 Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()
             }

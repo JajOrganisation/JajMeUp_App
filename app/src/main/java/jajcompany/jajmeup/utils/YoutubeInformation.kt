@@ -11,12 +11,11 @@ object YoutubeInformation {
         StrictMode.setThreadPolicy(policy)
         try {
             if (youtubeID != null) {
-                Log.d("HELLO", "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" +
-                        youtubeID + "&format=json")
+
                 val embededURL = URL("https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" +
                         youtubeID + "&format=json"
                 ).readText()
-
+                Log.d("HELLO", embededURL)
                 return JSONObject(embededURL).getString("title")
             }
 
@@ -24,6 +23,6 @@ object YoutubeInformation {
             e.printStackTrace()
         }
 
-        return ""
+        return "ERROR"
     }
 }

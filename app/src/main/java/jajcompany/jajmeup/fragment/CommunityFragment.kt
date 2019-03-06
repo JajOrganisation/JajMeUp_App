@@ -50,6 +50,7 @@ class CommunityFragment : Fragment() {
     private lateinit var listFriendsListenerRegistration: ListenerRegistration
     private lateinit var searchListenerRegistration: ListenerRegistration
     private lateinit var removeListenerRegistration: ListenerRegistration
+    private lateinit var removeFriendListenerRegistration: ListenerRegistration
     private var shouldInitRecyclerViewWorld = true
     private var shouldInitRecyclerViewFriends = true
     private var shouldInitRecyclerViewSearch = false
@@ -63,8 +64,19 @@ class CommunityFragment : Fragment() {
     private var broadCastReceiver = object : BroadcastReceiver() {
         override fun onReceive(contxt: Context?, intent: Intent?) {
             if (intent!!.action == "onAllFriends") {
+                Log.d("HELLO", "onAllFriends "+intent.getStringArrayListExtra("uidList"))
                 if (intent.getStringArrayListExtra("uidList") != null)
                     setAllFriendsListener(intent.getStringArrayListExtra("uidList"))
+            }
+            else if (intent!!.action == "onRemove") {
+                Log.d("HELLO", "onRemove")
+                unsetFriendsList()
+                setUpdateListFriends()
+            }
+            else if (intent!!.action == "onNewFriend") {
+                Log.d("HELLO", "onNewFriend")
+                unsetListWorld()
+                setUpdateListWorld()
             }
         }
     }
@@ -129,8 +141,11 @@ class CommunityFragment : Fragment() {
         super.onResume()
         unsetListWorld()
         unsetFriendsList()
+        unsetRemoveFriends()
         setUpdateListWorld()
         setUpdateListFriends()
+        setRemoveFriends()
+
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
         if (sharedPreferences.getBoolean("on_wakeup", false)){
             showPopOnWakeUp()
@@ -150,6 +165,8 @@ class CommunityFragment : Fragment() {
         super.onDestroyView()
         setUpdateListFriends()
         setUpdateListWorld()
+        setRemoveFriends()
+        unsetRemoveFriends()
         unsetFriendsList()
         unsetListWorld()
         shouldInitRecyclerViewFriends = true
@@ -206,17 +223,21 @@ class CommunityFragment : Fragment() {
             }
         }
         fun updateItemsFriends() {
-            Log.d("HELLO", "on check "+friendsSection.getPosition(items[0]))
-            if (items.isNotEmpty()) {
-                if (listFriends.indexOf(uid) == -1) {
-                    listFriends.add(uid)
-                    listFriendsSection.add(items[0])
-                    return friendsSection.update(listFriendsSection)
+            try {
+                Log.d("HELLO", "on check "+friendsSection.getPosition(items[0]))
+                if (items.isNotEmpty()) {
+                    if (listFriends.indexOf(uid) == -1) {
+                        listFriends.add(uid)
+                        listFriendsSection.add(items[0])
+                        return friendsSection.update(listFriendsSection)
+                    }
+                    else {
+                        listFriendsSection[listFriends.indexOf(uid)] = items[0]
+                        return friendsSection.update(listFriendsSection)
+                    }
                 }
-                else {
-                    listFriendsSection[listFriends.indexOf(uid)] = items[0]
-                    return friendsSection.update(listFriendsSection)
-                }
+            }catch (e: Exception) {
+                resetall()
             }
         }
 
@@ -344,25 +365,47 @@ class CommunityFragment : Fragment() {
 
     fun setUpdateListWorld() {
         Log.d("HELLO", "set world")
-        userListenerRegistration = FireStore.getUsers(this.activity!!, this::updateRecyclerViewWorld)
+        try {
+            userListenerRegistration = FireStore.getUsers(this.activity!!, this::updateRecyclerViewWorld)
+        }catch (e: Exception){
+
+        }
        // userListenerRegistration = FireStore.addUsersListener(this.activity!!, this::updateRecyclerViewWorld)
     }
 
     fun setUpdateFriends() {
-        context!!.registerReceiver(broadCastReceiver, IntentFilter("onAllFriends"))
-        FireStore.getAllFriendUID(this.activity!!)
+        try {
+            context!!.registerReceiver(broadCastReceiver, IntentFilter("onAllFriends"))
+            FireStore.getAllFriendUID(this.activity!!)
+        } catch (e: Exception){
+
+        }
         //friendsListenerRegistration = FireStore.getAllFriendUID(this.activity!!, this::updateRecyclerViewFriends)
     }
 
     fun setAllFriendsListener(test: List<String>) {
         context!!.unregisterReceiver(broadCastReceiver)
-        listListenerRegistration = mutableListOf()
-        for (current in test) {
-            listListenerRegistration.add(FireStore.addFriendsListener(this.activity!!, current, this::updateRecyclerViewFriends))
+        if (test.isNotEmpty()) {
+            if (test[0] != "Nothing") {
+                listListenerRegistration = mutableListOf()
+                for (current in test) {
+                    listListenerRegistration.add(FireStore.addFriendsListener(this.activity!!, current, this::updateRecyclerViewFriends))
+                }
+            }
+        }
+    }
+
+    fun updateRemoveFriends(items: List<String>) {
+        try {
+            context!!.registerReceiver(broadCastReceiver, IntentFilter("onRemove"))
+            FireStore.removedFriend(this.activity!!)
+        } catch (e: Exception){
+
         }
     }
 
     fun setUpdateListFriends() {
+        context!!.registerReceiver(broadCastReceiver, IntentFilter("onNewFriend"))
         listFriendsListenerRegistration = FireStore.newFriendsListener(this::updateListFriends)
     }
 
@@ -370,16 +413,26 @@ class CommunityFragment : Fragment() {
         searchListenerRegistration = FireStore.searchUser(this.activity!!, this::updateRecyclerViewSearch, toSearch)
     }
 
+    fun setRemoveFriends() {
+        removeFriendListenerRegistration = FireStore.addRemovedFriendsListener(this::updateRemoveFriends)
+    }
+
+    fun unsetRemoveFriends() {
+        FireStore.removeListener(removeFriendListenerRegistration)
+    }
+
     fun unsetSearch() {
         FireStore.removeListener(searchListenerRegistration)
     }
 
     fun unsetListWorld() {
+        shouldInitRecyclerViewWorld = true
         FireStore.removeListener(userListenerRegistration)
     }
 
     fun unsetFriendsList() {
         //friendsSection = Section()
+        shouldInitRecyclerViewFriends = true
         FireStore.removeListener(listFriendsListenerRegistration)
     }
 
@@ -390,11 +443,14 @@ class CommunityFragment : Fragment() {
     fun resetall() {
         unsetListWorld()
         unsetFriendsList()
+        unsetRemoveFriends()
         setUpdateListWorld()
         setUpdateListFriends()
+        setRemoveFriends()
     }
 
     private fun detectPref() {
+        setRemoveFriends()
         setUpdateListFriends()
         setUpdateListWorld()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
@@ -494,8 +550,9 @@ class CommunityFragment : Fragment() {
             popupWindow.dismiss()
         }
         removefriend.setOnClickListener {
+            context!!.registerReceiver(broadCastReceiver, IntentFilter("onRemove"))
             FireStore.getCurrentUser {myuser ->
-                    removeListenerRegistration = FireStore.removeFriends(this::notifRemove, item.userId)
+                    removeListenerRegistration = FireStore.removeFriends(this::notifRemove, item.userId, this.activity!!)
                     friendsSection.remove(item)
             }
             popupWindow.dismiss()

@@ -128,7 +128,10 @@ object FireStore {
                     var totaluser = querySnapshot!!.get("users_count").toString().toInt()
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                     val editor = sharedPreferences.edit()
-                    val therand = Random().nextInt((totaluser))+1
+                    var therand = Random().nextInt((totaluser))+1
+                    if (therand+20 > totaluser) {
+                        therand = totaluser - 20
+                    }
                     editor.putInt("randomUser", therand)
                     editor.apply()
                 }
@@ -221,6 +224,7 @@ object FireStore {
                     }
                     else {
                         val items = mutableListOf<String>()
+                        items.add(0, "Nothing")
                         onListen(items)
                     }
                 }
@@ -265,6 +269,9 @@ object FireStore {
                             //if (it["uid"] in listUidFriends){
                                 Log.d("HELLO", " ici "+it)
                                 items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
+                                val intent = Intent()
+                                intent.action = "onNewFriend"
+                                context.sendBroadcast(intent)
                                 onListen(items, it["uid"].toString())
                             //}
                         }
@@ -272,6 +279,9 @@ object FireStore {
                     else {
                         Log.d("HELLO", " aie ")
                         val items = mutableListOf<Item>()
+                        val intent = Intent()
+                        intent.action = "onNewFriend"
+                        context.sendBroadcast(intent)
                         onListen(items, "nop")
                     }
                 }
@@ -414,6 +424,25 @@ object FireStore {
                 }
     }
 
+    fun addRemovedFriendsListener(onListen: (List<String>) -> Unit): ListenerRegistration {
+        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/removedFriends")
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Ask Friends listener error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+
+                    val items = mutableListOf<String>()
+                    querySnapshot!!.documents.forEach {
+                        if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+                            items.add(it["uid"].toString())
+                        }
+                    }
+                    onListen(items)
+                }
+    }
+
     fun askingFriendCount(onListen: (Int) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/askFriends")
@@ -468,7 +497,7 @@ object FireStore {
                 .addOnFailureListener { e -> Log.d("HELLO", "Error ask friends", e) }
     }
 
-    fun removeFriends(onListen: () -> Unit, otherUserID: String): ListenerRegistration {
+    fun removeFriends(onListen: () -> Unit, otherUserID: String, context: Context): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/friends")
                 .whereEqualTo("uid", otherUserID)
@@ -480,7 +509,25 @@ object FireStore {
                     querySnapshot!!.documents.forEach {
                         Log.d("HELLO", "suppr")
                         it.reference.delete().addOnFailureListener { e -> Log.d("HELLO", "Error remove friends", e) }
-                        fireStoreInstance.document("users/"+otherUserID)
+                        val tmp: Map<String, String> = hashMapOf("uid" to FirebaseAuth.getInstance().currentUser?.uid.toString())
+                        fireStoreInstance.document("users/${otherUserID}/")
+                                .collection("removedFriends")
+                                .document(FirebaseAuth.getInstance().currentUser?.uid.toString())
+                                .set(tmp)
+                                .addOnFailureListener { e -> Log.d("HELLO", "Error remove friends", e) }
+                                .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                                val intent = Intent()
+                                                intent.action = "onRemove"
+                                                context.sendBroadcast(intent)
+                                                onListen()
+                                            }
+                                        else {
+                                            Log.d("LOGGER", "get failed with ", task.exception)
+                                        }
+                                    }
+                                }
+                        /*fireStoreInstance.document("users/"+otherUserID)
                                 .collection("friends")
                                 .whereEqualTo("uid", FirebaseAuth.getInstance().currentUser?.uid.toString())
                                 .get()
@@ -489,14 +536,16 @@ object FireStore {
                                         task.result!!.forEach { moi ->
                                             Log.d("HELLO", "suppr MOI")
                                             moi.reference.delete()
+                                            val intent = Intent()
+                                            intent.action = "onRemove"
+                                            context.sendBroadcast(intent)
                                             onListen()
                                         }
                                     } else {
                                         Log.d("LOGGER", "get failed with ", task.exception)
                                     }
-                                }
+                                }*/
                     }
-                }
     }
 
     fun addFriends(userAsk: String) {
@@ -541,6 +590,40 @@ object FireStore {
                         task.result!!.forEach {
                             it.reference.delete()
                         }
+                    } else {
+                        Log.d("LOGGER", "get failed with ", task.exception)
+                    }
+                }
+    }
+
+    fun removedFriend(context: Context) {
+        fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}")
+                .collection("removedFriends")
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        task.result!!.forEach {
+                            fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
+                                    ?: throw NullPointerException("UID is null.")}")
+                                    .collection("friends")
+                                    .whereEqualTo("uid", it["uid"])
+                                    .get()
+                                    .addOnCompleteListener { taskfriend ->
+                                        if (taskfriend.isSuccessful) {
+                                            taskfriend.result!!.forEach { itfriend->
+                                                itfriend.reference.delete()
+                                            }
+                                            it.reference.delete()
+                                        }
+                                        else {
+                                            Log.d("LOGGER", "get failed with ", task.exception)
+                                        }
+                                    }
+                        }
+                        val intent = Intent()
+                        intent.action = "onRemove"
+                        context.sendBroadcast(intent)
                     } else {
                         Log.d("LOGGER", "get failed with ", task.exception)
                     }

@@ -137,8 +137,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
 
                 override fun onError(reason: YouTubePlayer.ErrorReason) {
                     playerState = "ERROR ($reason)"
-                    if (reason == YouTubePlayer.ErrorReason.UNEXPECTED_SERVICE_DISCONNECTION) {
-                    }
+                    startLastAlarm()
                 }
             }
         }

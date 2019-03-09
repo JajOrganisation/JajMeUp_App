@@ -3,13 +3,16 @@ package jajcompany.jajmeup.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.R
+import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
+import jajcompany.jajmeup.utils.YoutubeInformation
 import kotlinx.android.synthetic.main.connect_layout.*
 
 class ConnectActivity : AppCompatActivity() {
@@ -30,8 +33,18 @@ class ConnectActivity : AppCompatActivity() {
                     mAuth!!.signInWithEmailAndPassword(username, password)
                             .addOnCompleteListener(this) { task ->
                                 if (task.isSuccessful) {
-                                    startActivity(PrincipalActivity.newIntent(this))
-                                    Log.d("LoginActivity", "signInWithEmail:success")
+                                    FireStore.getCurrentUser { user ->
+                                        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("default_reveil", user.reveilDefaultLink).apply()
+                                        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("default_reveil_name", YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(user.reveilDefaultLink))).apply()
+                                        when(user.authorization){
+                                            0 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "PRIVATE").apply()
+                                            1 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "FRIENDS").apply()
+                                            2 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "WORD").apply()
+                                        }
+                                        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", user.authorization.toString()).apply()
+                                        startActivity(PrincipalActivity.newIntent(this))
+                                        Log.d("LoginActivity", "signInWithEmail:success")
+                                    }
                                 } else {
                                     Log.e("LoginActivity", "signInWithEmail:failure", task.exception)
                                     Toast.makeText(this@ConnectActivity, getString(R.string.erreur_identification),

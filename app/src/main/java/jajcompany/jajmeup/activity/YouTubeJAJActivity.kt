@@ -3,6 +3,7 @@ package jajcompany.jajmeup.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.view.WindowManager
 import android.widget.Toast
@@ -10,11 +11,8 @@ import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import jajcompany.jajmeup.R
-import kotlinx.android.synthetic.main.youtube_layout.*
-import android.os.Handler
-import com.google.android.youtube.player.YouTubePlayer.PlayerStateChangeListener
 import jajcompany.jajmeup.utils.YoutubeInformation
-import java.util.regex.Pattern
+import kotlinx.android.synthetic.main.youtube_layout.*
 
 class YouTubeJAJActivity : YouTubeBaseActivity(){
 

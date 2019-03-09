@@ -5,14 +5,17 @@ import android.content.Intent
 import android.preference.PreferenceManager
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
-import com.google.firebase.firestore.model.value.ReferenceValue
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.xwray.groupie.kotlinandroidextensions.Item
-import jajcompany.jajmeup.RecycleView.item.*
+import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
+import jajcompany.jajmeup.RecycleView.item.NotifItem
+import jajcompany.jajmeup.RecycleView.item.UserItem
+import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.models.*
-import java.lang.ref.Reference
 import java.util.*
-import java.util.regex.Pattern
 
 
 object FireStore {
@@ -63,6 +66,9 @@ object FireStore {
         if (profilePicture != null) userFieldMap["profilePicture"] = profilePicture
         if (authorization != -1) userFieldMap["authorization"] = authorization
         currentUserDocRef.update(userFieldMap)
+                .addOnFailureListener {
+                    Log.d("HELLO", "Error update "+it)
+                }
     }
 
     fun getCurrentUser(onComplete: (User) -> Unit) {

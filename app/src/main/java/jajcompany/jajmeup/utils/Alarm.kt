@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import android.widget.Switch
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -31,7 +32,15 @@ object Alarm {
         cal.set(Calendar.HOUR_OF_DAY, hours)
         cal.set(Calendar.MINUTE, minutes)
         cal.set(Calendar.SECOND, 0)
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pendingIntent)
+        Log.d("HELLO", "HEURE "+cal.timeInMillis)
+        var time = cal.timeInMillis - cal.timeInMillis % 60000
+        if (System.currentTimeMillis() > time) {
+            if (Calendar.AM_PM === 0)
+                time += 1000 * 60 * 60 * 12
+            else
+                time += time + 1000 * 60 * 60 * 24
+        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent)
         switchAlarm = switchA
         val filter = IntentFilter()
         filter.addAction("onReveilINFO")
@@ -67,14 +76,26 @@ object Alarm {
     class OnReveilInfo : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilINFO") {
-                if (intent.getStringExtra("votant") != "Ton réveil") {
-                    val user = FirebaseAuth.getInstance().currentUser
-                    val notif = NotifWakeUp("Wakeup", intent.getStringExtra("lien"), YoutubeInformation.getTitleQuietly(intent.getStringExtra("lien")), user!!.uid, Calendar.getInstance().time, "unread")
-                    sendNotifWakeUp(notif, intent.getStringExtra("votantuid"))
-                }
-                val intentt = YouTubeJAJActivity.newIntent(context, intent.getStringExtra("votant"), intent.getStringExtra("lien"), intent.getStringExtra("message"))
                 switchAlarm.isChecked = false
-                context.startActivity(intentt)
+                if (intent.getStringExtra("votant") != "Ton réveil") {
+                    val titlevideo = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(intent.getStringExtra("lien")))
+                    if (titlevideo != "ERROR") {
+                        val user = FirebaseAuth.getInstance().currentUser
+                        val notif = NotifWakeUp("Wakeup", intent.getStringExtra("lien"), YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(intent.getStringExtra("lien"))), user!!.uid, Calendar.getInstance().time, "unread")
+                        sendNotifWakeUp(notif, intent.getStringExtra("votantuid"))
+                    } else {
+                        val intentt = LastAlarmActivity.newIntent(context)
+                        context.startActivity(intentt)
+                    }
+                }
+                val titlevideo = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(intent.getStringExtra("lien")))
+                if (titlevideo != "ERROR") {
+                    val intentt = YouTubeJAJActivity.newIntent(context, intent.getStringExtra("votant"), intent.getStringExtra("lien"), intent.getStringExtra("message"))
+                    context.startActivity(intentt)
+                } else {
+                    val intentt = LastAlarmActivity.newIntent(context)
+                    context.startActivity(intentt)
+                }
             }
         }
     }

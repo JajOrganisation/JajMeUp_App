@@ -109,6 +109,7 @@
     <string name="label_write_message_string">Écrit un message pour</string>
     <string name="label_state_on_clock_list_user_string">A mis un réveil !</string>
     <string name="label_state_off_clock_list_user_string">N\'a pas mis de réveil</string>
+    <string name="label_default_alarm_change_string">Choisis ton réveil par défault</string>
 
     <!-- Différent hint -->
     <string name="hint_password_string">Mot de passe</string>

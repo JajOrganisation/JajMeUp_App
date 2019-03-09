@@ -12,9 +12,13 @@ import com.google.android.youtube.player.YouTubePlayer
 import jajcompany.jajmeup.R
 import kotlinx.android.synthetic.main.youtube_layout.*
 import android.os.Handler
-
+import com.google.android.youtube.player.YouTubePlayer.PlayerStateChangeListener
+import jajcompany.jajmeup.utils.YoutubeInformation
+import java.util.regex.Pattern
 
 class YouTubeJAJActivity : YouTubeBaseActivity(){
+
+    private var votantString: String = ""
 
     companion object IntentOptions{
         val API_KEY: String = "AIzaSyBjGxgGofuyFwavGjp4VMlNkfD0_iFcscg"
@@ -23,7 +27,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         var message:String? = ""
         fun newIntent(context: Context, vot: String?, lie: String?, mess: String?): Intent {
             votant = vot
-            lien = lie
+            lien = YoutubeInformation.getIDFromURL(lie.toString())
             message = mess
             val intent = Intent(context, YouTubeJAJActivity::class.java)
             return intent
@@ -35,18 +39,32 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val handler = Handler()
+        val runnableMyYoutubeAlarm = Runnable {
+            finish()
+            val intentt = YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), "Celui qui a voté pour toi n'a pas été assez bon...")
+            this.startActivity(intentt)
+        }
+        val runnableMyLastAlarm = Runnable {
+            startLastAlarm()
+        }
         setContentView(R.layout.youtube_layout)
-        userAlarm.text = getString(R.string.qui_m_a_reveille)+votant
+        userAlarm.text = getString(R.string.qui_m_a_reveille)+"\n"+votant
         messageAlarm.text = message
         initUI()
         youtubeAlarm.initialize(API_KEY, youtubePlayerInit)
         stopAlarm.setOnClickListener {
             if (votant != "Ton réveil") {
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+                //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
                 sharedPreferences.edit().putString("user_wakeup", votant).apply()
                 sharedPreferences.edit().putString("message_wakeup", message).apply()
                 sharedPreferences.edit().putString("link_wakeup", lien).apply()
                 sharedPreferences.edit().putBoolean("on_wakeup", true).apply()
+                handler.removeCallbacks(runnableMyYoutubeAlarm)
+            }
+            else {
+                handler.removeCallbacks(runnableMyLastAlarm)
             }
             finish()
         }
@@ -58,8 +76,6 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-        val handler = Handler()
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         var timebeforequit = sharedPreferences.getString("time_before_my_alarm_preference", "3").toInt()
         if (timebeforequit == 75) {
             timebeforequit = 45000
@@ -68,16 +84,10 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
             timebeforequit *= 60000
         }
         if (votant != "Ton réveil") {
-            handler.postDelayed({
-                finish()
-                val intentt = YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "dQw4w9WgXcQ"), "Celui qui a voté pour toi n'a pas été assez bon...")
-                this.startActivity(intentt)
-            }, timebeforequit.toLong())
+            handler.postDelayed(runnableMyYoutubeAlarm, timebeforequit.toLong())
         }
         else {
-            handler.postDelayed({
-                startLastAlarm()
-            }, timebeforequit.toLong())
+            handler.postDelayed(runnableMyLastAlarm, timebeforequit.toLong())
         }
     }
 
@@ -91,14 +101,12 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         youtubePlayerInit = object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, youtubeAlarm: YouTubePlayer?, p2: Boolean) {
                 youtubeAlarm?.loadVideo(lien)
-
             }
 
             override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
                 startLastAlarm()
                 Toast.makeText(applicationContext, "Probleme YouTUBE", Toast.LENGTH_SHORT).show()
             }
-
         }
     }
 }

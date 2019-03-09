@@ -1,6 +1,7 @@
 package jajcompany.jajmeup.activity
 
 import android.app.Activity
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,6 +15,7 @@ import android.provider.MediaStore
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.transition.Slide
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -28,8 +30,10 @@ import jajcompany.jajmeup.glide.GlideApp
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
 import jajcompany.jajmeup.utils.StorageUtil
+import jajcompany.jajmeup.utils.YoutubeInformation
 import kotlinx.android.synthetic.main.profilepicturesettings_layout.*
 import java.io.ByteArrayOutputStream
+import java.util.regex.Pattern
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -111,8 +115,8 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            if(requestCode == 3 && resultCode == Activity.RESULT_OK &&
-                    data != null && data.data != null){
+            if (requestCode == 3 && resultCode == Activity.RESULT_OK &&
+                    data != null && data.data != null) {
                 val audioFilePath = data.data
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("last_alarm", audioFilePath.toString()).apply()
             }
@@ -121,10 +125,6 @@ class SettingsActivity : AppCompatActivity() {
         override fun onSharedPreferenceChanged(sharedPref: SharedPreferences, key: String) {
             if (Jajinternet.getStatusInternet(context)) {
                 when (key) {
-                    "default_reveil" -> {
-                        //findPreference("default_reveil").editor.putString("reveil_default", "").apply()
-                        FireStore.updateCurrentUser(reveilDefault = PreferenceManager.getDefaultSharedPreferences(context).getString("default_reveil", "dQw4w9WgXcQ"))
-                    }
                     "visibility_preference" -> {
                         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                         when (sharedPreferences.getString("visibility_preference", "WORLD")) {
@@ -134,8 +134,7 @@ class SettingsActivity : AppCompatActivity() {
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
         }
@@ -273,22 +272,77 @@ class SettingsActivity : AppCompatActivity() {
                             0,
                             0
                     )
-                }else if(preference.key == "last_alarm") {
+                } else if (preference.key == "last_alarm") {
                     val intent = Intent().apply {
                         type = "audio/*"
                         action = Intent.ACTION_OPEN_DOCUMENT
                         putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("audio/mpeg"))
                     }
                     startActivityForResult(Intent.createChooser(intent, "Select Audio"), 3)
+                } else if (preference.key == "default_alarm") {
+                    val myClipboard: ClipboardManager? = activity.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
+                    val primary = myClipboard?.primaryClip
+                    val item = primary?.getItemAt(0)
+                    val inflater = LayoutInflater.from(context)
+                    val view = inflater.inflate(R.layout.defaultalarm_popup_layout, null)
+                    val popupWindow = PopupWindow(
+                            view,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    val slideIn = Slide()
+                    slideIn.slideEdge = Gravity.TOP
+                    popupWindow.enterTransition = slideIn
+                    val slideOut = Slide()
+                    slideOut.slideEdge = Gravity.END
+                    popupWindow.exitTransition = slideOut
+                    popupWindow.isFocusable = true
+                    val closepop = view.findViewById<Button>(R.id.button_closepop_password)
+                    val validationpop = view.findViewById<Button>(R.id.button_change_default_alarm)
+                    val edityt = view.findViewById<EditText>(R.id.youtube_link_default_alarm)
+                    val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
+                    val compiledPattern = Pattern.compile(pattern)
+                    if(compiledPattern.matcher(item!!.text.toString()).find()) {
+                        edityt.setText(item.text, TextView.BufferType.EDITABLE)
+                    }else if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
+                        edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"), TextView.BufferType.EDITABLE)
+                    }else {
+                        PreferenceManager.getDefaultSharedPreferences(context).getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+                    }
+
+                    closepop.setOnClickListener {
+                        popupWindow.dismiss()
+                    }
+                    validationpop.setOnClickListener {
+                        val matcher = compiledPattern.matcher(edityt.text.toString())
+                        if (matcher.find()) {
+                            val titlevideo = YoutubeInformation.getTitleQuietly(matcher.group())
+                            if (titlevideo != "ERROR") {
+                                PreferenceManager.getDefaultSharedPreferences(context).edit().putString("default_reveil", edityt.text.toString()).apply()
+                                FireStore.updateCurrentUser(reveilDefault = edityt.text.toString())
+                                popupWindow.dismiss()
+                            } else {
+                                Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()
+                            }
+
+                        } else {
+                            Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    popupWindow.showAtLocation(
+                            view,
+                            Gravity.CENTER,
+                            0,
+                            0
+                    )
                 }
             }
-            else{
+            else {
                 Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
             return super.onPreferenceTreeClick(preferenceScreen, preference)
         }
     }
-
     companion object {
         fun newIntent(context: Context): Intent {
             val intent = Intent(context, SettingsActivity::class.java)

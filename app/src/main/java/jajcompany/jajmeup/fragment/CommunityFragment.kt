@@ -1,12 +1,10 @@
 package jajcompany.jajmeup.fragment
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -597,16 +595,15 @@ class CommunityFragment : Fragment() {
         closepop.setOnClickListener {
             popupWindow.dismiss()
         }
-
+        val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
+        val compiledPattern = Pattern.compile(pattern)
         votepop.setOnClickListener {
-            val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
-            val compiledPattern = Pattern.compile(pattern)
             val matcher = compiledPattern.matcher(edityt.text.toString())
             if (matcher.find()) {
                 val user = FirebaseAuth.getInstance().currentUser
                 val titlevideo = YoutubeInformation.getTitleQuietly(matcher.group())
                 if (titlevideo != "ERROR") {
-                    val vote = Vote(matcher.group(), titlevideo, user?.uid.toString(), editmess.text.toString(), Calendar.getInstance().time)
+                    val vote = Vote(edityt.text.toString(), titlevideo, user?.uid.toString(), editmess.text.toString(), Calendar.getInstance().time)
                     FireStore.sendVote(vote, item.user.uid)
                     popupWindow.dismiss()
                     Toast.makeText(activity, getString(R.string.vote_pour) +" "+item.user.name, Toast.LENGTH_LONG).show()
@@ -619,14 +616,18 @@ class CommunityFragment : Fragment() {
                 Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()
             }
         }
+        val myClipboard: ClipboardManager? = activity!!.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager?
+        val primary = myClipboard?.primaryClip
+        val itemPaste = primary?.getItemAt(0)
         if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
-            val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
-            val compiledPattern = Pattern.compile(pattern)
-            val matcher = compiledPattern.matcher(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))
-            if (matcher.find()) {
+            if (compiledPattern.matcher(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456")).find()) {
                 edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))
             }
         }
+        else if (compiledPattern.matcher(itemPaste!!.text.toString()).find()) {
+            edityt.setText(itemPaste.text.toString())
+        }
+
         TransitionManager.beginDelayedTransition(community_layout)
         popupWindow.showAtLocation(
                 community_layout,

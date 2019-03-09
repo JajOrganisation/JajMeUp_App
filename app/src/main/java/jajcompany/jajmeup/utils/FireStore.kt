@@ -12,6 +12,7 @@ import jajcompany.jajmeup.RecycleView.item.*
 import jajcompany.jajmeup.models.*
 import java.lang.ref.Reference
 import java.util.*
+import java.util.regex.Pattern
 
 
 object FireStore {
@@ -251,8 +252,6 @@ object FireStore {
                 }
     }
 
-
-
     fun addFriendsListener(context: Context, friendUid: String, onListen: (List<Item>, String) -> Unit): ListenerRegistration {
         Log.d("HELLO", "on va y aller"+friendUid)
         return  fireStoreInstance.collection("/users/")
@@ -397,6 +396,7 @@ object FireStore {
     fun addNotificationListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/notifications")
+                .orderBy("time", Query.Direction.DESCENDING)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Log.e("FIRESTORE", "Notification listener error.", firebaseFirestoreException)

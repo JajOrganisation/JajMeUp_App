@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:key="default_reveil"
-        android:title="Reveil par défault"
-        android:summary="Nom de la video"
-        android:textColor="@android:color/white"
-        android:dialogTitle="Lien YouTube pour te réveiller"
-        android:defaultValue="dQw4w9WgXcQ"/>
+    <Preference
+        android:key="default_alarm"
+        android:title="Réveil par défault"
+        android:summary="Nom vidéo"/>
 
     <Preference
         android:key="last_alarm"

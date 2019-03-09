@@ -28,6 +28,7 @@ import jajcompany.jajmeup.fragment.CommunityFragment
 import jajcompany.jajmeup.fragment.HistoryFragment
 import jajcompany.jajmeup.utils.FireStore
 import kotlinx.android.synthetic.main.main_layout.*
+import java.util.regex.Pattern
 
 
 class PrincipalActivity : AppCompatActivity() {
@@ -164,7 +165,11 @@ class PrincipalActivity : AppCompatActivity() {
         if (sharedText != null) {
             Log.d("YOUTUBE_SHARE", sharedText)
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-            sharedPreferences.edit().putString("current_link", sharedText).apply()
+            val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
+            val compiledPattern = Pattern.compile(pattern)
+            if(compiledPattern.matcher(sharedText).find()) {
+                sharedPreferences.edit().putString("current_link", sharedText).apply()
+            }
         }
     }
 

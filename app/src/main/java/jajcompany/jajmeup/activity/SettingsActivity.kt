@@ -303,8 +303,10 @@ class SettingsActivity : AppCompatActivity() {
                     val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
                     val compiledPattern = Pattern.compile(pattern)
                     if(compiledPattern.matcher(item!!.text.toString()).find()) {
+                        Toast.makeText(context, R.string.copie_presse_papier, Toast.LENGTH_SHORT).show()
                         edityt.setText(item.text, TextView.BufferType.EDITABLE)
                     }else if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
+                        Toast.makeText(context, R.string.partage_recupere, Toast.LENGTH_SHORT).show()
                         edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"), TextView.BufferType.EDITABLE)
                     }else {
                         PreferenceManager.getDefaultSharedPreferences(context).getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")

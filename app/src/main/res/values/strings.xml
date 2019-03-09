@@ -154,6 +154,8 @@
     <string name="courriel_envoye">Un courriel vient d\'être envoyé</string>
     <string name="ajout_photo">Ajoutes une photo!</string>
     <string name="vote_pour">Tu as voté pour </string>
+    <string name="copie_presse_papier">Lien copié importé !</string>
+    <string name="partage_recupere">Lien partagé importé !</string>
 
     <!-- Message Erreur -->
     <string name="erreur_internet">Pas de connexion internet!</string>

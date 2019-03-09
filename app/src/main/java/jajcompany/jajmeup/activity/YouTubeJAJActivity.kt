@@ -19,6 +19,7 @@ import java.util.regex.Pattern
 class YouTubeJAJActivity : YouTubeBaseActivity(){
 
     private var votantString: String = ""
+    private lateinit var myYTPlayer: YouTubePlayer
 
     companion object IntentOptions{
         val API_KEY: String = "AIzaSyBjGxgGofuyFwavGjp4VMlNkfD0_iFcscg"
@@ -99,13 +100,46 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
 
     private fun initUI() {
         youtubePlayerInit = object : YouTubePlayer.OnInitializedListener {
-            override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, youtubeAlarm: YouTubePlayer?, p2: Boolean) {
-                youtubeAlarm?.loadVideo(lien)
+            override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, youtubeAlarm: YouTubePlayer, p2: Boolean) {
+                youtubeAlarm.setPlayerStateChangeListener(MyPlayerStateChangeListener())
+                youtubeAlarm.loadVideo(lien)
+                myYTPlayer = youtubeAlarm
             }
 
             override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
                 startLastAlarm()
                 Toast.makeText(applicationContext, "Probleme YouTUBE", Toast.LENGTH_SHORT).show()
+            }
+
+            private inner class MyPlayerStateChangeListener : YouTubePlayer.PlayerStateChangeListener {
+                internal var playerState = "UNINITIALIZED"
+
+                override fun onLoading() {
+                    playerState = "LOADING"
+                }
+
+                override fun onLoaded(videoId: String) {
+                    playerState = String.format("LOADED %s", videoId)
+                }
+
+                override fun onAdStarted() {
+                    playerState = "AD_STARTED"
+                }
+
+                override fun onVideoStarted() {
+                    playerState = "VIDEO_STARTED"
+                }
+
+                override fun onVideoEnded() {
+                    myYTPlayer.loadVideo(lien)
+                    playerState = "VIDEO_ENDED"
+                }
+
+                override fun onError(reason: YouTubePlayer.ErrorReason) {
+                    playerState = "ERROR ($reason)"
+                    if (reason == YouTubePlayer.ErrorReason.UNEXPECTED_SERVICE_DISCONNECTION) {
+                    }
+                }
             }
         }
     }

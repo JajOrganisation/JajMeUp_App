@@ -106,6 +106,7 @@ class SettingsActivity : AppCompatActivity() {
             if (!Jajinternet.getStatusInternet(context)) {
                 Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
             }
+            findPreference("default_alarm").summary = PreferenceManager.getDefaultSharedPreferences(context).getString("default_reveil_name", "Rick Astley - Never Gonna Give You Up (Official Music Video)")
             preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         }
 
@@ -319,7 +320,9 @@ class SettingsActivity : AppCompatActivity() {
                             val titlevideo = YoutubeInformation.getTitleQuietly(matcher.group())
                             if (titlevideo != "ERROR") {
                                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("default_reveil", edityt.text.toString()).apply()
+                                PreferenceManager.getDefaultSharedPreferences(context).edit().putString("default_reveil_name", YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(edityt.text.toString()))).apply()
                                 FireStore.updateCurrentUser(reveilDefault = edityt.text.toString())
+                                preference.summary = PreferenceManager.getDefaultSharedPreferences(context).getString("default_reveil_name", "Rick Astley - Never Gonna Give You Up (Official Music Video)")
                                 popupWindow.dismiss()
                             } else {
                                 Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()

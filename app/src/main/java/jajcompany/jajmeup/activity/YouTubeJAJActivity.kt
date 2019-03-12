@@ -2,9 +2,12 @@ package jajcompany.jajmeup.activity
 
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
+import android.media.AudioManager.STREAM_MUSIC
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import com.google.android.youtube.player.YouTubeBaseActivity
@@ -39,6 +42,11 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
 
         super.onCreate(savedInstanceState)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val audioManager: AudioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+        val maxVolume = audioManager.getStreamMaxVolume(STREAM_MUSIC)
+        val prefVolume = sharedPreferences.getInt("volume_reveil", 6)
+        val finalVolume = ((prefVolume*10)*maxVolume)/100
+        audioManager.setStreamVolume(STREAM_MUSIC, finalVolume, 0)
         val handler = Handler()
         val runnableMyYoutubeAlarm = Runnable {
             finish()

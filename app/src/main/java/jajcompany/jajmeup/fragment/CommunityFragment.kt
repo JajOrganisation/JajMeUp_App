@@ -66,12 +66,12 @@ class CommunityFragment : Fragment() {
                 if (intent.getStringArrayListExtra("uidList") != null)
                     setAllFriendsListener(intent.getStringArrayListExtra("uidList"))
             }
-            else if (intent!!.action == "onRemove") {
+            else if (intent.action == "onRemove") {
                 Log.d("HELLO", "onRemove")
                 unsetFriendsList()
                 setUpdateListFriends()
             }
-            else if (intent!!.action == "onNewFriend") {
+            else if (intent.action == "onNewFriend") {
                 Log.d("HELLO", "onNewFriend")
                 unsetListWorld()
                 setUpdateListWorld()

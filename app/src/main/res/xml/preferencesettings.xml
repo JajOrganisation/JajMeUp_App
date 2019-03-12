@@ -9,6 +9,10 @@
         android:key="last_alarm"
         android:title="Réveil de secours"/>
 
+    <Preference
+        android:key="volume"
+        android:title="Volume du réveil"/>
+
     <ListPreference
         android:key="visibility_preference"
         android:title="Visibilite de mon reveil"

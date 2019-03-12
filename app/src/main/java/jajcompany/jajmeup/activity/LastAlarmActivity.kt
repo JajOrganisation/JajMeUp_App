@@ -2,6 +2,7 @@ package jajcompany.jajmeup.activity
 
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.os.Environment
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.google.android.youtube.player.YouTubeBaseActivity
 import jajcompany.jajmeup.R
 import kotlinx.android.synthetic.main.last_alarm_layout.*
 import java.io.File
@@ -33,7 +35,11 @@ class LastAlarmActivity : AppCompatActivity() {
             mediaPlayer.stop()
             finish()
         }
-
+        val audioManager: AudioManager = getSystemService(YouTubeBaseActivity.AUDIO_SERVICE) as AudioManager
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        val prefVolume = PreferenceManager.getDefaultSharedPreferences(this).getInt("volume_reveil", 6)
+        val finalVolume = ((prefVolume*10)*maxVolume)/100
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, finalVolume, 0)
         if (PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", "defaultalarm") != "defaultalarm") {
             urisound = Uri.parse(PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", ""))
             if (File(urisound.path).exists()){
@@ -47,7 +53,7 @@ class LastAlarmActivity : AppCompatActivity() {
             mediaPlayer = MediaPlayer.create(this, R.raw.defaultalarm)
         }
         Log.d("HELLO", "Mon reveil "+PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", ""))
-
+        mediaPlayer.isLooping = true
         mediaPlayer.start()
     }
 }

@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.notification_item.*
 
 class NotifItem(val notif: NotifWakeUp, val username: String, val profilePicture: String, private val context: Context): Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        if (profilePicture != null) {
+        if (profilePicture != "") {
             GlideApp.with(context).load(StorageUtil.pathToReference(profilePicture))
                     .placeholder(R.drawable.ic_account_circle_black_24dp).into(viewHolder.userPictureNotif)
             Glide.with(context).load(StorageUtil.pathToReference(profilePicture)).apply(RequestOptions.circleCropTransform()).into(viewHolder.userPictureNotif)

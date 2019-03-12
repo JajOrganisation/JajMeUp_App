@@ -25,7 +25,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.glide.GlideApp
+//import jajcompany.jajmeup.glide.GlideApp
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
 import jajcompany.jajmeup.utils.StorageUtil
@@ -66,7 +66,7 @@ class SettingsActivity : AppCompatActivity() {
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             selectedImageBytes = outputStream.toByteArray()
 
-            GlideApp.with(this)
+            Glide.with(this)
                     .load(selectedImageBytes)
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .apply(RequestOptions.circleCropTransform())
@@ -83,7 +83,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onStart()
         FireStore.getCurrentUser { user ->
                 if (!pictureJustChanged && user.profilePicture != null) {
-                    GlideApp.with(this)
+                    Glide.with(this)
                             .load(StorageUtil.pathToReference(user.profilePicture))
                             .placeholder(R.drawable.ic_account_circle_black_24dp)
                             .into(profilePictureSettings)
@@ -332,6 +332,40 @@ class SettingsActivity : AppCompatActivity() {
                         } else {
                             Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()
                         }
+                    }
+                    popupWindow.showAtLocation(
+                            view,
+                            Gravity.CENTER,
+                            0,
+                            0
+                    )
+                }
+                else if (preference.key == "volume") {
+                    val inflater = LayoutInflater.from(context)
+                    val view = inflater.inflate(R.layout.volumechange_popup_layout, null)
+                    val popupWindow = PopupWindow(
+                            view,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    val slideIn = Slide()
+                    slideIn.slideEdge = Gravity.TOP
+                    popupWindow.enterTransition = slideIn
+                    val slideOut = Slide()
+                    slideOut.slideEdge = Gravity.END
+                    popupWindow.exitTransition = slideOut
+                    popupWindow.isFocusable = true
+                    val closepop = view.findViewById<Button>(R.id.button_closepop_volume)
+                    val validationpop = view.findViewById<Button>(R.id.button_change_volume)
+                    val levelpref = view.findViewById<SeekBar>(R.id.volumelevelpref)
+                    levelpref.max = 10
+                    validationpop.setOnClickListener {
+                        Log.d("HELLO", "Volume level "+levelpref.progress.toString())
+                        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("volume_reveil", levelpref.progress).apply()
+                        popupWindow.dismiss()
+                    }
+                    closepop.setOnClickListener {
+                        popupWindow.dismiss()
                     }
                     popupWindow.showAtLocation(
                             view,

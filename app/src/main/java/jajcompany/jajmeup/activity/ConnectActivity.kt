@@ -39,7 +39,7 @@ class ConnectActivity : AppCompatActivity() {
                                         when(user.authorization){
                                             0 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "PRIVATE").apply()
                                             1 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "FRIENDS").apply()
-                                            2 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "WORD").apply()
+                                            2 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "WORLD").apply()
                                         }
                                         PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", user.authorization.toString()).apply()
                                         startActivity(PrincipalActivity.newIntent(this))

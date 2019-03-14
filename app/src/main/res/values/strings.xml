@@ -166,4 +166,5 @@
     <string name="mot_de_passe_differents">Mot de passe différents</string>
     <string name="erreur_inscription">Erreur lors de l\'inscription</string>
     <string name="lien_yt_invalide">Lien YouTube invalide</string>
+    <string name="erreur_user_existe">Pseudo déjà utilisé</string>
 </resources>

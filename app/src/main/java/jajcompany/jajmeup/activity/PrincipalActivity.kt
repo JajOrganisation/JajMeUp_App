@@ -23,6 +23,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirestoreRegistrar
 import com.google.firebase.firestore.ListenerRegistration
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.fragment.ClockFragment

@@ -1,5 +1,6 @@
 package jajcompany.jajmeup.utils
 
+import android.hardware.camera2.CaptureFailure
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -15,11 +16,14 @@ object StorageUtil {
                         ?: throw NullPointerException("UID is null."))
 
     fun uploadProfilePhoto(imageBytes: ByteArray,
-                           onSuccess: (imagePath: String) -> Unit) {
+                           onComplete: (imagePath: String) -> Unit) {
         val ref = currentUserRef.child("profilePictures/${UUID.nameUUIDFromBytes(imageBytes)}")
         ref.putBytes(imageBytes)
                 .addOnSuccessListener {
-                    onSuccess(ref.path)
+                    onComplete(ref.path)
+                }
+                .addOnFailureListener {
+                    onComplete("ERROR")
                 }
     }
 

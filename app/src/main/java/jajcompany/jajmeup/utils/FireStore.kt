@@ -26,7 +26,7 @@ object FireStore {
         get() = fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}")
 
-    fun initCurrentUser(myname: String, myprofilepicture: String, onComplete: () -> Unit) {
+    fun initCurrentUser(myname: String, myprofilepicture: String, onComplete: (result: String) -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
                 val newUser = UserRegister(FirebaseAuth.getInstance().currentUser!!.uid, myname, "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "down", myprofilepicture)
@@ -35,7 +35,7 @@ object FireStore {
                             .get()
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    var test = task.result!!.toObject(Counters::class.java)
+                                    val test = task.result!!.toObject(Counters::class.java)
                                     val countersFieldMap = mutableMapOf<String, Any>()
                                     countersFieldMap["users_count"] = test!!.users_count + 1
                                     Log.d("HELLO", "My number "+test.users_count)
@@ -43,16 +43,19 @@ object FireStore {
                                             .update(countersFieldMap)
                                             .addOnCompleteListener {
                                                 updateCurrentUser(mynumber = test.users_count + 1)
-                                                onComplete()
+                                                onComplete("OK")
                                             }
-                                            .addOnFailureListener { e -> Log.d("HELLO", "Error set number", e) }
+                                            .addOnFailureListener {
+                                                e -> Log.d("HELLO", "Error set number", e)
+                                                onComplete("ERROR")
+                                            }
                                 }
                             }
                             .addOnFailureListener { e -> Log.d("HELLO", "Error ici set number", e) }
                 }
             }
             else{
-                onComplete()
+                onComplete("ERROR")
             }
         }
     }
@@ -75,6 +78,22 @@ object FireStore {
         currentUserDocRef.get()
                 .addOnSuccessListener {
                     onComplete(it.toObject(User::class.java)!!)
+                }
+    }
+
+    fun checkIfUsername(usernamecheck: String, onComplete: (result: String) -> Unit) {
+        fireStoreInstance.collection("users/")
+                .whereEqualTo("name", usernamecheck)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        var docResult = task.result
+                        if (docResult!!.isEmpty) {
+                            onComplete("NOTEXIST")
+                        }
+                        else
+                            onComplete("EXIST")
+                    }
                 }
     }
 

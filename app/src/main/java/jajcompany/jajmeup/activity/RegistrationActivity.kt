@@ -27,6 +27,7 @@ class RegistrationActivity : AppCompatActivity() {
     private val RC_SELECT_IMAGE = 2
     private var selectedImageBytes: ByteArray = byteArrayOf()
     private var pictureJustChanged = false
+    private var flagRegistration = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,21 +61,79 @@ class RegistrationActivity : AppCompatActivity() {
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(usermail).matches() || usermail.replace("\\s".toRegex(), "") == "") {
                     Toast.makeText(this, getString(R.string.courriel_incorrect), Toast.LENGTH_LONG).show()
                 } else {
-                    mAuth?.createUserWithEmailAndPassword(usermail, password)
-                            ?.addOnCompleteListener(this) { task ->
-                                if (task.isSuccessful) {
-                                    Log.d("RegistrationActivity", "createUserWithEmail:success")
-                                    StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
-                                        FireStore.initCurrentUser(userpseudo, imagePath) {
-                                            startActivity(PrincipalActivity.newIntent(this))
+                    if (!flagRegistration) {
+                        mAuth?.createUserWithEmailAndPassword(usermail, password)
+                                ?.addOnCompleteListener(this) { task ->
+                                    if (task.isSuccessful) {
+                                        flagRegistration = true
+                                        FireStore.checkIfUsername(userpseudo) {
+                                            Log.d("RegistrationActivity", "createUserWithEmail:success")
+                                            if (it == "NOTEXIST") {
+                                                StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
+                                                    if (imagePath == "ERROR") {
+                                                        Toast.makeText(this, getString(R.string.erreur_inscription),
+                                                                Toast.LENGTH_SHORT).show()
+                                                    } else {
+                                                        FireStore.initCurrentUser(userpseudo, imagePath) {
+                                                            if (it == "ERROR") {
+                                                                Toast.makeText(this, getString(R.string.erreur_inscription),
+                                                                        Toast.LENGTH_SHORT).show()
+                                                            } else {
+                                                                startActivity(PrincipalActivity.newIntent(this))
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                Toast.makeText(this, getString(R.string.erreur_user_existe),
+                                                        Toast.LENGTH_SHORT).show()
+                                                mAuth?.signOut()
+                                            }
                                         }
+                                    } else {
+                                        Log.w("RegistrationActivity", "createUserWithEmail:failure", task.exception)
+                                        Toast.makeText(this, getString(R.string.erreur_inscription),
+                                                Toast.LENGTH_SHORT).show()
                                     }
-                                } else {
-                                    Log.w("RegistrationActivity", "createUserWithEmail:failure", task.exception)
-                                    Toast.makeText(this, getString(R.string.erreur_inscription),
-                                            Toast.LENGTH_SHORT).show()
                                 }
-                            }
+                    }
+                    else {
+                        mAuth?.signInWithEmailAndPassword(usermail, password)
+                                ?.addOnCompleteListener(this) { task ->
+                                    if (task.isSuccessful) {
+                                        FireStore.checkIfUsername(userpseudo) {
+                                            if (it == "NOTEXIST") {
+                                                flagRegistration = true
+                                                Log.d("RegistrationActivity", "createUserWithEmail:success")
+                                                StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
+                                                    if (imagePath == "ERROR") {
+                                                        Toast.makeText(this, getString(R.string.erreur_inscription),
+                                                                Toast.LENGTH_SHORT).show()
+                                                    } else {
+                                                        FireStore.initCurrentUser(userpseudo, imagePath) {
+                                                            if (it == "ERROR") {
+                                                                Toast.makeText(this, getString(R.string.erreur_inscription),
+                                                                        Toast.LENGTH_SHORT).show()
+                                                            } else {
+                                                                startActivity(PrincipalActivity.newIntent(this))
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                Toast.makeText(this, getString(R.string.erreur_user_existe),
+                                                        Toast.LENGTH_SHORT).show()
+                                            }
+
+                                        }
+                                    } else {
+                                        Log.w("RegistrationActivity", "createUserWithEmail:failure", task.exception)
+                                        Toast.makeText(this, getString(R.string.erreur_inscription),
+                                                Toast.LENGTH_SHORT).show()
+                                    }
+                        }
+                    }
                 }
             }
             else {

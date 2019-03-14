@@ -36,12 +36,12 @@ class ConnectActivity : AppCompatActivity() {
                                     FireStore.getCurrentUser { user ->
                                         PreferenceManager.getDefaultSharedPreferences(this).edit().putString("default_reveil", user.reveilDefaultLink).apply()
                                         PreferenceManager.getDefaultSharedPreferences(this).edit().putString("default_reveil_name", YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(user.reveilDefaultLink))).apply()
+                                        Log.d("HELLO", "PREF "+user.authorization.toString())
                                         when(user.authorization){
                                             0 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "PRIVATE").apply()
                                             1 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "FRIENDS").apply()
                                             2 -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", "WORLD").apply()
                                         }
-                                        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("visibility_preference", user.authorization.toString()).apply()
                                         startActivity(PrincipalActivity.newIntent(this))
                                         Log.d("LoginActivity", "signInWithEmail:success")
                                     }

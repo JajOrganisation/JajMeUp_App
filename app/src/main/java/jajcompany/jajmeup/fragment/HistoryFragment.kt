@@ -8,9 +8,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.view.MotionEventCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -25,6 +27,7 @@ import jajcompany.jajmeup.RecycleView.item.VoteItem
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
 import kotlinx.android.synthetic.main.history_layout.*
+import kotlinx.android.synthetic.main.main_layout.*
 
 class HistoryFragment : Fragment() {
 
@@ -82,7 +85,7 @@ class HistoryFragment : Fragment() {
     private val onItemClick = OnItemClickListener { item, view ->
         if (item is VoteItem) {
             if (Jajinternet.getStatusInternet(context)) {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v="+item.vote.lien)))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.vote.lien)))
 
             }
             else{

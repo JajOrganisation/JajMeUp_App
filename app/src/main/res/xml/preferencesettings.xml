@@ -33,11 +33,11 @@
         android:textColor="@android:color/white"
         android:defaultValue="3"/>
 
-    <CheckBoxPreference
+    <!--<CheckBoxPreference
         android:key="history_preference"
         android:title="Historique"
         android:summary="Activer / Désactiver lhistorique"
-        android:defaultValue="true"/>
+        android:defaultValue="true"/>-->
 
     <Preference
         android:key="changepassword"

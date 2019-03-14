@@ -14,10 +14,12 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.MenuItemCompat
+import android.support.v4.view.MotionEventCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
@@ -28,6 +30,7 @@ import jajcompany.jajmeup.fragment.CommunityFragment
 import jajcompany.jajmeup.fragment.HistoryFragment
 import jajcompany.jajmeup.utils.FireStore
 import kotlinx.android.synthetic.main.main_layout.*
+import java.time.Clock
 import java.util.regex.Pattern
 
 
@@ -38,6 +41,9 @@ class PrincipalActivity : AppCompatActivity() {
     private lateinit var textCartItemCountNotifications: TextView
     private lateinit var askingFriendsCount: ListenerRegistration
     private lateinit var notificationsCount: ListenerRegistration
+    var x1: Float = 0F
+    var x2: Float = 0F
+    var MIN_DISTANCE = 150
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -216,14 +222,13 @@ class PrincipalActivity : AppCompatActivity() {
 
     private fun checkPref() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@PrincipalActivity)
-        if(!sharedPreferences.getBoolean("history_preference", true)) {
+        /*if(!sharedPreferences.getBoolean("history_preference", true)) {
             navigation.menu.getItem(0).isEnabled = false
             if(navigation.menu.getItem(0).isChecked) {
                 navigation.selectedItemId = R.id.navigation_clock
             }
-        }
-        else
-            navigation.menu.getItem(0).isEnabled = true
+        }*/
+        navigation.menu.getItem(0).isEnabled = true
 
         if (sharedPreferences.getString("visibility_preference", "WORLD") == "PRIVATE") {
             navigation.menu.getItem(2).isEnabled = false
@@ -267,5 +272,50 @@ class PrincipalActivity : AppCompatActivity() {
 
         setCountFriendsAsking()
         setCountNotifications()
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val action: Int = MotionEventCompat.getActionMasked(event)
+        Log.d("HELLO", "COUCOU")
+
+        return when (action) {
+            MotionEvent.ACTION_DOWN -> {
+                x1 = event!!.x
+                true
+            }
+            MotionEvent.ACTION_UP -> {
+                x2 = event!!.x
+                val deltaX = x2 - x1
+                if(Math.abs(deltaX) > MIN_DISTANCE) {
+                    if(x2 > x1) {
+                        if(navigation.selectedItemId == R.id.navigation_community) {
+                            navigation.selectedItemId = R.id.navigation_clock
+                            replaceFragment(ClockFragment())
+                        }
+                        else if (navigation.selectedItemId == R.id.navigation_clock) {
+                            navigation.selectedItemId = R.id.navigation_history
+                            replaceFragment(HistoryFragment())
+                        }
+                        Log.d("HELLO", "RIGHT"+navigation.selectedItemId)
+                        //replaceFragment(HistoryFragment())
+                    }
+                    else {
+                        if(navigation.selectedItemId == R.id.navigation_clock) {
+                            navigation.selectedItemId = R.id.navigation_community
+                            replaceFragment(CommunityFragment())
+                        }
+                        else if (navigation.selectedItemId == R.id.navigation_history) {
+                            navigation.selectedItemId = R.id.navigation_clock
+                            replaceFragment(ClockFragment())
+                        }
+                        Log.d("HELLO", "LEFT"+navigation.selectedItemId)
+                        //replaceFragment(CommunityFragment())
+                    }
+                }
+                true
+            }
+            else -> super.onTouchEvent(event)
+        }
+
     }
 }

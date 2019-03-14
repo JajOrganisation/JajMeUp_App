@@ -9,7 +9,7 @@
         android:id="@+id/alarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:headerBackground="#2000"
+        android:headerBackground="#313335"
         android:numbersSelectorColor="@color/colorAccent">
 
     </TimePicker>

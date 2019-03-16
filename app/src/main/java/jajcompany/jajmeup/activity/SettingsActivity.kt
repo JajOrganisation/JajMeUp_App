@@ -338,6 +338,8 @@ class SettingsActivity : AppCompatActivity() {
                     val validationpop = view.findViewById<Button>(R.id.button_change_volume)
                     val levelpref = view.findViewById<SeekBar>(R.id.volumelevelpref)
                     levelpref.max = 10
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    levelpref.progress = sharedPreferences.getInt("volume_reveil", 6)
                     validationpop.setOnClickListener {
                         Log.d("HELLO", "Volume level "+levelpref.progress.toString())
                         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("volume_reveil", levelpref.progress).apply()

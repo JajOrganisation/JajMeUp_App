@@ -45,10 +45,10 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="D:\Android_Studio\Project\IMG\clock.png" />
-                                      <entry key="outputName" value="ic_clock_white" />
+                                      <entry key="imageAsset" value="D:\Android_Studio\Project\Logo\J_Accueil.png" />
+                                      <entry key="outputName" value="ic_logo_round_icon" />
                                       <entry key="theme" value="HOLO_DARK" />
-                                      <entry key="themeColor" value="ffffff" />
+                                      <entry key="themeColor" value="dddddd" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -72,6 +72,13 @@
                                       </entry>
                                     </map>
                                   </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="backgroundLayerName" value="ic_launcher_background" />
+                                      <entry key="foregroundLayerName" value="ic_launcher_foreground" />
+                                      <entry key="outputName" value="ic_logo" />
+                                    </map>
+                                  </option>
                                 </PersistentState>
                               </value>
                             </entry>
@@ -91,6 +98,25 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                      <entry key="image">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="color" value="000000" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="iconShape" value="NONE" />
+                                      <entry key="imageAsset" value="D:\Android_Studio\Project\Logo\LogoJajMeUp_round.png" />
+                                      <entry key="outputName" value="ic_logo_round" />
                                     </map>
                                   </option>
                                 </PersistentState>

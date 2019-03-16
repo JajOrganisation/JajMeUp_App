@@ -1,48 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.ConnectRegistrationActivity"
-    android:background="@drawable/gradientbackground">
+    android:background="@drawable/gradientbackground">-->
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/relativeConnect"
+<LinearLayout
+    android:background="@drawable/gradientbackground"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeConnectRegistration"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_weight="1"
+        android:background="@drawable/gradientbackground">
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/jaccueil"
+            android:background="@drawable/gradientbackground"/>
+    </LinearLayout>
 
+    <LinearLayout
+        android:background="@drawable/gradientbackground"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:layout_weight="2">
         <Button
             android:id="@+id/connectButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="54dp"
-            android:layout_marginTop="182dp"
-            android:padding="12dp"
             android:background="@drawable/button_drawable"
+            android:layout_gravity="center_horizontal"
             android:text="@string/button_connect_string"
             android:textColor="@android:color/white"
             android:textSize="35sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:padding="12dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"/>
 
         <Button
             android:id="@+id/registrationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="69dp"
-            android:layout_marginBottom="147dp"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/button_drawable"
             android:text="@string/button_register_string"
             android:textColor="@android:color/white"
             android:textSize="35sp"
             android:textStyle="bold"
             android:padding="12dp"/>
-    </RelativeLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"/>
+    </LinearLayout>
+</LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+<!--</android.support.constraint.ConstraintLayout>-->

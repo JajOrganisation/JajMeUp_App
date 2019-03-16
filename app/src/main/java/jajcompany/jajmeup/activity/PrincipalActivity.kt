@@ -45,7 +45,6 @@ class PrincipalActivity : AppCompatActivity() {
     var MIN_DISTANCE = 150
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         PreferenceManager.setDefaultValues(this, R.xml.preferencesettings, false)
 
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -87,6 +86,7 @@ class PrincipalActivity : AppCompatActivity() {
             }
         }
         checkPref()
+
     }
 
     override fun onResume() {

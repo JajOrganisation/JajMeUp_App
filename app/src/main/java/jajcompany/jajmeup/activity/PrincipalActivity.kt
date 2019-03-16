@@ -23,7 +23,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirestoreRegistrar
 import com.google.firebase.firestore.ListenerRegistration
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.fragment.ClockFragment
@@ -31,7 +30,6 @@ import jajcompany.jajmeup.fragment.CommunityFragment
 import jajcompany.jajmeup.fragment.HistoryFragment
 import jajcompany.jajmeup.utils.FireStore
 import kotlinx.android.synthetic.main.main_layout.*
-import java.time.Clock
 import java.util.regex.Pattern
 
 
@@ -128,8 +126,12 @@ class PrincipalActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unsetCountFriendsAsking()
-        unsetCountNotifications()
+        try {
+            unsetCountFriendsAsking()
+            unsetCountNotifications()
+        } catch (e: Exception){
+
+        }
     }
 
         override fun onCreateOptionsMenu(menu: Menu): Boolean {

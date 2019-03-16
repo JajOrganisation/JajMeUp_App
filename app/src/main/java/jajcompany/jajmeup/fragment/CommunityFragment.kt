@@ -161,12 +161,16 @@ class CommunityFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        setUpdateListFriends()
-        setUpdateListWorld()
-        setRemoveFriends()
-        unsetRemoveFriends()
-        unsetFriendsList()
-        unsetListWorld()
+        try {
+            setUpdateListFriends()
+            setUpdateListWorld()
+            setRemoveFriends()
+            unsetRemoveFriends()
+            unsetFriendsList()
+            unsetListWorld()
+        }catch (e: Exception) {
+
+        }
         shouldInitRecyclerViewFriends = true
         shouldInitRecyclerViewWorld = true
     }
@@ -364,7 +368,25 @@ class CommunityFragment : Fragment() {
     fun setUpdateListWorld() {
         Log.d("HELLO", "set world")
         try {
-            userListenerRegistration = FireStore.getUsers(this.activity!!, this::updateRecyclerViewWorld)
+            FireStore.getLastDateRandom {end ->
+                if (end == 0L){
+                    try {
+                        userListenerRegistration = FireStore.getUsers(this.activity!!, 0, this::updateRecyclerViewWorld)
+                    } catch (e: Exception){
+
+                    }
+                }
+                else
+                    FireStore.getStartDateRandom { start ->
+                        try {
+                            val randomDate = (start..end).random()
+                            userListenerRegistration = FireStore.getUsers(this.activity!!, randomDate, this::updateRecyclerViewWorld)
+                        } catch (e: Exception){
+
+                        }
+                    }
+            }
+
         }catch (e: Exception){
 
         }
@@ -424,8 +446,12 @@ class CommunityFragment : Fragment() {
     }
 
     fun unsetListWorld() {
-        shouldInitRecyclerViewWorld = true
-        FireStore.removeListener(userListenerRegistration)
+        try {
+            shouldInitRecyclerViewWorld = true
+            FireStore.removeListener(userListenerRegistration)
+        }catch (e: Exception) {
+
+        }
     }
 
     fun unsetFriendsList() {
@@ -467,7 +493,7 @@ class CommunityFragment : Fragment() {
             }
 
             header_world.setRandomImageButton.setOnClickListener {
-                FireStore.setRandomUserNumber(_context)
+                //FireStore.setRandomUserNumber(_context)
                 unsetListWorld()
                 setUpdateListWorld()
             }

@@ -13,10 +13,10 @@ import android.widget.Toast
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.utils.FireStore
-import jajcompany.jajmeup.utils.StorageUtil
 import jajcompany.jajmeup.glide.GlideApp
+import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
+import jajcompany.jajmeup.utils.StorageUtil
 import kotlinx.android.synthetic.main.registration_layout.*
 import java.io.ByteArrayOutputStream
 
@@ -74,8 +74,8 @@ class RegistrationActivity : AppCompatActivity() {
                                                         Toast.makeText(this, getString(R.string.erreur_inscription),
                                                                 Toast.LENGTH_SHORT).show()
                                                     } else {
-                                                        FireStore.initCurrentUser(userpseudo, imagePath) {
-                                                            if (it == "ERROR") {
+                                                        FireStore.initCurrentUser(userpseudo, imagePath) {resultinit ->
+                                                            if (resultinit == "ERROR") {
                                                                 Toast.makeText(this, getString(R.string.erreur_inscription),
                                                                         Toast.LENGTH_SHORT).show()
                                                             } else {

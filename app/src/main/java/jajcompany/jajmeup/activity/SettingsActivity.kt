@@ -1,5 +1,6 @@
 package jajcompany.jajmeup.activity
 
+//import jajcompany.jajmeup.glide.GlideApp
 import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
@@ -23,9 +24,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import jajcompany.jajmeup.R
-//import jajcompany.jajmeup.glide.GlideApp
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
 import jajcompany.jajmeup.utils.StorageUtil
@@ -234,36 +233,16 @@ class SettingsActivity : AppCompatActivity() {
                         } else if (firstpass.text.toString() != secondpass.text.toString()) {
                             Toast.makeText(activity, "Mot de passe différent", Toast.LENGTH_LONG).show()
                         } else {
-                            val mAuth: FirebaseAuth? = FirebaseAuth.getInstance()
-                            val user = FirebaseAuth.getInstance().currentUser
-                            mAuth!!.signInWithEmailAndPassword(user!!.email.toString(), firstpass.text.toString())
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-                                            Log.d("HELLO", "Connecte new")
-                                            val cred = EmailAuthProvider.getCredential(user.email.toString(), firstpass.text.toString())
-                                            user.reauthenticate(cred)?.addOnCompleteListener {
-                                                val fireStoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
-                                                fireStoreInstance.collection("users")
-                                                        .document(user.uid).delete()
-                                                        .addOnCompleteListener {
-                                                            user.delete()
-                                                                    .addOnCompleteListener { task ->
-                                                                        if (task.isSuccessful) {
-                                                                            val sendDeconnect = LocalBroadcastManager.getInstance(context)
-                                                                            sendDeconnect
-                                                                                    .sendBroadcast(Intent("deconnectUser"))
-                                                                            activity.finish()
-                                                                        }
-                                                                    }
-                                                                    .addOnFailureListener { e -> Log.d("HELLO", "Error delete account", e) }
-                                                        }
-                                                        .addOnFailureListener { e -> Log.d("HELLO", "Error delete account data", e) }
-                                            }
-                                        } else {
-                                            Log.e("HELLO", "Erreur ancien mot de passe", task.exception)
-                                            Toast.makeText(activity, "Ancien mot de passe incorrect", Toast.LENGTH_LONG).show()
-                                        }
-                                    }
+                            FireStore.deleteAccount(firstpass.text.toString()) {
+                                if (it == "OLDPASSWORD")
+                                    Toast.makeText(activity, "Ancien mot de passe incorrect", Toast.LENGTH_LONG).show()
+                                else if (it == "OK") {
+                                    val sendDeconnect = LocalBroadcastManager.getInstance(context)
+                                    sendDeconnect
+                                            .sendBroadcast(Intent("deconnectUser"))
+                                    activity.finish()
+                                }
+                            }
                         }
                     }
                     popupWindow.showAtLocation(

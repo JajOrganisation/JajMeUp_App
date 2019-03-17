@@ -225,22 +225,29 @@ class PrincipalActivity : AppCompatActivity() {
 
     private fun checkPref() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@PrincipalActivity)
-        /*if(!sharedPreferences.getBoolean("history_preference", true)) {
+        if(!sharedPreferences.getBoolean("history_preference", true)) {
             navigation.menu.getItem(0).isEnabled = false
+            navigation.menu.getItem(0).isVisible = false
             if(navigation.menu.getItem(0).isChecked) {
                 navigation.selectedItemId = R.id.navigation_clock
             }
-        }*/
-        navigation.menu.getItem(0).isEnabled = true
+        }
+        else {
+            navigation.menu.getItem(0).isEnabled = true
+            navigation.menu.getItem(0).isVisible = true
+        }
 
         if (sharedPreferences.getString("visibility_preference", "WORLD") == "PRIVATE") {
             navigation.menu.getItem(2).isEnabled = false
+            navigation.menu.getItem(2).isVisible = false
             if (navigation.menu.getItem(2).isChecked) {
                 navigation.selectedItemId = R.id.navigation_clock
             }
         }
-        else
+        else {
+            navigation.menu.getItem(2).isVisible = true
             navigation.menu.getItem(2).isEnabled = true
+        }
     }
 
     fun setCountFriendsAsking() {
@@ -278,6 +285,7 @@ class PrincipalActivity : AppCompatActivity() {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@PrincipalActivity)
         val action: Int = MotionEventCompat.getActionMasked(event)
         Log.d("HELLO", "COUCOU")
 
@@ -296,16 +304,19 @@ class PrincipalActivity : AppCompatActivity() {
                             replaceFragment(ClockFragment())
                         }
                         else if (navigation.selectedItemId == R.id.navigation_clock) {
-                            navigation.selectedItemId = R.id.navigation_history
-                            replaceFragment(HistoryFragment())
+                            if (sharedPreferences.getBoolean("history_preference", true)) {
+                                navigation.selectedItemId = R.id.navigation_history
+                                replaceFragment(HistoryFragment())
+                            }
                         }
                         Log.d("HELLO", "RIGHT"+navigation.selectedItemId)
-                        //replaceFragment(HistoryFragment())
                     }
                     else {
                         if(navigation.selectedItemId == R.id.navigation_clock) {
-                            navigation.selectedItemId = R.id.navigation_community
-                            replaceFragment(CommunityFragment())
+                            if (sharedPreferences.getString("visibility_preference", "WORLD") != "PRIVATE") {
+                                navigation.selectedItemId = R.id.navigation_community
+                                replaceFragment(CommunityFragment())
+                            }
                         }
                         else if (navigation.selectedItemId == R.id.navigation_history) {
                             navigation.selectedItemId = R.id.navigation_clock

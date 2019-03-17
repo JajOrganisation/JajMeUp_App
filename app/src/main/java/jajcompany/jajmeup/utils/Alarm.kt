@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Switch
 import android.widget.Toast
@@ -61,7 +62,19 @@ object Alarm {
             if (intent!!.action == "onReveilRing") {
                 Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_SHORT).show()
                 if (Jajinternet.getStatusInternet(context)) {
-                    FireStore.getLastReveil(context)
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    if (sharedPreferences.getString("visibility_preference", "WORLD") != "PRIVATE") {
+                        FireStore.getLastReveil(context)
+                    }
+                    else {
+                        val intentt = Intent()
+                        intentt.action = "onReveilINFO"
+                        intentt.putExtra("lien", sharedPreferences.getString("default_reveil", "dQw4w9WgXcQ"))
+                        intentt.putExtra("votant", "Ton réveil")
+                        intentt.putExtra("message", "Tu n'as pas voulu reçevoir de vote")
+                        intentt.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
+                        context.sendBroadcast(intentt)
+                    }
                 }
                 else {
                     val intentt = LastAlarmActivity.newIntent(context)

@@ -82,7 +82,7 @@ object FireStore {
                 }
     }
 
-    fun getLastReveil(context: Context) {
+    fun getLastReveil(context: Context, onComplete: (VoteGet) -> Unit) {
         var flag = false
         fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/reveilVote")
@@ -97,7 +97,8 @@ object FireStore {
                             fireStoreInstance.document("users/${tmpvote.votant}")
                                     .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                                         if (task.isSuccessful) {
-                                            val test = querySnapshot!!.get("name").toString()
+                                            onComplete(VoteGet(tmpvote.lien, YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(tmpvote.lien)), querySnapshot!!.get("name").toString(), tmpvote.votant, tmpvote.message))
+                                            /*val test = querySnapshot!!.get("name").toString()
                                             Log.d("HELLO", "COUCOU"+test)
                                             val intent = Intent()
                                             intent.action = "onReveilINFO"
@@ -106,7 +107,7 @@ object FireStore {
                                             intent.putExtra("votantuid", tmpvote.votant)
                                             intent.putExtra("message", tmpvote.message)
                                             intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
-                                            context.sendBroadcast(intent)
+                                            context.sendBroadcast(intent)*/
                                         }
                                         else {
                                             Log.e("FIRESTORE", "Get User Alarm error.")
@@ -114,14 +115,17 @@ object FireStore {
                             }
                         }
                         if(!flag) {
-                            val intent = Intent()
-                            intent.action = "onReveilINFO"
                             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                            val titlevideo = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")))
+                            onComplete(VoteGet(titlevideo, titlevideo, "Ton réveil", "Tu n'as pas reçu de vote", "123456"))
+                            /*val intent = Intent()
+                            intent.action = "onReveilINFO"
+                            //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                             intent.putExtra("lien", sharedPreferences.getString("default_reveil", "dQw4w9WgXcQ"))
                             intent.putExtra("votant", "Ton réveil")
                             intent.putExtra("message", "Tu n'as pas reçu de vote")
                             intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
-                            context.sendBroadcast(intent)
+                            context.sendBroadcast(intent)*/
                         }
                     } else {
                         Log.e("FIRESTORE", "Reveil last listener error.")

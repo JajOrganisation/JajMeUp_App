@@ -36,6 +36,7 @@ import java.util.regex.Pattern
 class PrincipalActivity : AppCompatActivity() {
 
     var link: String = ""
+    var active: Boolean = false
     private lateinit var textCartItemCountFriends: TextView
     private lateinit var textCartItemCountNotifications: TextView
     private lateinit var askingFriendsCount: ListenerRegistration
@@ -85,6 +86,15 @@ class PrincipalActivity : AppCompatActivity() {
                 handleSendText(intent)
             }
         }
+        val broadcast_reciever = object : BroadcastReceiver() {
+            override fun onReceive(arg0: Context, intent: Intent) {
+                val action = intent.action
+                if (action == "finish_principal") {
+                    finish()
+                }
+            }
+        }
+        registerReceiver(broadcast_reciever, IntentFilter("finish_principal"))
         checkPref()
 
     }
@@ -117,7 +127,6 @@ class PrincipalActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun makeRequest() {
         ActivityCompat.requestPermissions(this,
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),

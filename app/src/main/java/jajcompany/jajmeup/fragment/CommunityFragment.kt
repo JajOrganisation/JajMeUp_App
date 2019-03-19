@@ -29,11 +29,9 @@ import jajcompany.jajmeup.RecycleView.item.UserItem
 import jajcompany.jajmeup.activity.YouTubeJAJActivity
 import jajcompany.jajmeup.glide.GlideApp
 import jajcompany.jajmeup.models.Vote
-import jajcompany.jajmeup.utils.FireStore
-import jajcompany.jajmeup.utils.Jajinternet
-import jajcompany.jajmeup.utils.StorageUtil
-import jajcompany.jajmeup.utils.YoutubeInformation
+import jajcompany.jajmeup.utils.*
 import jajcompany.jajmeup.utils.YoutubeInformation.getTitleQuietly
+import kotlinx.android.synthetic.main.clock_layout.*
 import kotlinx.android.synthetic.main.community_layout.*
 import kotlinx.android.synthetic.main.community_list_header.view.*
 import java.util.*
@@ -146,7 +144,12 @@ class CommunityFragment : Fragment() {
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
         if (sharedPreferences.getBoolean("on_wakeup", false)){
+            Alarm.deleteAlarm(context!!)
             showPopOnWakeUp()
+        }
+        else if (sharedPreferences.getBoolean("on_wakeup_my_alarm", false)){
+            sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", false).apply()
+            alarmSet.isChecked = false
         }
         if (!Jajinternet.getStatusInternet(context)) {
             Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()

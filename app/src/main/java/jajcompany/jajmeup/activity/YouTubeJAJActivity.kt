@@ -71,9 +71,13 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
                 handler.removeCallbacks(runnableMyYoutubeAlarm)
             }
             else {
+                sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", true).apply()
                 handler.removeCallbacks(runnableMyLastAlarm)
             }
             finish()
+            val intenta = PrincipalActivity.newIntent(this)
+            intenta.flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME
+            this.startActivity(intenta)
         }
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or
         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or

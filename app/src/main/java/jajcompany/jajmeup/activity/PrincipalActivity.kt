@@ -90,6 +90,7 @@ class PrincipalActivity : AppCompatActivity() {
             override fun onReceive(arg0: Context, intent: Intent) {
                 val action = intent.action
                 if (action == "finish_principal") {
+                    Log.d("HELLO", "on a fini")
                     finish()
                 }
             }

@@ -59,14 +59,12 @@ object Alarm {
     class OnAlarm : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilRing") {
-                val intent = Intent()
-                intent.action = "finish_principal"
-                intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
-                context.sendBroadcast(intent)
+                Log.d("HELLO", "On sonne")
+                Alarm.deleteAlarm(context)
                 //switchAlarm.isChecked = false
                 Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_LONG).show()
                 val haha = LoadingAlarm.newIntent(context)
-                haha.flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                haha.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(haha)
             }
         }

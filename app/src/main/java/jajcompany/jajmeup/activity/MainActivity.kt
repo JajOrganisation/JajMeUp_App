@@ -21,5 +21,11 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
     }
+    companion object {
+        fun newIntent(context: Context): Intent {
+            val intent = Intent(context, MainActivity::class.java)
+            return intent
+        }
 
+    }
 }

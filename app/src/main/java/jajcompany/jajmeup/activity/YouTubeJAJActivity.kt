@@ -63,21 +63,23 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         youtubeAlarm.initialize(API_KEY, youtubePlayerInit)
         stopAlarm.setOnClickListener {
             if (votant != "Ton réveil") {
+                Log.d("HELLO", "STOP ALARM")
                 //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
                 sharedPreferences.edit().putString("user_wakeup", votant).apply()
                 sharedPreferences.edit().putString("message_wakeup", message).apply()
                 sharedPreferences.edit().putString("link_wakeup", lien).apply()
                 sharedPreferences.edit().putBoolean("on_wakeup", true).apply()
                 handler.removeCallbacks(runnableMyYoutubeAlarm)
+                Log.d("HELLO", "STOP ALARM ALWAYS ALIVE")
             }
             else {
                 sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", true).apply()
                 handler.removeCallbacks(runnableMyLastAlarm)
             }
+            val principalStart = MainActivity.newIntent(this)
+            principalStart.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            this.startActivity(MainActivity.newIntent(this))
             finish()
-            val intenta = PrincipalActivity.newIntent(this)
-            intenta.flags = Intent.FLAG_ACTIVITY_TASK_ON_HOME
-            this.startActivity(intenta)
         }
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or
         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or

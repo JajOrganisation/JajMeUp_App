@@ -6,6 +6,7 @@ import android.content.Intent.FLAG_ACTIVITY_TASK_ON_HOME
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.models.NotifWakeUp
 import jajcompany.jajmeup.utils.FireStore
@@ -16,41 +17,47 @@ class LoadingAlarm : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("HELLO", "Dans le loading")
         if (Jajinternet.getStatusInternet(this)) {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
             if (sharedPreferences.getString("visibility_preference", "WORLD") != "PRIVATE") {
                FireStore.getLastReveil(this) {
                    if (it.videoname != "ERROR") {
-                       val user = FirebaseAuth.getInstance().currentUser
-                       val notif = NotifWakeUp("Wakeup", it.lien, it.videoname, user!!.uid, Calendar.getInstance().time, "unread")
-                       FireStore.sendNotifWakeUp(notif, it.votantuid)
-                       val intenttt = YouTubeJAJActivity.newIntent(this, it.votant, it.lien, it.message)
-                       this.startActivity(intenttt)
+                       if(it.votant != "Ton réveil") {
+                           val user = FirebaseAuth.getInstance().currentUser
+                           val notif = NotifWakeUp("Wakeup", it.lien, it.videoname, user!!.uid, Calendar.getInstance().time, "unread")
+                           FireStore.sendNotifWakeUp(notif, it.votantuid)
+                       }
+                       else {
+                           this.startActivity(YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), it.message))
+                       }
+                       this.startActivity(YouTubeJAJActivity.newIntent(this, it.votant, it.lien, it.message))
                    } else {
-                       val intentttt = LastAlarmActivity.newIntent(this)
-                       this.startActivity(intentttt)
+                       this.startActivity(LastAlarmActivity.newIntent(this))
                    }
                }
 
             }
             else {
-                val intenttttt = YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), "Tu n'as pas voulu reçevoir de vote")
-                this.startActivity(intenttttt)
+                this.startActivity(YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), "Tu n'as pas voulu reçevoir de vote"))
             }
         }
         else {
              val intentt = LastAlarmActivity.newIntent(this)
              //intentt.addFlags(Intent.ACTION_OPEN_DOCUMENT)
-            intentt.flags = FLAG_ACTIVITY_TASK_ON_HOME
+            //intentt.flags = FLAG_ACTIVITY_TASK_ON_HOME
             this.startActivity(intentt)
         }
+        val intentFinish = Intent()
+        intentFinish.action = "finish_principal"
+        intentFinish.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
+        this.sendBroadcast(intentFinish)
         finish()
     }
 
     companion object {
         fun newIntent(context: Context): Intent {
-            val intent = Intent(context, LoadingAlarm::class.java)
-            return intent
+            return Intent(context, LoadingAlarm::class.java)
         }
     }
 }

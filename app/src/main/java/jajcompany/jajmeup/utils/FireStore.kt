@@ -117,7 +117,7 @@ object FireStore {
                         if(!flag) {
                             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                             val titlevideo = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")))
-                            onComplete(VoteGet(titlevideo, titlevideo, "Ton réveil", "Tu n'as pas reçu de vote", "123456"))
+                            onComplete(VoteGet(titlevideo, titlevideo, "Ton réveil", "Tu n'as pas reçu de vote", "Tu n'as pas reçu de vote"))
                             /*val intent = Intent()
                             intent.action = "onReveilINFO"
                             //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)

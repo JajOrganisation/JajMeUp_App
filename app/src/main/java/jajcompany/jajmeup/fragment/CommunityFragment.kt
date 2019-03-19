@@ -144,12 +144,14 @@ class CommunityFragment : Fragment() {
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
         if (sharedPreferences.getBoolean("on_wakeup", false)){
-            Alarm.deleteAlarm(context!!)
-            showPopOnWakeUp()
+            Log.d("HELLO", "OK")
+            community_layout.post{
+                Alarm.deleteAlarm(this.activity!!)
+                showPopOnWakeUp()
+            }
         }
         else if (sharedPreferences.getBoolean("on_wakeup_my_alarm", false)){
             sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", false).apply()
-            alarmSet.isChecked = false
         }
         if (!Jajinternet.getStatusInternet(context)) {
             Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
@@ -671,7 +673,7 @@ class CommunityFragment : Fragment() {
         sharedPreferences.edit().putString("message_wakeup", YouTubeJAJActivity.message).apply()
         sharedPreferences.edit().putString("link_wakeup", YouTubeJAJActivity.lien).apply()
         sharedPreferences.edit().putBoolean("on_wakeup", false).apply()
-        val inflater = LayoutInflater.from(context)
+        val inflater = LayoutInflater.from(this.activity)
         val view = inflater.inflate(R.layout.wakeup_popup_layout, null)
         val popupWindow = PopupWindow(
                 view, // Custom view to show in popup window

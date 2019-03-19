@@ -41,13 +41,13 @@ class ClockFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-        if (sharedPreferences.getBoolean("on_wakeup", false)){
+        if (sharedPreferences.getBoolean("on_wakeup_clock", false)){
             Alarm.deleteAlarm(this.activity!!)
-            sharedPreferences.edit().putBoolean("on_wakeup", false).apply()
+            sharedPreferences.edit().putBoolean("on_wakeup_clock", false).apply()
             alarmSet.isChecked = false
         }
-        else if (sharedPreferences.getBoolean("on_wakeup_my_alarm", false)){
-            sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", false).apply()
+        else if (sharedPreferences.getBoolean("on_wakeup_my_alarm_clock", false)){
+            sharedPreferences.edit().putBoolean("on_wakeup_my_alarm_clock", false).apply()
             alarmSet.isChecked = false
             Alarm.deleteAlarm(this.activity!!)
         }

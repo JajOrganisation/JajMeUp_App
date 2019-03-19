@@ -69,11 +69,13 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
                 sharedPreferences.edit().putString("message_wakeup", message).apply()
                 sharedPreferences.edit().putString("link_wakeup", lien).apply()
                 sharedPreferences.edit().putBoolean("on_wakeup", true).apply()
+                sharedPreferences.edit().putBoolean("on_wakeup_clock", true).apply()
                 handler.removeCallbacks(runnableMyYoutubeAlarm)
                 Log.d("HELLO", "STOP ALARM ALWAYS ALIVE")
             }
             else {
                 sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", true).apply()
+                sharedPreferences.edit().putBoolean("on_wakeup_my_alarm_clock", true).apply()
                 handler.removeCallbacks(runnableMyLastAlarm)
             }
             val principalStart = MainActivity.newIntent(this)

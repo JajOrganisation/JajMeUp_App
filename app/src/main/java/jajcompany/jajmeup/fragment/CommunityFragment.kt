@@ -147,11 +147,13 @@ class CommunityFragment : Fragment() {
             Log.d("HELLO", "OK")
             community_layout.post{
                 Alarm.deleteAlarm(this.activity!!)
+                sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
                 showPopOnWakeUp()
             }
         }
         else if (sharedPreferences.getBoolean("on_wakeup_my_alarm", false)){
             sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", false).apply()
+            sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
         }
         if (!Jajinternet.getStatusInternet(context)) {
             Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()

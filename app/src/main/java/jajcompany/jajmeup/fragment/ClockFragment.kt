@@ -43,6 +43,13 @@ class ClockFragment : Fragment() {
                 Alarm.deleteAlarm(this.activity!!)
             }
         }
+        alarm.setOnTimeChangedListener { timePicker, _, _ ->
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+            if (sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") {
+                alarm.hour = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[0].toInt()
+                alarm.minute = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[1].toInt()
+            }
+        }
     }
 
     override fun onResume() {

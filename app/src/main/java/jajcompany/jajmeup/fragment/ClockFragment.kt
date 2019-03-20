@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.clock_layout.*
 import android.app.PendingIntent
 import android.content.Intent
 import android.preference.PreferenceManager
+import android.util.Log
 import android.widget.Toast
 import jajcompany.jajmeup.activity.LoadingAlarm
 
@@ -28,11 +29,17 @@ class ClockFragment : Fragment() {
         //Toast.makeText(activity, "UP HAHA", Toast.LENGTH_SHORT).show()
         alarm.setIs24HourView(true)
         alarmSet.setOnCheckedChangeListener{ _, isChecked ->
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
             if (isChecked) {
                 //alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                Alarm.setAlarm(this.activity!!, alarm.hour, alarm.minute, alarmSet)
+                if (sharedPreferences.getString("hours_clock", "-11:-11") == "-11:-11") {
+                    Log.d("HELLO", "Coucou "+alarm.hour.toString()+":"+alarm.minute.toString())
+                    Alarm.setAlarm(this.activity!!, alarm.hour, alarm.minute, alarmSet)
+                    sharedPreferences.edit().putString("hours_clock", alarm.hour.toString() + ":" + alarm.minute.toString()).apply()
+                }
             }
             else {
+                sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
                 Alarm.deleteAlarm(this.activity!!)
             }
         }
@@ -55,5 +62,11 @@ class ClockFragment : Fragment() {
         intent.action = "onReveilRing"
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_NO_CREATE) != null
         alarmSet.isChecked = pendingIntent
+        if(alarmSet.isChecked) {
+            Log.d("HELLO", "Au revoir"+sharedPreferences.getString("hours_clock", "-11:-11"))
+            alarm.hour = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[0].toInt()
+            alarm.minute = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[1].toInt()
+        }
+
     }
 }

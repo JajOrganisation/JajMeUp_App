@@ -156,6 +156,8 @@
     <string name="vote_pour">Tu as voté pour </string>
     <string name="copie_presse_papier">Lien copié importé !</string>
     <string name="partage_recupere">Lien partagé importé !</string>
+    <string name="no_alarm">Pas de réveil</string>
+    <string name="alarm_in">Réveil dans</string>
 
     <!-- Message Erreur -->
     <string name="erreur_internet">Pas de connexion internet!</string>

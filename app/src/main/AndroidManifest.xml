@@ -61,6 +61,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".utils.Alarm$OnUpdateBetween" >
+            <intent-filter>
+                <action android:name="onUpdateTimer" android:exported="true" />
+            </intent-filter>
+        </receiver>
+
         <!--  <service
              android:name=".utils.TestService"
              android:enabled="true"/>

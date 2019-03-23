@@ -65,7 +65,7 @@ class ClockFragment : Fragment() {
                     if (hours == "00" || hours == "0")
                         alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
                     else
-                        alarmbetween.text = getString(R.string.alarm_in)+hours+" heures "+minutes+" minutes"
+                        alarmbetween.text = getString(R.string.alarm_in)+" "+hours+" heures "+minutes+" minutes"
                     isRunning = true
                     try {
                         threadActualize.start()

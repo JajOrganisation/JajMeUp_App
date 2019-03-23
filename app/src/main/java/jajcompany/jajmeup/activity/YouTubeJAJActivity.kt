@@ -44,16 +44,19 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val audioManager: AudioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         val maxVolume = audioManager.getStreamMaxVolume(STREAM_MUSIC)
+        val currentVolume = audioManager.getStreamVolume(STREAM_MUSIC)
         val prefVolume = sharedPreferences.getInt("volume_reveil", 6)
         val finalVolume = ((prefVolume*10)*maxVolume)/100
         audioManager.setStreamVolume(STREAM_MUSIC, finalVolume, 0)
         val handler = Handler()
         val runnableMyYoutubeAlarm = Runnable {
+            audioManager.setStreamVolume(STREAM_MUSIC, currentVolume, 0)
             finish()
             val intentt = YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), "Celui qui a voté pour toi n'a pas été assez bon...")
             this.startActivity(intentt)
         }
         val runnableMyLastAlarm = Runnable {
+            audioManager.setStreamVolume(STREAM_MUSIC, currentVolume, 0)
             startLastAlarm()
         }
         setContentView(R.layout.youtube_layout)
@@ -62,6 +65,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         initUI()
         youtubeAlarm.initialize(API_KEY, youtubePlayerInit)
         stopAlarm.setOnClickListener {
+            audioManager.setStreamVolume(STREAM_MUSIC, currentVolume, 0)
             if (votant != "Ton réveil") {
                 Log.d("HELLO", "STOP ALARM")
                 //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)

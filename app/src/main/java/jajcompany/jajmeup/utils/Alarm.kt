@@ -14,6 +14,7 @@ import android.widget.Toast
 import java.util.*
 import jajcompany.jajmeup.activity.*
 import java.lang.Exception
+import java.text.DateFormat
 
 
 @SuppressLint("StaticFieldLeak")
@@ -71,8 +72,11 @@ object Alarm {
 
     fun getBetween(alarmTotalDepart: String): String{
         val getTime = Calendar.getInstance()
+        Log.d("HELLO", "AM PM "+getTime.get(Calendar.AM_PM).toString())
         val alarmTotal = (alarmTotalDepart.split(':')[0].toInt()).toString()+":"+ (alarmTotalDepart.split(':')[1].toInt()).toString()
-        val currentTimeTotal = (getTime.get(Calendar.HOUR)).toString()+":"+getTime.get(Calendar.MINUTE).toString()
+        var currentTimeTotal = (getTime.get(Calendar.HOUR)).toString()+":"+getTime.get(Calendar.MINUTE).toString()
+        if (getTime.get(Calendar.AM_PM) == 1)
+            currentTimeTotal = ((getTime.get(Calendar.HOUR))+12).toString()+":"+getTime.get(Calendar.MINUTE).toString()
         Log.d("HELLO", "TIME = Current $currentTimeTotal Alarm $alarmTotal")
         var hoursfinal = 0
         var minutesfinal = 0

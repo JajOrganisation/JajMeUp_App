@@ -45,12 +45,11 @@ object FireStore {
         }
     }
 
-    fun updateCurrentUser(name: String = "", reveilDefault: String = "", reveilCurrent: String = "", mynumber: Int = 0, authorization: Int = -1, profilePicture: String? = null) {
+    fun updateCurrentUser(name: String = "", reveilDefault: String = "", reveilCurrent: String = "", authorization: Int = -1, profilePicture: String? = null) {
         val userFieldMap = mutableMapOf<String, Any>()
         if (name != "") userFieldMap["name"] = name
         if (reveilDefault != "") userFieldMap["reveilDefaultLink"] = reveilDefault
         if (reveilCurrent != "") userFieldMap["reveilCurrentHour"] = reveilCurrent
-        if(mynumber != 0) userFieldMap["mynumber"] = mynumber
         if (profilePicture != null) userFieldMap["profilePicture"] = profilePicture
         if (authorization != -1) userFieldMap["authorization"] = authorization
         currentUserDocRef.update(userFieldMap)

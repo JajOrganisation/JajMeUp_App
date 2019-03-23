@@ -33,6 +33,8 @@ class LastAlarmActivity : AppCompatActivity() {
         textLastAlarm.text = getString(R.string.lastAlarmText)
         stopAlarm.setOnClickListener {
             mediaPlayer.stop()
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+            sharedPreferences.edit().putBoolean("on_wakeup_my_alarm_clock", true).apply()
             finish()
         }
         val audioManager: AudioManager = getSystemService(YouTubeBaseActivity.AUDIO_SERVICE) as AudioManager

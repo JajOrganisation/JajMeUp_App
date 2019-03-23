@@ -103,9 +103,12 @@ object Alarm {
                 Alarm.deleteAlarm(context)
                 //switchAlarm.isChecked = false
                 Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_LONG).show()
-                val haha = LoadingAlarm.newIntent(context)
-                haha.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(haha)
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                if (sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") {
+                    val haha = LoadingAlarm.newIntent(context)
+                    haha.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(haha)
+                }
             }
         }
     }

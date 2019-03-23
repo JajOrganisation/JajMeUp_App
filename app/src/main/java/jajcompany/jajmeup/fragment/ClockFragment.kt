@@ -1,5 +1,6 @@
 package jajcompany.jajmeup.fragment
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
@@ -18,13 +19,21 @@ class ClockFragment : Fragment() {
 
     private final var isRunning = false
 
+    @SuppressLint("SetTextI18n")
     private val threadActualize = Thread(Runnable {
             while(isRunning) {
                 try {
                     Log.d("HELLO", "On change")
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-                    alarmbetween.text = getString(R.string.alarm_in)+" "+Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
-                    Thread.sleep(1000 * 10)
+                    val hoursbeetween = Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
+                    val hours = hoursbeetween.split(':')[0]
+                    val minutes = hoursbeetween.split(':')[1]
+                    if (hours == "00" || hours == "0")
+                        alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
+                    else
+                        alarmbetween.text = getString(R.string.alarm_in)+" "+hours+" heures "+minutes+" minutes"
+
+                    Thread.sleep(1000 * 5)
                 }catch (e: Exception) {
 
                 }
@@ -35,6 +44,7 @@ class ClockFragment : Fragment() {
         return inflater?.inflate(R.layout.clock_layout, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //Toast.makeText(activity, "UP HAHA", Toast.LENGTH_SHORT).show()
         alarm.setIs24HourView(true)
@@ -48,9 +58,14 @@ class ClockFragment : Fragment() {
                     sharedPreferences.edit().putString("hours_clock", alarm.hour.toString() + ":" + alarm.minute.toString()).apply()
                     Log.d("HELLO", "Coucou "+alarm.hour.toString()+":"+alarm.minute.toString())
                     //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                    val betweenTime = Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
-                    sharedPreferences.edit().putString("between_time", betweenTime).apply()
-                    alarmbetween.text = getString(R.string.alarm_in)+" "+betweenTime
+                    val hoursbeetween = Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
+                    val hours = hoursbeetween.split(':')[0]
+                    val minutes = hoursbeetween.split(':')[1]
+                    Log.d("HELLO", "Oui "+hours+minutes)
+                    if (hours == "00" || hours == "0")
+                        alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
+                    else
+                        alarmbetween.text = getString(R.string.alarm_in)+hours+" heures "+minutes+" minutes"
                     isRunning = true
                     try {
                         threadActualize.start()
@@ -94,8 +109,14 @@ class ClockFragment : Fragment() {
         alarmSet.isChecked = sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11"
         if(alarmSet.isChecked) {
             Log.d("HELLO", "Au revoir"+sharedPreferences.getString("hours_clock", "-11:-11"))
-            alarm.hour = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[0].toInt()
-            alarm.minute = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[1].toInt()
+            val hoursbeetween = Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
+            val hours = hoursbeetween.split(':')[0]
+            val minutes = hoursbeetween.split(':')[1]
+            Log.d("HELLO", "Oui "+hours+minutes)
+            if (hours == "00" || hours == "0")
+                alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
+            else
+                alarmbetween.text = getString(R.string.alarm_in)+" "+hours+" heures "+minutes+" minutes"
             isRunning = true
             try {
                 threadActualize.start()

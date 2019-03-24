@@ -8,11 +8,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.view.MotionEventCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -23,17 +21,16 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import jajcompany.jajmeup.R
-import jajcompany.jajmeup.RecycleView.item.VoteItem
+import jajcompany.jajmeup.RecycleView.item.HistoryItem
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
 import kotlinx.android.synthetic.main.history_layout.*
-import kotlinx.android.synthetic.main.main_layout.*
 
 class HistoryFragment : Fragment() {
 
-    private lateinit var voteListenerRegistration: ListenerRegistration
+    private lateinit var historyListenerRegistration: ListenerRegistration
     private var shouldInitRecyclerView = true
-    private lateinit var voteSection: Section
+    private lateinit var historySection: Section
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val receiveDeconnect = LocalBroadcastManager.getInstance(this@HistoryFragment.context!!)
@@ -42,13 +39,13 @@ class HistoryFragment : Fragment() {
                 Log.d("HELLO", "signout receive community fragment")
                 receiveDeconnect.unregisterReceiver(this)
                 try {
-                    FireStore.removeListener(voteListenerRegistration)
+                    FireStore.removeListener(historyListenerRegistration)
                 } catch (e: Exception) {
                     Log.d("HELLO", "History unset "+e)
                 }
             }
         }, IntentFilter("deconnectUser"))
-        voteListenerRegistration = FireStore.addReveilListener(this.activity!!, this::updateRecyclerView)
+        historyListenerRegistration = FireStore.addHistoryListener(this.activity!!, this::updateRecyclerView)
         return inflater?.inflate(R.layout.history_layout, container, false)
     }
 
@@ -58,17 +55,17 @@ class HistoryFragment : Fragment() {
                 history_list.apply {
                     layoutManager = LinearLayoutManager(this@HistoryFragment.context)
                     adapter = GroupAdapter<ViewHolder>().apply {
-                        voteSection = Section(items)
-                        add(voteSection)
+                        historySection = Section(items)
+                        add(historySection)
                         setOnItemClickListener(onItemClick)
                     }
                 }
                 shouldInitRecyclerView = false
             } catch (e: Exception) {
-                Log.e("Error", "Error update votes")
+                Log.e("Error", "Error update history")
             }
         }
-        fun updateItems() = voteSection.update(items)
+        fun updateItems() = historySection.update(items)
 
         if (shouldInitRecyclerView)
             init()
@@ -76,16 +73,16 @@ class HistoryFragment : Fragment() {
             try {
                 updateItems()
             } catch (e: Exception) {
-                Log.e("Error", "Error update votes")
+                Log.e("Error", "Error update history")
             }
         }
 
     }
 
     private val onItemClick = OnItemClickListener { item, view ->
-        if (item is VoteItem) {
+        if (item is HistoryItem) {
             if (Jajinternet.getStatusInternet(context)) {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.vote.lien)))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.history.lien)))
 
             }
             else{

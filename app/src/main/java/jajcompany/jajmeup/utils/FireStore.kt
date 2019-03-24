@@ -11,10 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.xwray.groupie.kotlinandroidextensions.Item
-import jajcompany.jajmeup.RecycleView.item.AskingFriendsItem
-import jajcompany.jajmeup.RecycleView.item.NotifItem
-import jajcompany.jajmeup.RecycleView.item.UserItem
-import jajcompany.jajmeup.RecycleView.item.VoteItem
+import jajcompany.jajmeup.RecycleView.item.*
 import jajcompany.jajmeup.models.*
 import java.util.*
 
@@ -449,6 +446,36 @@ object FireStore {
                 }
     }
 
+    fun addHistoryListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+        return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}/history")
+                .orderBy("time", Query.Direction.DESCENDING)
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Log.e("FIRESTORE", "Notification listener error.", firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+                    val items = mutableListOf<Item>()
+                    querySnapshot!!.documents.forEach {
+                        val historytmp = it.toObject(History::class.java)!!
+                        fireStoreInstance.collection("users/")
+                                .whereEqualTo("uid", it["whowokeup"].toString())
+                                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                                    if (firebaseFirestoreException != null) {
+                                        Log.e("FIRESTORE", "Notification listener error.", firebaseFirestoreException)
+                                        return@addSnapshotListener
+                                    }
+                                    querySnapshot!!.documents.forEach {
+                                        val usertmp = it.toObject(User::class.java)!!
+                                        items.add(HistoryItem(historytmp, usertmp.name, usertmp.profilePicture!!, context))
+                                    }
+                                    onListen(items)
+                                }
+                    }
+                    onListen(items)
+                }
+    }
+
     fun addRemovedFriendsListener(onListen: (List<String>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/removedFriends")
@@ -510,6 +537,14 @@ object FireStore {
         fireStoreInstance.document("users/${otherUserId}")
                 .collection("notifications")
                 .add(notif)
+                .addOnFailureListener { e -> Log.d("HELLO", "Error send notif", e) }
+    }
+
+    fun updateHistory(history: History) {
+        fireStoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
+                ?: throw NullPointerException("UID is null.")}")
+                .collection("history")
+                .add(history)
                 .addOnFailureListener { e -> Log.d("HELLO", "Error send notif", e) }
     }
 

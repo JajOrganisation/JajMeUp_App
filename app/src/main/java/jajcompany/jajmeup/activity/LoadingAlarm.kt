@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import jajcompany.jajmeup.models.History
 import jajcompany.jajmeup.models.NotifWakeUp
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
@@ -26,7 +27,9 @@ class LoadingAlarm : AppCompatActivity() {
                        if(it.votant != "Ton réveil") {
                            val user = FirebaseAuth.getInstance().currentUser
                            val notif = NotifWakeUp("Wakeup", it.lien, it.videoname, user!!.uid, Calendar.getInstance().time, "unread")
+                           val history = History(it.lien, it.videoname, it.votantuid, Calendar.getInstance().time)
                            FireStore.sendNotifWakeUp(notif, it.votantuid)
+                           FireStore.updateHistory(history)
                        }
                        else {
                            this.startActivity(YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), it.message))

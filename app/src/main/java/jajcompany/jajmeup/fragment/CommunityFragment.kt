@@ -40,6 +40,7 @@ import java.util.regex.Pattern
 
 class CommunityFragment : Fragment() {
 
+    private var listTest: MutableList<String> = mutableListOf()
     private lateinit var userListenerRegistration: ListenerRegistration
     private lateinit var friendsListenerRegistration: ListenerRegistration
     private var listListenerRegistration: MutableList<ListenerRegistration> = mutableListOf()
@@ -84,7 +85,7 @@ class CommunityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        detectPref()
+        //detectPref()
         header_friends.header_communauty.text = getString(R.string.label_header_friends_list_community_string)
 
         header_friends.header_communauty.setOnClickListener {
@@ -135,12 +136,13 @@ class CommunityFragment : Fragment() {
     override fun onResume() {
         detectPref()
         super.onResume()
-        unsetListWorld()
-        unsetFriendsList()
-        unsetRemoveFriends()
-        setUpdateListWorld()
-        setUpdateListFriends()
-        setRemoveFriends()
+        //unsetListWorld()
+        //unsetFriendsList()
+        //unsetFriends()
+        //unsetRemoveFriends()
+       // setUpdateListWorld()
+        //setUpdateListFriends()
+        //setRemoveFriends()
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
         if (sharedPreferences.getBoolean("on_wakeup", false)){
@@ -416,7 +418,10 @@ class CommunityFragment : Fragment() {
             if (test[0] != "Nothing") {
                 listListenerRegistration = mutableListOf()
                 for (current in test) {
-                    listListenerRegistration.add(FireStore.addFriendsListener(this.activity!!, current, this::updateRecyclerViewFriends))
+                    if (!listTest.contains(current)) {
+                        listListenerRegistration.add(FireStore.addFriendsListener(this.activity!!, current, this::updateRecyclerViewFriends))
+                        listTest.add(current)
+                    }
                 }
             }
         }
@@ -481,9 +486,15 @@ class CommunityFragment : Fragment() {
     }
 
     private fun detectPref() {
+        try {
+            unsetFriendsList()
+            unsetRemoveFriends()
+        }catch (e: java.lang.Exception){
+
+        }
         setRemoveFriends()
         setUpdateListFriends()
-        setUpdateListWorld()
+        //setUpdateListWorld()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
         if (sharedPreferences.getString("visibility_preference", "WORLD") == "WORLD") {
             setUpdateListWorld()

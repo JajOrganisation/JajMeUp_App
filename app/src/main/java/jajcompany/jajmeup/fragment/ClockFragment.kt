@@ -54,7 +54,7 @@ class ClockFragment : Fragment() {
                 //alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 if (sharedPreferences.getString("hours_clock", "-11:-11") == "-11:-11") {
                     Log.d("HELLO", "Coucou "+alarm.hour.toString()+":"+alarm.minute.toString())
-                    Alarm.setAlarm(this.activity!!, alarm.hour, alarm.minute, alarmSet)
+                    Alarm.setAlarm(alarm.hour, alarm.minute, alarmSet)
                     sharedPreferences.edit().putString("hours_clock", alarm.hour.toString() + ":" + alarm.minute.toString()).apply()
                     Log.d("HELLO", "Coucou "+alarm.hour.toString()+":"+alarm.minute.toString())
                     //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -78,7 +78,7 @@ class ClockFragment : Fragment() {
                 sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
                 sharedPreferences.edit().putString("between_time", "-11:-11").apply()
                 alarmbetween.text = getString(R.string.no_alarm)
-                Alarm.deleteAlarm(this.activity!!)
+                Alarm.deleteAlarm()
                 isRunning = false
             }
         }
@@ -96,7 +96,7 @@ class ClockFragment : Fragment() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
         if (sharedPreferences.getBoolean("on_wakeup_clock", false)){
             sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
-            Alarm.deleteAlarm(this.activity!!)
+            Alarm.deleteAlarm()
             sharedPreferences.edit().putBoolean("on_wakeup_clock", false).apply()
             alarmSet.isChecked = false
         }
@@ -104,7 +104,7 @@ class ClockFragment : Fragment() {
             sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
             sharedPreferences.edit().putBoolean("on_wakeup_my_alarm_clock", false).apply()
             alarmSet.isChecked = false
-            Alarm.deleteAlarm(this.activity!!)
+            Alarm.deleteAlarm()
         }
         alarmSet.isChecked = sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11"
         if(alarmSet.isChecked) {

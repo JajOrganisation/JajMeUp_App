@@ -17,10 +17,7 @@ import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.MotionEventCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ListenerRegistration
@@ -45,8 +42,13 @@ class PrincipalActivity : AppCompatActivity() {
     var x2: Float = 0F
     var MIN_DISTANCE = 150
 
+    init {
+        instance = this
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         PreferenceManager.setDefaultValues(this, R.xml.preferencesettings, false)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
         if (auth.currentUser == null) {
@@ -193,6 +195,12 @@ class PrincipalActivity : AppCompatActivity() {
     }
 
     companion object {
+        private var instance: PrincipalActivity? = null
+
+        fun applicationContext() : Context {
+            return instance!!.applicationContext
+        }
+
         fun newIntent(context: Context): Intent {
             val intent = Intent(context, PrincipalActivity::class.java)
             return intent

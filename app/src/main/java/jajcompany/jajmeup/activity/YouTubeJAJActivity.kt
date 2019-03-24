@@ -7,9 +7,13 @@ import android.media.AudioManager.STREAM_MUSIC
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.transition.Slide
+import android.transition.TransitionManager
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.WindowManager
-import android.widget.Toast
+import android.widget.*
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -21,6 +25,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
 
     private var votantString: String = ""
     private lateinit var myYTPlayer: YouTubePlayer
+    private var clicked = false
 
     companion object IntentOptions{
         val API_KEY: String = "AIzaSyBjGxgGofuyFwavGjp4VMlNkfD0_iFcscg"
@@ -39,7 +44,6 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
     lateinit var youtubePlayerInit: YouTubePlayer.OnInitializedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val audioManager: AudioManager = getSystemService(AUDIO_SERVICE) as AudioManager
@@ -67,25 +71,32 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         stopAlarm.setOnClickListener {
             audioManager.setStreamVolume(STREAM_MUSIC, currentVolume, 0)
             if (votant != "Ton réveil") {
-                Log.d("HELLO", "STOP ALARM")
-                //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-                sharedPreferences.edit().putString("user_wakeup", votant).apply()
-                sharedPreferences.edit().putString("message_wakeup", message).apply()
-                sharedPreferences.edit().putString("link_wakeup", lien).apply()
-                sharedPreferences.edit().putBoolean("on_wakeup", true).apply()
-                sharedPreferences.edit().putBoolean("on_wakeup_clock", true).apply()
-                handler.removeCallbacks(runnableMyYoutubeAlarm)
-                Log.d("HELLO", "STOP ALARM ALWAYS ALIVE")
+                if (!clicked) {
+                    myYTPlayer.pause()
+                    Log.d("HELLO", "STOP ALARM")
+                    //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+                    sharedPreferences.edit().putString("user_wakeup", votant).apply()
+                    sharedPreferences.edit().putString("message_wakeup", message).apply()
+                    sharedPreferences.edit().putString("link_wakeup", lien).apply()
+                    sharedPreferences.edit().putBoolean("on_wakeup", true).apply()
+                    sharedPreferences.edit().putBoolean("on_wakeup_clock", true).apply()
+                    handler.removeCallbacks(runnableMyYoutubeAlarm)
+                    Log.d("HELLO", "STOP ALARM ALWAYS ALIVE")
+                    clicked = true
+                    showPopOnWakeUp()
+                }
+                else
+                    finish()
             }
             else {
                 sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", true).apply()
                 sharedPreferences.edit().putBoolean("on_wakeup_my_alarm_clock", true).apply()
                 handler.removeCallbacks(runnableMyLastAlarm)
+                val principalStart = MainActivity.newIntent(this)
+                principalStart.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                this.startActivity(MainActivity.newIntent(this))
+                finish()
             }
-            val principalStart = MainActivity.newIntent(this)
-            principalStart.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            this.startActivity(MainActivity.newIntent(this))
-            finish()
         }
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or
         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
@@ -108,6 +119,55 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         else {
             handler.postDelayed(runnableMyLastAlarm, timebeforequit.toLong())
         }
+    }
+
+    private fun showPopOnWakeUp() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.edit().putString("user_wakeup", YouTubeJAJActivity.votant).apply()
+        sharedPreferences.edit().putString("message_wakeup", YouTubeJAJActivity.message).apply()
+        sharedPreferences.edit().putString("link_wakeup", YouTubeJAJActivity.lien).apply()
+        sharedPreferences.edit().putBoolean("on_wakeup", false).apply()
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.wakeup_popup_layout, null)
+        val popupWindow = PopupWindow(
+                view, // Custom view to show in popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+                LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+        )
+
+        val slideIn = Slide()
+        slideIn.slideEdge = Gravity.TOP
+        popupWindow.enterTransition = slideIn
+        val slideOut = Slide()
+        slideOut.slideEdge = Gravity.END
+        popupWindow.exitTransition = slideOut
+        popupWindow.isFocusable = true
+        val closepop = view.findViewById<Button>(R.id.button_closepop_wakeup)
+        val labelyt = view.findViewById<TextView>(R.id.yt_wakeup)
+        val labelvotant = view.findViewById<TextView>(R.id.votant_wakeup)
+        val labelmess = view.findViewById<TextView>(R.id.message_wakeup)
+        closepop.setOnClickListener {
+            popupWindow.dismiss()
+            this.finish()
+        }
+
+        labelyt.text = getString(R.string.quelle_video)+ YoutubeInformation.getTitleQuietly(sharedPreferences.getString("link_wakeup", ""))
+
+        labelvotant.text = sharedPreferences.getString("user_wakeup", "")+" t'as réveillé"
+        if (sharedPreferences.getString("message_wakeup", "") != "") {
+            labelmess.text = sharedPreferences.getString("message_wakeup", "")
+        }
+        TransitionManager.beginDelayedTransition(youtube_layout)
+        this.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        popupWindow.showAtLocation(
+                youtube_layout,
+                Gravity.CENTER,
+                0,
+                0
+        )
     }
 
     private fun startLastAlarm() {

@@ -24,10 +24,11 @@ object Alarm {
     lateinit var switchAlarm: Switch
     //lateinit var onReveilInfoReceiver: OnReveilInfo
 
-    fun setAlarm(context: Context, hours: Int, minutes: Int, switchA: Switch) {
-        val intentAlarmPrincipale = Intent(context, OnAlarm::class.java)
+    fun setAlarm(hours: Int, minutes: Int, switchA: Switch) {
+        val contextApp = PrincipalActivity.applicationContext()
+        val intentAlarmPrincipale = Intent(contextApp, OnAlarm::class.java)
         intentAlarmPrincipale.action = "onReveilRing"
-        val pendingAlarmPrincipal = PendingIntent.getBroadcast(context, 0, intentAlarmPrincipale, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingAlarmPrincipal = PendingIntent.getBroadcast(contextApp, 0, intentAlarmPrincipale, PendingIntent.FLAG_UPDATE_CURRENT)
         val cal: Calendar = Calendar.getInstance()
         cal.set(Calendar.HOUR_OF_DAY, hours)
         cal.set(Calendar.MINUTE, minutes)
@@ -40,29 +41,34 @@ object Alarm {
             else
                 time += time + 1000 * 60 * 60 * 24
         }
-        alarmManagerPrincipal = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManagerPrincipal = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManagerPrincipal.setExact(AlarmManager.RTC_WAKEUP, time, pendingAlarmPrincipal)
         switchAlarm = switchA
 
 
-        val intentAlarmBetween = Intent(context, OnUpdateBetween::class.java)
+        val intentAlarmBetween = Intent(contextApp, OnUpdateBetween::class.java)
         intentAlarmBetween.action = "onUpdateTimer"
-        val pendingAlarmBetween = PendingIntent.getBroadcast(context, 0, intentAlarmBetween, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManagerBetween = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val pendingAlarmBetween = PendingIntent.getBroadcast(contextApp, 0, intentAlarmBetween, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManagerBetween = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManagerBetween.setInexactRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), 1000, pendingAlarmBetween)
         FireStore.updateCurrentUser(reveilCurrent =  "up")
     }
 
-    fun deleteAlarm(context: Context) {
+    fun deleteAlarm() {
         try {
-            val intentPrincipal = Intent(context, OnAlarm::class.java)
+            val contextApp = PrincipalActivity.applicationContext()
+            val intentPrincipal = Intent(contextApp, OnAlarm::class.java)
             intentPrincipal.action = "onReveilRing"
-            val pendingIntent = PendingIntent.getBroadcast(context, 0, intentPrincipal, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = PendingIntent.getBroadcast(contextApp, 0, intentPrincipal, PendingIntent.FLAG_UPDATE_CURRENT)
+            alarmManagerPrincipal = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManagerPrincipal.cancel(pendingIntent)
-            val intentBetween = Intent(context, OnAlarm::class.java)
+            pendingIntent.cancel()
+            val intentBetween = Intent(contextApp, OnUpdateBetween::class.java)
             intentBetween.action = "onUpdateTimer"
-            val pendingIntentBetween = PendingIntent.getBroadcast(context, 0, intentBetween, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntentBetween = PendingIntent.getBroadcast(contextApp, 0, intentBetween, PendingIntent.FLAG_UPDATE_CURRENT)
+            alarmManagerBetween = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManagerBetween.cancel(pendingIntentBetween)
+            pendingIntentBetween.cancel()
             //context.unregisterReceiver(onReveilInfoReceiver)
             FireStore.updateCurrentUser(reveilCurrent = "down")
         }catch (e: Exception) {
@@ -104,14 +110,17 @@ object Alarm {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilRing") {
                 Log.d("HELLO", "On sonne")
-                Alarm.deleteAlarm(context)
+                Alarm.deleteAlarm()
                 //switchAlarm.isChecked = false
-                Toast.makeText(context, "Ca sonne mon gars", Toast.LENGTH_LONG).show()
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                 if (sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") {
                     val haha = LoadingAlarm.newIntent(context)
                     haha.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     context.startActivity(haha)
+                }
+                else {
+                    Log.d("HELLO", "Recu alarm sans reveil")
+                    deleteAlarm()
                 }
             }
         }
@@ -120,9 +129,16 @@ object Alarm {
     class OnUpdateBetween : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onUpdateTimer") {
-                Log.d("HELLO", "On change le between time")
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                sharedPreferences.edit().putString("between_time", Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())).apply()
+                if (sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") {
+                    Log.d("HELLO", "On change le between time")
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    sharedPreferences.edit().putString("between_time", Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())).apply()
+                }
+                else {
+                    Log.d("HELLO", "Recu update sans reveil "+context.toString())
+                    deleteAlarm()
+                }
             }
         }
     }

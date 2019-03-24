@@ -1,18 +1,17 @@
 package jajcompany.jajmeup.fragment
 
+import android.app.KeyguardManager
 import android.content.*
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -148,14 +147,14 @@ class CommunityFragment : Fragment() {
         if (sharedPreferences.getBoolean("on_wakeup", false)){
             Log.d("HELLO", "OK")
             community_layout.post{
-                Alarm.deleteAlarm(this.activity!!)
+                Alarm.deleteAlarm()
                 sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
-                showPopOnWakeUp()
             }
         }
         else if (sharedPreferences.getBoolean("on_wakeup_my_alarm", false)){
             sharedPreferences.edit().putBoolean("on_wakeup_my_alarm", false).apply()
             sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
+            Alarm.deleteAlarm()
         }
         if (!Jajinternet.getStatusInternet(context)) {
             Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
@@ -680,50 +679,6 @@ class CommunityFragment : Fragment() {
                 0
         )
     }
-    private fun showPopOnWakeUp() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
-        sharedPreferences.edit().putString("user_wakeup", YouTubeJAJActivity.votant).apply()
-        sharedPreferences.edit().putString("message_wakeup", YouTubeJAJActivity.message).apply()
-        sharedPreferences.edit().putString("link_wakeup", YouTubeJAJActivity.lien).apply()
-        sharedPreferences.edit().putBoolean("on_wakeup", false).apply()
-        val inflater = LayoutInflater.from(this.activity)
-        val view = inflater.inflate(R.layout.wakeup_popup_layout, null)
-        val popupWindow = PopupWindow(
-                view, // Custom view to show in popup window
-                LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
-                LinearLayout.LayoutParams.WRAP_CONTENT // Window height
-        )
-
-        val slideIn = Slide()
-        slideIn.slideEdge = Gravity.TOP
-        popupWindow.enterTransition = slideIn
-        val slideOut = Slide()
-        slideOut.slideEdge = Gravity.END
-        popupWindow.exitTransition = slideOut
-        popupWindow.isFocusable = true
-        val closepop = view.findViewById<Button>(R.id.button_closepop_wakeup)
-        val labelyt = view.findViewById<TextView>(R.id.yt_wakeup)
-        val labelvotant = view.findViewById<TextView>(R.id.votant_wakeup)
-        val labelmess = view.findViewById<TextView>(R.id.message_wakeup)
-        closepop.setOnClickListener {
-            popupWindow.dismiss()
-        }
-
-        labelyt.text = getString(R.string.quelle_video)+getTitleQuietly(sharedPreferences.getString("link_wakeup", ""))
-
-        labelvotant.text = sharedPreferences.getString("user_wakeup", "")+" t'as réveillé"
-        if (sharedPreferences.getString("message_wakeup", "") != "") {
-            labelmess.text = sharedPreferences.getString("message_wakeup", "")
-        }
-        TransitionManager.beginDelayedTransition(community_layout)
-        popupWindow.showAtLocation(
-                community_layout,
-                Gravity.CENTER,
-                0,
-                0
-        )
-    }
-
     fun showPopSearch(item: UserItem, isFriend: Boolean) {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.search_popup_layout, null)

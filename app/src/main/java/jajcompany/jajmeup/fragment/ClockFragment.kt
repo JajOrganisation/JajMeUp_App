@@ -108,6 +108,8 @@ class ClockFragment : Fragment() {
         }
         alarmSet.isChecked = sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11"
         if(alarmSet.isChecked) {
+            alarm.hour = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[0].toInt()
+            alarm.minute = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[1].toInt()
             Log.d("HELLO", "Au revoir"+sharedPreferences.getString("hours_clock", "-11:-11"))
             val hoursbeetween = Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
             val hours = hoursbeetween.split(':')[0]

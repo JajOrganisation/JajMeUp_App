@@ -258,6 +258,7 @@ class PrincipalActivity : AppCompatActivity() {
         if (sharedPreferences.getString("visibility_preference", "WORLD") == "PRIVATE") {
             navigation.menu.getItem(2).isEnabled = false
             navigation.menu.getItem(2).isVisible = false
+            navigation.menu.removeItem(2)
             if (navigation.menu.getItem(2).isChecked) {
                 navigation.selectedItemId = R.id.navigation_clock
             }

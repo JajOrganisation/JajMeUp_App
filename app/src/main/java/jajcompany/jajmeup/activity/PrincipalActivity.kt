@@ -31,6 +31,7 @@ import jajcompany.jajmeup.R
 import jajcompany.jajmeup.fragment.ClockFragment
 import jajcompany.jajmeup.fragment.CommunityFragment
 import jajcompany.jajmeup.fragment.HistoryFragment
+import jajcompany.jajmeup.utils.Alarm
 import jajcompany.jajmeup.utils.FireStore
 import kotlinx.android.synthetic.main.main_layout.*
 import java.util.regex.Pattern
@@ -114,6 +115,11 @@ class PrincipalActivity : AppCompatActivity() {
         }
         registerReceiver(broadcast_reciever, IntentFilter("finish_principal"))
         checkPref()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        if (sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") {
+            Alarm.unsetNotif()
+            Alarm.setNotif(sharedPreferences.getString("hours_clock", "-11:-11").split(':')[0].toInt(), sharedPreferences.getString("hours_clock", "-11:-11").split(':')[1].toInt())
+        }
 
     }
 

@@ -57,7 +57,7 @@ class PrincipalActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                     "ChannelIDTest",
-                    "Example Service Channel",
+                    "JajMeUp Service",
                     NotificationManager.IMPORTANCE_DEFAULT
             )
 

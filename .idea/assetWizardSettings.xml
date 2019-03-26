@@ -46,7 +46,7 @@
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="imageAsset" value="D:\Android_Studio\Project\Logo\J_Accueil.png" />
-                                      <entry key="outputName" value="ic_logo_round_icon" />
+                                      <entry key="outputName" value="ic_notification_alarm" />
                                       <entry key="theme" value="HOLO_DARK" />
                                       <entry key="themeColor" value="dddddd" />
                                     </map>

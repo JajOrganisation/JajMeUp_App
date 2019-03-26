@@ -1,17 +1,19 @@
 package jajcompany.jajmeup.fragment
 
 import android.annotation.SuppressLint
-import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import jajcompany.jajmeup.R
+import jajcompany.jajmeup.activity.PrincipalActivity
 import jajcompany.jajmeup.utils.Alarm
+import jajcompany.jajmeup.utils.AlarmNotificationService
 import kotlinx.android.synthetic.main.clock_layout.*
 
 
@@ -72,6 +74,8 @@ class ClockFragment : Fragment() {
                     } catch (e: Exception){
 
                     }
+                    //val intentTest = Intent(this.activity, AlarmNotificationService::class.java)
+                    //ContextCompat.startForegroundService(PrincipalActivity.applicationContext(), intentTest)
                 }
             }
             else {
@@ -80,6 +84,7 @@ class ClockFragment : Fragment() {
                 alarmbetween.text = getString(R.string.no_alarm)
                 Alarm.deleteAlarm()
                 isRunning = false
+
             }
         }
         alarm.setOnTimeChangedListener { timePicker, _, _ ->

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.STREAM_MUSIC
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
@@ -98,14 +99,19 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
                 finish()
             }
         }
+        //if (android.os.Build.VERSION.SDK_INT < 27) {
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or
-        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN or
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        /*} else {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        }*/
         var timebeforequit = sharedPreferences.getString("time_before_my_alarm_preference", "3").toInt()
         if (timebeforequit == 75) {
             timebeforequit = 45000

@@ -50,6 +50,17 @@ object Alarm {
         //alarmManagerPrincipal.setAlarmClock(ac, pendingAlarmPrincipal)
         alarmManagerPrincipal.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingAlarmPrincipal)
         switchAlarm = switchA
+        setNotif(hours, minutes)
+        /*val intentAlarmBetween = Intent(contextApp, OnUpdateBetween::class.java)
+        intentAlarmBetween.action = "onUpdateTimer"
+        val pendingAlarmBetween = PendingIntent.getBroadcast(contextApp, 0, intentAlarmBetween, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManagerBetween = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManagerBetween.setInexactRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), 1000, pendingAlarmBetween)*/
+        FireStore.updateCurrentUser(reveilCurrent =  "up")
+    }
+
+    fun setNotif(hours: Int, minutes: Int) {
+        val contextApp = PrincipalActivity.applicationContext()
         var hoursString = hours.toString()
         var minutesString = minutes.toString()
         if (hours < 10)
@@ -59,13 +70,12 @@ object Alarm {
         val testMachin = Intent(contextApp, AlarmNotificationService::class.java)
         testMachin.putExtra("heureReveil", "$hoursString:$minutesString")
         ContextCompat.startForegroundService(contextApp, testMachin)
+    }
 
-        /*val intentAlarmBetween = Intent(contextApp, OnUpdateBetween::class.java)
-        intentAlarmBetween.action = "onUpdateTimer"
-        val pendingAlarmBetween = PendingIntent.getBroadcast(contextApp, 0, intentAlarmBetween, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManagerBetween = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManagerBetween.setInexactRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), 1000, pendingAlarmBetween)*/
-        FireStore.updateCurrentUser(reveilCurrent =  "up")
+    fun unsetNotif() {
+        val contextApp = PrincipalActivity.applicationContext()
+        val testMachin = Intent(contextApp, AlarmNotificationService::class.java)
+        contextApp.stopService(testMachin)
     }
 
     fun deleteAlarm() {
@@ -83,9 +93,8 @@ object Alarm {
             alarmManagerBetween = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManagerBetween.cancel(pendingIntentBetween)
             pendingIntentBetween.cancel()
-            val testMachin = Intent(contextApp, AlarmNotificationService::class.java)
-            contextApp.stopService(testMachin)
             //context.unregisterReceiver(onReveilInfoReceiver)
+            unsetNotif()
             FireStore.updateCurrentUser(reveilCurrent = "down")
         }catch (e: Exception) {
 

@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -58,7 +59,8 @@
 
         <receiver android:name=".utils.Alarm$OnAlarm" >
             <intent-filter>
-                <action android:name="onReveilRing"  android:exported="true" />
+                <action android:name="onReveilRing"
+                    android:exported="true"/>
             </intent-filter>
         </receiver>
 
@@ -70,6 +72,7 @@
 
         <service
         android:name=".utils.AlarmNotificationService"
+            android:enabled="true"
             android:exported="true" />
         <!--  <service
              android:name=".utils.TestService"

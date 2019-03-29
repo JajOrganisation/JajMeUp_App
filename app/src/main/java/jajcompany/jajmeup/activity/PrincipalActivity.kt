@@ -115,18 +115,26 @@ class PrincipalActivity : AppCompatActivity() {
         }
         registerReceiver(broadcast_reciever, IntentFilter("finish_principal"))
         checkPref()
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if (sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") {
-            Alarm.unsetNotif()
-            Alarm.setNotif(sharedPreferences.getString("hours_clock", "-11:-11").split(':')[0].toInt(), sharedPreferences.getString("hours_clock", "-11:-11").split(':')[1].toInt())
-        }
-
     }
 
     override fun onResume() {
         checkPref()
-        super.onResume()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        if ((sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") && !(sharedPreferences.getBoolean("on_wakeup_clock", false)) && !(sharedPreferences.getBoolean("on_wakeup_my_alarm_clock", false))) {
+            try {
+                Alarm.unsetNotif()
+                Alarm.setNotif(sharedPreferences.getString("hours_clock", "-11:-11").split(':')[0].toInt(), sharedPreferences.getString("hours_clock", "-11:-11").split(':')[1].toInt())
+            } catch (e: Exception) {
+            }
+        }
+        else {
+            try {
+                Alarm.unsetNotif()
+            } catch (e: Exception) {
+
+            }
+        }
+        super.onResume()
         if (sharedPreferences.getBoolean("on_wakeup", false)){
             replaceFragment(CommunityFragment())
         }

@@ -1,5 +1,6 @@
 package jajcompany.jajmeup.utils
 
+import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.app.PendingIntent
@@ -29,10 +30,6 @@ class AlarmNotificationService: Service() {
                 .build()
 
         startForeground(1, notification)
-
-        //do heavy work on a background thread
-        //stopSelf();
-
         return Service.START_NOT_STICKY
     }
 

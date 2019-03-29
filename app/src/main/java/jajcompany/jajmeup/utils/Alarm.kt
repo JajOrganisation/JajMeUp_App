@@ -48,7 +48,7 @@ object Alarm {
         alarmManagerPrincipal = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         //val ac = AlarmManager.AlarmClockInfo(time, pendingAlarmPrincipal)
         //alarmManagerPrincipal.setAlarmClock(ac, pendingAlarmPrincipal)
-        alarmManagerPrincipal.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingAlarmPrincipal)
+        alarmManagerPrincipal.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingAlarmPrincipal)
         switchAlarm = switchA
         setNotif(hours, minutes)
         /*val intentAlarmBetween = Intent(contextApp, OnUpdateBetween::class.java)

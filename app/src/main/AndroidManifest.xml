@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -57,14 +58,14 @@
             </intent-filter>
         </receiver>-->
 
-        <receiver android:name=".utils.Alarm$OnAlarm" >
+        <receiver android:process=":remote" android:name=".utils.Alarm$OnAlarm" >
             <intent-filter>
                 <action android:name="onReveilRing"
                     android:exported="true"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".utils.Alarm$OnUpdateBetween" >
+        <receiver android:process=":remote" android:name=".utils.Alarm$OnUpdateBetween" >
             <intent-filter>
                 <action android:name="onUpdateTimer" android:exported="true" />
             </intent-filter>
@@ -72,6 +73,11 @@
 
         <service
         android:name=".utils.AlarmNotificationService"
+        android:enabled="true"
+        android:exported="true" />
+
+        <service
+            android:name=".utils.AlarmService"
             android:enabled="true"
             android:exported="true" />
         <!--  <service

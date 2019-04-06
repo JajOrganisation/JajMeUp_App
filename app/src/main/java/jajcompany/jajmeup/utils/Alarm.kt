@@ -2,6 +2,8 @@ package jajcompany.jajmeup.utils
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,14 +11,19 @@ import android.content.Intent
 import android.os.SystemClock
 import android.preference.PreferenceManager
 import android.provider.SyncStateContract
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.getSystemService
+import android.support.v4.content.WakefulBroadcastReceiver
 import android.util.Log
 import android.widget.Switch
 import android.widget.Toast
 import com.google.android.gms.common.internal.Constants
+import jajcompany.jajmeup.R
 import java.util.*
 import jajcompany.jajmeup.activity.*
 import java.lang.Exception
+import java.sql.Time
 import java.text.DateFormat
 import kotlin.reflect.jvm.internal.impl.load.java.Constant
 
@@ -39,23 +46,22 @@ object Alarm {
         cal.set(Calendar.SECOND, 0)
         Log.d("HELLO", "HEURE "+cal.timeInMillis)
         var time = cal.timeInMillis - cal.timeInMillis % 60000
+
         if (System.currentTimeMillis() > time) {
-            if (Calendar.AM_PM === 0)
-                time += 1000 * 60 * 60 * 12
-            else
-                time += time + 1000 * 60 * 60 * 24
+            time += 1000 * 60 * 60 * 24
         }
+        Log.d("HELLO", "TIME "+time.toString())
         alarmManagerPrincipal = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         //val ac = AlarmManager.AlarmClockInfo(time, pendingAlarmPrincipal)
         //alarmManagerPrincipal.setAlarmClock(ac, pendingAlarmPrincipal)
         alarmManagerPrincipal.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingAlarmPrincipal)
         switchAlarm = switchA
         setNotif(hours, minutes)
-        /*val intentAlarmBetween = Intent(contextApp, OnUpdateBetween::class.java)
+        val intentAlarmBetween = Intent(contextApp, OnUpdateBetween::class.java)
         intentAlarmBetween.action = "onUpdateTimer"
         val pendingAlarmBetween = PendingIntent.getBroadcast(contextApp, 0, intentAlarmBetween, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManagerBetween = contextApp.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManagerBetween.setInexactRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), 1000, pendingAlarmBetween)*/
+        alarmManagerBetween.setInexactRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), 1000*60, pendingAlarmBetween)
         FireStore.updateCurrentUser(reveilCurrent =  "up")
     }
 
@@ -69,6 +75,7 @@ object Alarm {
             minutesString = "0"+minutesString
         val testMachin = Intent(contextApp, AlarmNotificationService::class.java)
         testMachin.putExtra("heureReveil", "$hoursString:$minutesString")
+        testMachin.putExtra("heureBetween", Alarm.getBetween("$hoursString:$minutesString"))
         ContextCompat.startForegroundService(contextApp, testMachin)
     }
 
@@ -101,37 +108,29 @@ object Alarm {
         }
     }
 
-    fun getBetween(alarmTotalDepart: String): String{
-        val getTime = Calendar.getInstance()
-        Log.d("HELLO", "AM PM "+getTime.get(Calendar.AM_PM).toString())
-        val alarmTotal = (alarmTotalDepart.split(':')[0].toInt()).toString()+":"+ (alarmTotalDepart.split(':')[1].toInt()).toString()
-        var currentTimeTotal = (getTime.get(Calendar.HOUR)).toString()+":"+getTime.get(Calendar.MINUTE).toString()
-        if (getTime.get(Calendar.AM_PM) == 1)
-            currentTimeTotal = ((getTime.get(Calendar.HOUR))+12).toString()+":"+getTime.get(Calendar.MINUTE).toString()
-        Log.d("HELLO", "TIME = Current $currentTimeTotal Alarm $alarmTotal")
-        var hoursfinal = 0
-        var minutesfinal = 0
-        if (currentTimeTotal.split(':')[0].toInt() > alarmTotal!!.split(':')[0].toInt())
-            hoursfinal = (23-currentTimeTotal.split(':')[0].toInt())+alarmTotal.split(':')[0].toInt()
-        else
-            hoursfinal = (alarmTotal.split(':')[0].toInt()-currentTimeTotal.split(':')[0].toInt())-1
-        if (currentTimeTotal.split(':')[1].toInt() > alarmTotal.split(':')[1].toInt())
-            minutesfinal = (60-currentTimeTotal.split(':')[1].toInt())+alarmTotal.split(':')[1].toInt()
-        else{
-            hoursfinal += 1
-            minutesfinal = alarmTotal.split(':')[1].toInt()-currentTimeTotal.split(':')[1].toInt()
-        }
-        var hoursfinalString = hoursfinal.toString()
-        var minutesfinalString = minutesfinal.toString()
-        if (hoursfinal < 10)
-            hoursfinalString = "0$hoursfinal"
-        if (minutesfinal < 10)
-            minutesfinalString = "0$minutesfinal"
-        Log.d("HELLO", "TIME FINAL = $hoursfinalString $minutesfinalString")
-        return "$hoursfinalString:$minutesfinalString"
+    fun getBetween(alarmTotalDepart: String): String {
+        val calStart: Calendar = Calendar.getInstance()
+        calStart.set(Calendar.HOUR_OF_DAY, alarmTotalDepart.split(':')[0].toInt())
+        calStart.set(Calendar.MINUTE, alarmTotalDepart.split(':')[1].toInt())
+        calStart.set(Calendar.SECOND, 0)
+        val calCurrentTime = Calendar.getInstance()
+
+        var milliStart = calStart.timeInMillis
+        val milliCurrent = calCurrentTime.timeInMillis
+
+        if (milliStart < milliCurrent)
+            milliStart += 1000 * 60 * 60 * 24
+
+        Log.d("HELLO", "Start "+milliStart.toString()+" Current "+milliCurrent.toString())
+
+        val diff = milliStart - milliCurrent
+
+        Log.d("HELLO", "Diff "+diff.toString()+" "+((diff / (1000*60*60))%24).toString()+":"+((diff / (1000*60))%60).toString())
+
+        return String.format("%02d", (diff / (1000*60*60))%24)+":"+ String.format("%02d", (diff / (1000*60))%60)
     }
 
-    class OnAlarm : BroadcastReceiver() {
+    /*class OnAlarm : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent!!.action == "onReveilRing") {
                 Log.d("HELLO", "On sonne")
@@ -149,6 +148,29 @@ object Alarm {
                 }
             }
         }
+    }*/
+
+    class OnAlarm: WakefulBroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            if (p1!!.action == "onReveilRing") {
+                val testt = Intent(p0, AlarmService::class.java)
+                startWakefulService(p0, testt)
+            }
+        }
+    }
+
+    fun getMyActivityNotification(textToSet:String, context: Context): Notification {
+        val notificationIntent = Intent(context, PrincipalActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context,
+                0, notificationIntent, 0)
+        return NotificationCompat.Builder(context, "ChannelIDTest")
+                .setContentTitle("JajMeUp prêt")
+                .setContentText(textToSet)
+                .setSmallIcon(R.drawable.jaccueil)
+                .setPriority(NotificationManager.IMPORTANCE_LOW)
+                .setContentIntent(pendingIntent)
+                .setSound(null)
+                .build()
     }
 
     class OnUpdateBetween : BroadcastReceiver() {
@@ -157,8 +179,10 @@ object Alarm {
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                 if (sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") {
                     Log.d("HELLO", "On change le between time")
-                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                     sharedPreferences.edit().putString("between_time", Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())).apply()
+                    val notifmanager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    val mynotif = getMyActivityNotification("Jajmeup à "+ sharedPreferences.getString("hours_clock", "-11:-11").toString() +" dans ("+sharedPreferences.getString("between_time", "-11:-11").toString()+")", context)
+                    notifmanager.notify(1, mynotif)
                 }
                 else {
                     Log.d("HELLO", "Recu update sans reveil "+context.toString())

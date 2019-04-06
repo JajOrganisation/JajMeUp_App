@@ -50,7 +50,7 @@ class LoadingAlarm : AppCompatActivity() {
 
             }
             else {
-                this.startActivity(YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), "Tu n'as pas voulu reçevoir de vote"))
+                this.startActivity(YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), "Tu n'as pas voulu recevoir de vote"))
             }
         }
         else {

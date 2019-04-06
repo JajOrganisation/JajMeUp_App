@@ -4,7 +4,10 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -53,11 +56,23 @@ class ConnectRegistrationActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        checkBattery()
         val permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
         if (permission != PackageManager.PERMISSION_GRANTED) {
             Log.i("HELLO", "Permission to record denied")
             makeRequest()
+        }
+    }
+
+    fun checkBattery() {
+        val packageName = applicationContext.packageName
+        val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        Log.d("HELLO", packageName)
+        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+            val intentt = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            intentt.data = Uri.parse("package:"+applicationContext.packageName)
+            startActivity(intentt)
         }
     }
 

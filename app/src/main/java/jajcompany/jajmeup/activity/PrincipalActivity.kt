@@ -9,9 +9,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.preference.PreferenceManager
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -59,7 +62,7 @@ class PrincipalActivity : AppCompatActivity() {
             val serviceChannel = NotificationChannel(
                     "ChannelIDTest",
                     "JajMeUp Service",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_LOW
             )
 
             val manager = getSystemService(NotificationManager::class.java)
@@ -118,6 +121,7 @@ class PrincipalActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        checkBattery()
         checkPref()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         if ((sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") && !(sharedPreferences.getBoolean("on_wakeup_clock", false)) && !(sharedPreferences.getBoolean("on_wakeup_my_alarm_clock", false))) {
@@ -146,6 +150,17 @@ class PrincipalActivity : AppCompatActivity() {
         }
      }
 
+    fun checkBattery() {
+        val packageName = applicationContext.packageName
+        val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        Log.d("HELLO", packageName)
+        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+            val intentt = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            intentt.data = Uri.parse("package:"+applicationContext.packageName)
+            startActivity(intentt)
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
@@ -161,7 +176,7 @@ class PrincipalActivity : AppCompatActivity() {
     }
     private fun makeRequest() {
         ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS),
                 142)
     }
 

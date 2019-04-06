@@ -1,5 +1,6 @@
 package jajcompany.jajmeup.activity
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
@@ -8,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.support.v4.content.WakefulBroadcastReceiver
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.util.Log
@@ -19,6 +21,7 @@ import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import jajcompany.jajmeup.R
+import jajcompany.jajmeup.utils.Alarm
 import jajcompany.jajmeup.utils.YoutubeInformation
 import kotlinx.android.synthetic.main.youtube_layout.*
 
@@ -100,11 +103,9 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
             }
         }
         //if (android.os.Build.VERSION.SDK_INT < 27) {
-        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+        this.window.setFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN or
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
@@ -125,6 +126,10 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         else {
             handler.postDelayed(runnableMyLastAlarm, timebeforequit.toLong())
         }
+        WakefulBroadcastReceiver.completeWakefulIntent(intent)
+        val notifmanager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val mynotif = Alarm.getMyActivityNotification("Jajmeup est dans YOUTUBE", this)
+        notifmanager.notify(1, mynotif)
     }
 
     private fun showPopOnWakeUp() {

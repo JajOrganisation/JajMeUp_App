@@ -56,7 +56,7 @@ class ConnectRegistrationActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkBattery()
+        //checkBattery()
         val permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -65,7 +65,7 @@ class ConnectRegistrationActivity : AppCompatActivity() {
         }
     }
 
-    fun checkBattery() {
+   /* fun checkBattery() {
         val packageName = applicationContext.packageName
         val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         Log.d("HELLO", packageName)
@@ -74,7 +74,7 @@ class ConnectRegistrationActivity : AppCompatActivity() {
             intentt.data = Uri.parse("package:"+applicationContext.packageName)
             startActivity(intentt)
         }
-    }
+    }*/
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {

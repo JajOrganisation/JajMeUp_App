@@ -121,7 +121,7 @@ class PrincipalActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        checkBattery()
+        //checkBattery()
         checkPref()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         if ((sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") && !(sharedPreferences.getBoolean("on_wakeup_clock", false)) && !(sharedPreferences.getBoolean("on_wakeup_my_alarm_clock", false))) {
@@ -150,7 +150,7 @@ class PrincipalActivity : AppCompatActivity() {
         }
      }
 
-    fun checkBattery() {
+    /*fun checkBattery() {
         val packageName = applicationContext.packageName
         val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         Log.d("HELLO", packageName)
@@ -159,7 +159,7 @@ class PrincipalActivity : AppCompatActivity() {
             intentt.data = Uri.parse("package:"+applicationContext.packageName)
             startActivity(intentt)
         }
-    }
+    }*/
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {

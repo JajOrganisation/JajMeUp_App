@@ -21,7 +21,7 @@ class AlarmNotificationService: Service() {
         val input = intent!!.getStringExtra("heureReveil")
         val inputbetween = intent!!.getStringExtra("heureBetween")
 
-        startForeground(1, getMyActivityNotification("Jajmeup à $input (dans $inputbetween)"))
+        startForeground(1, getMyActivityNotification("Jajmeup à $input"))
         return Service.START_NOT_STICKY
     }
 

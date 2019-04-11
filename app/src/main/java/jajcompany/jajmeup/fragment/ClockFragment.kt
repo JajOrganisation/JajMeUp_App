@@ -14,6 +14,7 @@ import jajcompany.jajmeup.R
 import jajcompany.jajmeup.activity.PrincipalActivity
 import jajcompany.jajmeup.utils.Alarm
 import jajcompany.jajmeup.utils.AlarmNotificationService
+import jajcompany.jajmeup.utils.AlarmService
 import kotlinx.android.synthetic.main.clock_layout.*
 
 
@@ -26,7 +27,7 @@ class ClockFragment : Fragment() {
             while(isRunning) {
                 try {
                     Log.d("HELLO", "On change")
-                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrincipalActivity.applicationContext())
                     val hoursbeetween = Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
                     val hours = hoursbeetween.split(':')[0]
                     val minutes = hoursbeetween.split(':')[1]
@@ -51,13 +52,13 @@ class ClockFragment : Fragment() {
         //Toast.makeText(activity, "UP HAHA", Toast.LENGTH_SHORT).show()
         alarm.setIs24HourView(true)
         alarmSet.setOnCheckedChangeListener{ _, isChecked ->
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrincipalActivity.applicationContext())
             if (isChecked) {
                 //alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 if (sharedPreferences.getString("hours_clock", "-11:-11") == "-11:-11") {
                     Log.d("HELLO", "Coucou "+alarm.hour.toString()+":"+alarm.minute.toString())
                     Alarm.setAlarm(alarm.hour, alarm.minute, alarmSet)
-                    sharedPreferences.edit().putString("hours_clock", alarm.hour.toString() + ":" + alarm.minute.toString()).apply()
+                    sharedPreferences.edit().putString("hours_clock", String.format("%02d", alarm.hour) + ":" + String.format("%02d", alarm.minute)).apply()
                     Log.d("HELLO", "Coucou "+alarm.hour.toString()+":"+alarm.minute.toString())
                     //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                     val hoursbeetween = Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
@@ -65,7 +66,10 @@ class ClockFragment : Fragment() {
                     val minutes = hoursbeetween.split(':')[1]
                     Log.d("HELLO", "Oui "+hours+minutes)
                     if (hours == "00" || hours == "0")
-                        alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
+                        if (minutes == "00" || minutes == "0")
+                            alarmbetween.text = getString(R.string.alarm_less_minute)
+                        else
+                            alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
                     else
                         alarmbetween.text = getString(R.string.alarm_in)+" "+hours+" heures "+minutes+" minutes"
                     isRunning = true
@@ -88,7 +92,7 @@ class ClockFragment : Fragment() {
             }
         }
         alarm.setOnTimeChangedListener { timePicker, _, _ ->
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrincipalActivity.applicationContext())
             if (sharedPreferences.getString("hours_clock", "-11:-11") != "-11:-11") {
                 alarm.hour = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[0].toInt()
                 alarm.minute = sharedPreferences.getString("hours_clock", "-11:-11")!!.split(":")[1].toInt()
@@ -98,7 +102,7 @@ class ClockFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.activity)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrincipalActivity.applicationContext())
         if (sharedPreferences.getBoolean("on_wakeup_clock", false)){
             sharedPreferences.edit().putString("hours_clock", "-11:-11").apply()
             Alarm.deleteAlarm()
@@ -119,9 +123,12 @@ class ClockFragment : Fragment() {
             val hoursbeetween = Alarm.getBetween(sharedPreferences.getString("hours_clock", "-11:-11")!!.toString())
             val hours = hoursbeetween.split(':')[0]
             val minutes = hoursbeetween.split(':')[1]
-            Log.d("HELLO", "Oui "+hours+minutes)
+            Log.d("HELLO", "Oui Resume"+hours+minutes)
             if (hours == "00" || hours == "0")
-                alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
+                if (minutes == "00" || minutes == "0")
+                    alarmbetween.text = getString(R.string.alarm_less_minute)
+                else
+                    alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
             else
                 alarmbetween.text = getString(R.string.alarm_in)+" "+hours+" heures "+minutes+" minutes"
             isRunning = true

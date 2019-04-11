@@ -79,6 +79,11 @@
             android:name=".utils.AlarmService"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name=".utils.AlarmPrevious"
+            android:enabled="true"
+            android:exported="true" />
         <!--  <service
              android:name=".utils.TestService"
              android:enabled="true"/>

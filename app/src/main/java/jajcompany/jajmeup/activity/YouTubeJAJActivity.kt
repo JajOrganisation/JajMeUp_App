@@ -1,11 +1,9 @@
 package jajcompany.jajmeup.activity
 
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.STREAM_MUSIC
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
@@ -127,9 +125,8 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
             handler.postDelayed(runnableMyLastAlarm, timebeforequit.toLong())
         }
         WakefulBroadcastReceiver.completeWakefulIntent(intent)
-        val notifmanager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val mynotif = Alarm.getMyActivityNotification("Jajmeup est dans YOUTUBE", this)
-        notifmanager.notify(1, mynotif)
+        Alarm.deleteAlarm()
+        Alarm.unsetNotif()
     }
 
     private fun showPopOnWakeUp() {

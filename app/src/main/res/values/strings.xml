@@ -158,6 +158,7 @@
     <string name="partage_recupere">Lien partagé importé !</string>
     <string name="no_alarm">Pas de réveil</string>
     <string name="alarm_in">Réveil dans</string>
+    <string name="alarm_less_minute">Réveil dans moins d\'une minute</string>
 
     <!-- Message Erreur -->
     <string name="erreur_internet">Pas de connexion internet!</string>

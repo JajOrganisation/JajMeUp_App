@@ -32,7 +32,10 @@ class ClockFragment : Fragment() {
                     val hours = hoursbeetween.split(':')[0]
                     val minutes = hoursbeetween.split(':')[1]
                     if (hours == "00" || hours == "0")
-                        alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
+                        if (minutes == "00" || minutes == "0")
+                            alarmbetween.text = getString(R.string.alarm_less_minute)
+                        else
+                            alarmbetween.text = getString(R.string.alarm_in)+" "+minutes+" minutes"
                     else
                         alarmbetween.text = getString(R.string.alarm_in)+" "+hours+" heures "+minutes+" minutes"
 

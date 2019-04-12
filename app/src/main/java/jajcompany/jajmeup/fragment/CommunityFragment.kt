@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.transition.Slide
 import android.transition.TransitionManager
+import android.transition.Visibility
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -633,6 +634,8 @@ class CommunityFragment : Fragment() {
         val edityt = view.findViewById<EditText>(R.id.youtubelinkpop)
         val editmess = view.findViewById<EditText>(R.id.messagepop)
         val labelmess = view.findViewById<TextView>(R.id.message_label)
+        val labelvideoname = view.findViewById<TextView>(R.id.youtube_video_nom)
+        val imagebutton = view.findViewById<ImageButton>(R.id.pastebutton)
         labelmess.text = getString(R.string.label_write_message_string)+" "+item.user.name
        // labelmess.setText(getString(R.string.label_write_message_string)+ item.user.name)
         closepop.setOnClickListener {
@@ -665,10 +668,29 @@ class CommunityFragment : Fragment() {
         if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
             if (compiledPattern.matcher(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456")).find()) {
                 edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))
+                labelvideoname.visibility = View.VISIBLE
+                labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))).take(50)
             }
         }
         else if (compiledPattern.matcher(itemPaste!!.text.toString()).find()) {
+            Toast.makeText(context, "Lien copié depuis le presse-papier", Toast.LENGTH_SHORT).show()
             edityt.setText(itemPaste.text.toString())
+            labelvideoname.visibility = View.VISIBLE
+            labelvideoname.text = YoutubeInformation.getTitleQuietly(itemPaste.text.toString()).take(50)
+        }
+
+        imagebutton.setOnClickListener {
+            val myClipboardd: ClipboardManager? = activity!!.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager?
+            val primaryy = myClipboardd?.primaryClip
+            val itemPastee = primaryy?.getItemAt(0)
+            if (compiledPattern.matcher(itemPastee!!.text.toString()).find()) {
+                Toast.makeText(context, "Lien copié depuis le presse-papier", Toast.LENGTH_SHORT).show()
+                edityt.setText(itemPastee.text.toString())
+                labelvideoname.visibility = View.VISIBLE
+                labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(itemPastee.text.toString())).take(50)
+            }
+            else
+                Toast.makeText(context, "Aucun lien dans le presse-papier", Toast.LENGTH_SHORT).show()
         }
 
         TransitionManager.beginDelayedTransition(community_layout)

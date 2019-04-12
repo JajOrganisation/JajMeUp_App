@@ -19,7 +19,7 @@ import java.util.*
 class AlarmService : IntentService("AlarmService") {
 
     override fun onHandleIntent(intent: Intent?) {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrincipalActivity.applicationContext())
+       /* val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrincipalActivity.applicationContext())
         val mynotif = getMyActivityNotification("Ton réveil sonne bientôt ! ("+intent!!.getStringExtra("heureReveil")+")")
         val notifmanager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notifmanager.notify(1, mynotif)
@@ -33,7 +33,7 @@ class AlarmService : IntentService("AlarmService") {
                 Log.d("HELLO", "On tourne dans l alarmservice")
             }
         }
-        Log.d("HELLO", "Belle Heure "+intent.getStringExtra("heureReveil"))
+        Log.d("HELLO", "Belle Heure "+intent.getStringExtra("heureReveil"))*/
         //if (sharedPreferences.getString("hours_clock", "-11:-11")!!.toString() != "-11:-11") {
         val i = Intent(this, LoadingAlarm::class.java)
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

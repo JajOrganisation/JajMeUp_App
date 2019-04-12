@@ -45,8 +45,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="D:\Android_Studio\Project\Logo\J_Accueil.png" />
-                                      <entry key="outputName" value="ic_notification_alarm" />
+                                      <entry key="imageAsset" value="D:\Android_Studio\Project\IMG\paste.png" />
+                                      <entry key="outputName" value="ic_paste" />
                                       <entry key="theme" value="HOLO_DARK" />
                                       <entry key="themeColor" value="dddddd" />
                                     </map>

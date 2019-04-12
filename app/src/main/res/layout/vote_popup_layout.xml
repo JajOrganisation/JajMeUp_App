@@ -16,14 +16,36 @@
         android:text="@string/label_youtube_link_string"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
-    <EditText
-        android:id="@+id/youtubelinkpop"
-        android:inputType="text"
-        android:textColor="@android:color/white"
-        android:textColorHint="@color/hintColor"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/youtubelinkpop"
+            android:inputType="text"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/hintColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:cursorVisible="true"
+            android:textIsSelectable="true"
+            android:focusable="true"
+            android:hint="@string/hint_youtube_link_string" />
+        <ImageButton
+            android:id="@+id/pastebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/youtubelinkpop"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_paste"/>
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/youtube_video_nom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_youtube_link_string"/>
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        />
     <TextView
         android:id="@+id/message_label"
         android:layout_width="wrap_content"
@@ -39,7 +61,7 @@
         android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLength="150"
+        android:maxLength="70"
         android:hint="@string/hint_message_string"/>
     <TableRow
         android:id="@+id/tableRow1"

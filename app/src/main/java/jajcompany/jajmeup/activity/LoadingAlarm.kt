@@ -12,6 +12,7 @@ import android.view.WindowManager
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.models.History
 import jajcompany.jajmeup.models.NotifWakeUp
+import jajcompany.jajmeup.utils.Alarm
 import jajcompany.jajmeup.utils.FireStore
 import jajcompany.jajmeup.utils.Jajinternet
 import java.util.*
@@ -20,6 +21,8 @@ class LoadingAlarm : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Alarm.unsetNotif()
+        Alarm.deleteAlarm()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             this.setTurnScreenOn(true)
         } else {
@@ -38,11 +41,11 @@ class LoadingAlarm : AppCompatActivity() {
                            val history = History(it.lien, it.videoname, it.votantuid, Calendar.getInstance().time)
                            FireStore.sendNotifWakeUp(notif, it.votantuid)
                            FireStore.updateHistory(history)
+                           this.startActivity(YouTubeJAJActivity.newIntent(this, it.votant, it.lien, it.message))
                        }
                        else {
                            this.startActivity(YouTubeJAJActivity.newIntent(this, "Ton réveil", sharedPreferences.getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"), it.message))
                        }
-                       this.startActivity(YouTubeJAJActivity.newIntent(this, it.votant, it.lien, it.message))
                    } else {
                        this.startActivity(LastAlarmActivity.newIntent(this))
                    }

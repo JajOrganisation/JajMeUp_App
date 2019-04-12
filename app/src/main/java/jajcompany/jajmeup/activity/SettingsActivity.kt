@@ -258,6 +258,7 @@ class SettingsActivity : AppCompatActivity() {
                         action = Intent.ACTION_OPEN_DOCUMENT
                         putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("audio/mpeg"))
                     }
+                    
                     startActivityForResult(Intent.createChooser(intent, "Select Audio"), 3)
                 } else if (preference.key == "default_alarm") {
                     val myClipboard: ClipboardManager? = activity.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?

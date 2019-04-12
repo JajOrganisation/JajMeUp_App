@@ -16,16 +16,36 @@
         android:text="@string/label_default_alarm_change_string"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         />
-    <EditText
-        android:id="@+id/youtube_link_default_alarm"
-        android:textIsSelectable="true"
-        android:cursorVisible="true"
-        android:inputType="text"
-        android:textColor="@android:color/white"
-        android:textColorHint="@color/hintColor"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/youtube_link_default_alarm"
+            android:textIsSelectable="true"
+            android:cursorVisible="true"
+            android:inputType="text"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/hintColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_youtube_link_string"/>
+        <ImageButton
+            android:id="@+id/pastebutton_default_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/youtube_link_default_alarm"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_paste"/>
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/youtube_video_nom_default_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_youtube_link_string"/>
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:layout_marginBottom="10dp"
+        />
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_gravity="center"

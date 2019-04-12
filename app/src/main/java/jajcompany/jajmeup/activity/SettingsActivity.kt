@@ -19,6 +19,7 @@ import android.transition.Slide
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -279,14 +280,20 @@ class SettingsActivity : AppCompatActivity() {
                     val closepop = view.findViewById<Button>(R.id.button_closepop_password)
                     val validationpop = view.findViewById<Button>(R.id.button_change_default_alarm)
                     val edityt = view.findViewById<EditText>(R.id.youtube_link_default_alarm)
+                    val imagebutton = view.findViewById<ImageButton>(R.id.pastebutton_default_alarm)
+                    val labelvideoname = view.findViewById<TextView>(R.id.youtube_video_nom_default_alarm)
                     val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
                     val compiledPattern = Pattern.compile(pattern)
                     if(compiledPattern.matcher(item!!.text.toString()).find()) {
                         Toast.makeText(context, R.string.copie_presse_papier, Toast.LENGTH_SHORT).show()
                         edityt.setText(item.text, TextView.BufferType.EDITABLE)
+                        labelvideoname.visibility = View.VISIBLE
+                        labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(item.text.toString())).take(50)
                     }else if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
                         Toast.makeText(context, R.string.partage_recupere, Toast.LENGTH_SHORT).show()
                         edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"), TextView.BufferType.EDITABLE)
+                        labelvideoname.visibility = View.VISIBLE
+                        labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))).take(50)
                     }else {
                         PreferenceManager.getDefaultSharedPreferences(context).getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
                     }
@@ -311,6 +318,19 @@ class SettingsActivity : AppCompatActivity() {
                         } else {
                             Toast.makeText(activity, getString(R.string.lien_yt_invalide), Toast.LENGTH_LONG).show()
                         }
+                    }
+                    imagebutton.setOnClickListener {
+                        val myClipboardd: ClipboardManager? = activity!!.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager?
+                        val primaryy = myClipboardd?.primaryClip
+                        val itemPastee = primaryy?.getItemAt(0)
+                        if (compiledPattern.matcher(itemPastee!!.text.toString()).find()) {
+                            Toast.makeText(context, "Lien copié depuis le presse-papier", Toast.LENGTH_SHORT).show()
+                            edityt.setText(itemPastee.text.toString())
+                            labelvideoname.visibility = View.VISIBLE
+                            labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(itemPastee.text.toString())).take(50)
+                        }
+                        else
+                            Toast.makeText(context, "Aucun lien dans le presse-papier", Toast.LENGTH_SHORT).show()
                     }
                     popupWindow.showAtLocation(
                             view,

@@ -256,7 +256,7 @@ object FireStore {
                 }
     }
 
-    fun addFriendsListener(context: Context, friendUid: String, onListen: (List<Item>, String) -> Unit): ListenerRegistration {
+    fun addFriendsListener(context: Context, friendUid: String, onListen: (User) -> Unit): ListenerRegistration {
         Log.d("HELLO", "on va y aller"+friendUid)
         return  fireStoreInstance.collection("/users/")
                 .whereEqualTo("uid", friendUid)
@@ -267,25 +267,17 @@ object FireStore {
                         return@addSnapshotListener
                     }
                     if (querySnapshot!!.size() != 0) {
-                        val items = mutableListOf<Item>()
+                        val items = mutableListOf<User>()
                         querySnapshot!!.forEach {
-                            //if (it["uid"] in listUidFriends){
-                                Log.d("HELLO", " ici "+it)
-                                items.add(UserItem(it.toObject(User::class.java)!!, it.id, context))
-                                val intent = Intent()
-                                intent.action = "onNewFriend"
-                                context.sendBroadcast(intent)
-                                onListen(items, it["uid"].toString())
-                            //}
+                            Log.d("HELLO", " ici "+it)
+                            items.add(it.toObject(User::class.java))
+                            onListen(it.toObject(User::class.java))
                         }
                     }
                     else {
                         Log.d("HELLO", " aie ")
-                        val items = mutableListOf<Item>()
-                        val intent = Intent()
-                        intent.action = "onNewFriend"
-                        context.sendBroadcast(intent)
-                        onListen(items, "nop")
+                        val items = User()
+                        onListen(items)
                     }
                 }
     }
@@ -569,24 +561,6 @@ object FireStore {
                                         }
                                     }
                                 }
-                        /*fireStoreInstance.document("users/"+otherUserID)
-                                .collection("friends")
-                                .whereEqualTo("uid", FirebaseAuth.getInstance().currentUser?.uid.toString())
-                                .get()
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        task.result!!.forEach { moi ->
-                                            Log.d("HELLO", "suppr MOI")
-                                            moi.reference.delete()
-                                            val intent = Intent()
-                                            intent.action = "onRemove"
-                                            context.sendBroadcast(intent)
-                                            onListen()
-                                        }
-                                    } else {
-                                        Log.d("LOGGER", "get failed with ", task.exception)
-                                    }
-                                }*/
                     }
     }
 

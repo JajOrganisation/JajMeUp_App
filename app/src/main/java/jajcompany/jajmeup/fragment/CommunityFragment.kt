@@ -28,6 +28,7 @@ import jajcompany.jajmeup.R
 import jajcompany.jajmeup.RecycleView.item.UserItem
 import jajcompany.jajmeup.activity.YouTubeJAJActivity
 import jajcompany.jajmeup.glide.GlideApp
+import jajcompany.jajmeup.models.User
 import jajcompany.jajmeup.models.Vote
 import jajcompany.jajmeup.utils.*
 import jajcompany.jajmeup.utils.YoutubeInformation.getTitleQuietly
@@ -56,7 +57,8 @@ class CommunityFragment : Fragment() {
     private lateinit var friendsSection: Section
     private lateinit var isFriend: ListenerRegistration
     private lateinit var _context: Context
-    private var listFriends: MutableList<String> = mutableListOf()
+    private var listFriends: MutableList<User> = mutableListOf()
+    private var listFriendsView: MutableList<Item> = mutableListOf()
     private var listFriendsSection: MutableList<Item> = mutableListOf()
     private var broadCastReceiver = object : BroadcastReceiver() {
         override fun onReceive(contxt: Context?, intent: Intent?) {
@@ -214,10 +216,10 @@ class CommunityFragment : Fragment() {
         }
     }
 
-    private fun updateRecyclerViewFriends(items:List<Item>, uid: String) {
+    private fun updateRecyclerViewFriends(items:List<Item>/*, uid: String*/) {
         fun initFriends() {
             try {
-                listFriends.add(uid)
+               // listFriends.add(uid)
                 listFriendsSection.add(items[0])
                 friends_list.apply {
                     layoutManager = LinearLayoutManager(_context)
@@ -233,7 +235,9 @@ class CommunityFragment : Fragment() {
                 Log.e("Error", "Error update friends")
             }
         }
-        fun updateItemsFriends() {
+        fun updateItemsFriends() = friendsSection.update(items)
+
+       /* fun updateItemsFriends() {
             try {
                 Log.d("HELLO", "on check "+friendsSection.getPosition(items[0]))
                 if (items.isNotEmpty()) {
@@ -250,7 +254,7 @@ class CommunityFragment : Fragment() {
             }catch (e: Exception) {
                 resetall()
             }
-        }
+        }*/
 
         if (shouldInitRecyclerViewFriends)
             initFriends()
@@ -412,14 +416,36 @@ class CommunityFragment : Fragment() {
         //friendsListenerRegistration = FireStore.getAllFriendUID(this.activity!!, this::updateRecyclerViewFriends)
     }
 
+    fun prepareViewFriend(items:User) {
+        var count = 0
+        var flag = false
+        Log.d("HELLO", "TestFriend "+items.name)
+        try {
+            for (current in listFriends) {
+                if (current.uid == items.uid) {
+                    Log.d("HELLO", "Count " + count.toString())
+                    listFriendsView[count] = UserItem(items, items.uid, this.activity!!)
+                    flag = true
+                }
+                count += 1
+            }
+            if (!flag && items.uid != "") {
+                listFriends.add(items)
+                listFriendsView.add(UserItem(items, items.uid, this.activity!!))
+            }
+            updateRecyclerViewFriends(listFriendsView)
+        }catch (e:Exception) {}
+    }
+
     fun setAllFriendsListener(test: List<String>) {
         context!!.unregisterReceiver(broadCastReceiver)
         if (test.isNotEmpty()) {
             if (test[0] != "Nothing") {
                 listListenerRegistration = mutableListOf()
                 for (current in test) {
+                    Log.d("Hello", "onAllFriends add "+current)
                     if (!listTest.contains(current)) {
-                        listListenerRegistration.add(FireStore.addFriendsListener(this.activity!!, current, this::updateRecyclerViewFriends))
+                        listListenerRegistration.add(FireStore.addFriendsListener(this.activity!!, current, this::prepareViewFriend))
                         listTest.add(current)
                     }
                 }

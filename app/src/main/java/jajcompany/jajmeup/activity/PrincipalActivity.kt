@@ -228,6 +228,7 @@ class PrincipalActivity : AppCompatActivity() {
             if(compiledPattern.matcher(sharedText).find()) {
                 Log.d("YOUTUBE_SHARE hb", sharedText)
                 sharedPreferences.edit().putString("current_link", sharedText).apply()
+                setIntent(intent)
             }
         }
     }

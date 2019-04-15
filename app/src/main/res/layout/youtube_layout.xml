@@ -28,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="30sp"
-                android:text="@string/hidden_message_string"
                 android:layout_weight="1"/>
 
         <Button

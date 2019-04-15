@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.STREAM_MUSIC
+import android.opengl.Visibility
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
@@ -13,6 +14,7 @@ import android.transition.TransitionManager
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import com.google.android.youtube.player.YouTubeBaseActivity
@@ -164,6 +166,9 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
         labelvotant.text = sharedPreferences.getString("user_wakeup", "")+" t'as réveillé"
         if (sharedPreferences.getString("message_wakeup", "") != "") {
             labelmess.text = sharedPreferences.getString("message_wakeup", "")
+        }
+        else {
+            labelmess.visibility = View.GONE
         }
         TransitionManager.beginDelayedTransition(youtube_layout)
         this.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or

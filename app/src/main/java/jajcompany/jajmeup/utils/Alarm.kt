@@ -45,30 +45,6 @@ object Alarm {
         val cal: Calendar = Calendar.getInstance(timeZone)
         cal.set(Calendar.HOUR_OF_DAY, hours)
         cal.set(Calendar.MINUTE, minutes)
-        /*var mintmp = Calendar.getInstance(timeZone).get(Calendar.MINUTE)+12
-        var hourtmp =  Calendar.getInstance(timeZone).get(Calendar.HOUR_OF_DAY)
-        if (mintmp >= 60) {
-            mintmp -= 60
-            hourtmp += 1
-            if (hourtmp >= 24)
-                hourtmp -= 24
-        }
-        Log.d("HELLO", "Hours $hours CurrentHours $hourtmp Minutes $minutes MinutesCurrent+10 $mintmp")
-        if ((hours == hourtmp) && (minutes <= mintmp))
-            cal.set(Calendar.MINUTE, minutes)
-        else {
-            Log.d("HELLO", "On enleve 10")
-            if ( (minutes-11) < 0)
-            {
-                if ((hours-1)<0)
-                    cal.set(Calendar.HOUR_OF_DAY, 23)
-                else
-                    cal.set(Calendar.HOUR_OF_DAY, hours-1)
-                cal.set(Calendar.MINUTE, 59-(11-minutes))
-            }
-            else
-                cal.set(Calendar.MINUTE, minutes - 11)
-        }*/
         cal.set(Calendar.SECOND, 0)
         Log.d("HELLO", "HEURE "+cal.timeInMillis)
         var time = cal.timeInMillis - cal.timeInMillis % 60000

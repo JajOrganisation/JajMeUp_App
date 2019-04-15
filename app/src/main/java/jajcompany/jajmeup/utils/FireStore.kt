@@ -82,7 +82,7 @@ object FireStore {
         var flag = false
         fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/reveilVote")
-                .orderBy("time", Query.Direction.DESCENDING)
+                .orderBy("timeVote", Query.Direction.DESCENDING)
                 .limit(1)
                 .get()
                 .addOnCompleteListener { task ->
@@ -324,7 +324,7 @@ object FireStore {
     fun addReveilListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/reveilVote")
-                .orderBy("time", Query.Direction.DESCENDING)
+                .orderBy("timeVote", Query.Direction.DESCENDING)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Log.e("FIRESTORE", "Reveil listener error.", firebaseFirestoreException)
@@ -392,7 +392,7 @@ object FireStore {
     fun addNotificationListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/notifications")
-                .orderBy("time", Query.Direction.DESCENDING)
+                .orderBy("timeNotif", Query.Direction.DESCENDING)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Log.e("FIRESTORE", "Notification listener error.", firebaseFirestoreException)
@@ -423,7 +423,7 @@ object FireStore {
     fun addHistoryListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return fireStoreInstance.collection("users/${FirebaseAuth.getInstance().currentUser?.uid
                 ?: throw NullPointerException("UID is null.")}/history")
-                .orderBy("time", Query.Direction.DESCENDING)
+                .orderBy("timeHistory", Query.Direction.DESCENDING)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Log.e("FIRESTORE", "Notification listener error.", firebaseFirestoreException)

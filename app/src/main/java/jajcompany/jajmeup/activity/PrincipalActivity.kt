@@ -95,18 +95,7 @@ class PrincipalActivity : AppCompatActivity() {
             true
         }
         navigation.selectedItemId = R.id.navigation_community
-        val intent: Intent = intent
-        val action: String? = intent.action
-        val type: String? = intent.type
 
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if ("text/plain".equals(type)) {
-                if (navigation.selectedItemId != R.id.navigation_community) {
-                    navigation.selectedItemId = R.id.navigation_community
-                }
-                handleSendText(intent)
-            }
-        }
         val broadcast_reciever = object : BroadcastReceiver() {
             override fun onReceive(arg0: Context, intent: Intent) {
                 val action = intent.action
@@ -150,17 +139,20 @@ class PrincipalActivity : AppCompatActivity() {
         }
      }
 
-    /*fun checkBattery() {
-        val packageName = applicationContext.packageName
-        val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
-        Log.d("HELLO", packageName)
-        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-            val intentt = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-            intentt.data = Uri.parse("package:"+applicationContext.packageName)
-            startActivity(intentt)
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val action: String? = intent!!.action
+        val type: String? = intent!!.type
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            Log.d("HELLO", "YOUTUBE_SHARE DEBUT "+intent.getStringExtra(Intent.EXTRA_TEXT))
+            if ("text/plain".equals(type)) {
+                if (navigation.selectedItemId != R.id.navigation_community) {
+                    navigation.selectedItemId = R.id.navigation_community
+                }
+                handleSendText(intent)
+            }
         }
-    }*/
-
+    }
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
@@ -227,12 +219,14 @@ class PrincipalActivity : AppCompatActivity() {
     private fun handleSendText(intent: Intent){
 
         val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+        Log.d("YOUTUBE_SHARE", sharedText)
         if (sharedText != null) {
             Log.d("YOUTUBE_SHARE", sharedText)
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
             val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
             val compiledPattern = Pattern.compile(pattern)
             if(compiledPattern.matcher(sharedText).find()) {
+                Log.d("YOUTUBE_SHARE hb", sharedText)
                 sharedPreferences.edit().putString("current_link", sharedText).apply()
             }
         }

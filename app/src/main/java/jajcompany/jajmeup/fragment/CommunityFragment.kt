@@ -691,11 +691,11 @@ class CommunityFragment : Fragment() {
         val myClipboard: ClipboardManager? = activity!!.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager?
         val primary = myClipboard?.primaryClip
         val itemPaste = primary?.getItemAt(0)
-        if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
-            if (compiledPattern.matcher(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456")).find()) {
-                edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))
+        if (PreferenceManager.getDefaultSharedPreferences(this.activity).getString("current_link", "123456") != "123456") {
+            if (compiledPattern.matcher(PreferenceManager.getDefaultSharedPreferences(this.activity).getString("current_link", "123456")).find()) {
+                edityt.setText(PreferenceManager.getDefaultSharedPreferences(this.activity).getString("current_link", "123456"))
                 labelvideoname.visibility = View.VISIBLE
-                labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))).take(50)
+                labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(PreferenceManager.getDefaultSharedPreferences(this.activity).getString("current_link", "123456"))).take(50)
             }
         }
         else if (compiledPattern.matcher(itemPaste!!.text.toString()).find()) {

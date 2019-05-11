@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.google.android.youtube.player.YouTubeBaseActivity
 import jajcompany.jajmeup.R
+import jajcompany.jajmeup.utils.Alarm
 import kotlinx.android.synthetic.main.last_alarm_layout.*
 import java.io.File
 
@@ -55,6 +56,8 @@ class LastAlarmActivity : AppCompatActivity() {
             mediaPlayer = MediaPlayer.create(this, R.raw.defaultalarm)
         }
         Log.d("HELLO", "Mon reveil "+PreferenceManager.getDefaultSharedPreferences(this).getString("last_alarm", ""))
+        Alarm.deleteAlarm()
+        Alarm.unsetNotif()
         mediaPlayer.isLooping = true
         mediaPlayer.start()
     }

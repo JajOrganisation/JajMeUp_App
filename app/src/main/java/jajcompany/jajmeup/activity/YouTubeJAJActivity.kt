@@ -228,6 +228,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
 
                 override fun onError(reason: YouTubePlayer.ErrorReason) {
                     playerState = "ERROR ($reason)"
+                    Log.d("HELLO", "YOUTUBE ERROR "+ playerState)
                     startLastAlarm()
                 }
             }

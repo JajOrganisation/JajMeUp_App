@@ -28,6 +28,7 @@
             android:textColorHint="@color/hintColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxEms="11"
             android:hint="@string/hint_youtube_link_string"/>
         <ImageButton
             android:id="@+id/pastebutton_default_alarm"

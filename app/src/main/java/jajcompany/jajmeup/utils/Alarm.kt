@@ -10,22 +10,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import android.preference.PreferenceManager
-import android.provider.SyncStateContract
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.getSystemService
-import android.support.v4.content.WakefulBroadcastReceiver
 import android.util.Log
 import android.widget.Switch
-import android.widget.Toast
-import com.google.android.gms.common.internal.Constants
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import jajcompany.jajmeup.R
+import jajcompany.jajmeup.activity.LoadingAlarm
+import jajcompany.jajmeup.activity.PrincipalActivity
 import java.util.*
-import jajcompany.jajmeup.activity.*
-import java.lang.Exception
-import java.sql.Time
-import java.text.DateFormat
-import kotlin.reflect.jvm.internal.impl.load.java.Constant
 
 
 @SuppressLint("StaticFieldLeak")
@@ -35,7 +27,7 @@ object Alarm {
     lateinit var switchAlarm: Switch
     //lateinit var onReveilInfoReceiver: OnReveilInfo
 
-    fun setAlarm(hours: Int, minutes: Int, switchA: Switch) {
+    fun setAlarm(hours: Int, minutes: Int/*, switchA: Switch*/) {
         val contextApp = PrincipalActivity.applicationContext()
         val intentAlarmPrincipale = Intent(contextApp, OnAlarm::class.java)
         intentAlarmPrincipale.putExtra("heureReveil", String.format("%02d",hours)+":"+String.format("%02d",minutes))
@@ -48,7 +40,6 @@ object Alarm {
         cal.set(Calendar.SECOND, 0)
         Log.d("HELLO", "HEURE "+cal.timeInMillis)
         var time = cal.timeInMillis - cal.timeInMillis % 60000
-
         if (System.currentTimeMillis() > time) {
             time += 1000 * 60 * 60 * 24
         }
@@ -57,7 +48,7 @@ object Alarm {
         val ac = AlarmManager.AlarmClockInfo(time, pendingAlarmPrincipal)
         alarmManagerPrincipal.setAlarmClock(ac, pendingAlarmPrincipal)
         //alarmManagerPrincipal.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingAlarmPrincipal)
-        switchAlarm = switchA
+        //switchAlarm = switchA
         setNotif(hours, minutes)
         val intentAlarmBetween = Intent(contextApp, OnUpdateBetween::class.java)
         intentAlarmBetween.action = "onUpdateTimer"
@@ -110,6 +101,7 @@ object Alarm {
     }
 
     fun getBetween(alarmTotalDepart: String): String {
+        Log.d("HELLO", "getBetween entry "+alarmTotalDepart)
         val timeZone = TimeZone.getDefault()
         val calStart: Calendar = Calendar.getInstance(timeZone)
         calStart.set(Calendar.HOUR_OF_DAY, alarmTotalDepart.split(':')[0].toInt())
@@ -155,13 +147,16 @@ object Alarm {
         return (((diff / (1000*60)))*60*1000)
     }
 
-    class OnAlarm: WakefulBroadcastReceiver() {
+    class OnAlarm: BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == "onReveilRing") {
                 Log.d("HELLO", "RECU")
-                val intentWake = Intent(context, AlarmService::class.java)
+                /*val intentWake = Intent(context, AlarmService::class.java)
                 intentWake.putExtra("heureReveil", intent.getStringExtra("heureReveil"))
-                startWakefulService(context, intentWake)
+                startWakefulService(context, intentWake)*/
+                val i = Intent(context, LoadingAlarm::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context!!.startActivity(i)
             }
         }
     }

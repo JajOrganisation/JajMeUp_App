@@ -4,16 +4,11 @@ import android.app.IntentService
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
-import android.preference.PreferenceManager
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.WakefulBroadcastReceiver
-import android.util.Log
+import androidx.core.app.NotificationCompat
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.activity.LoadingAlarm
 import jajcompany.jajmeup.activity.PrincipalActivity
-import java.util.*
 
 
 class AlarmService : IntentService("AlarmService") {

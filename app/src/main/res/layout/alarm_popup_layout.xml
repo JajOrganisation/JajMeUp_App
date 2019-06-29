@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popupalarm"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/popup_drawable"
+    android:padding="20dp"
+    >
+    <TimePicker
+        android:id="@+id/alarmpop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:headerBackground="#313335"
+        android:numbersSelectorColor="@color/colorAccent"
+        android:descendantFocusability="blocksDescendants">
+    </TimePicker>
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" >
+        <Button
+            android:id="@+id/button_alarmset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:textColor="@android:color/white"
+            android:text="@string/button_wake_up_string"
+            android:layout_marginRight="12dp"
+            style="?android:attr/buttonBarButtonStyle"
+            />
+        <Button
+            android:id="@+id/button_closepop_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_drawable"
+            android:textColor="@android:color/white"
+            android:text="@string/button_cancel_string"
+            style="?android:attr/buttonBarButtonStyle"/>
+    </TableRow>
+</LinearLayout>

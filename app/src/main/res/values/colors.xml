@@ -6,7 +6,7 @@
     <color name="colorAccent">#0109A0</color>
     <color name="backgroundGeneral">#222222</color>
     <color name="borderColor">#0077fa</color>
-    <color name="reveilUp">#51ff00</color>
-    <color name="reveilDown">#ff0008</color>
+    <color name="reveilUp">#669900</color>
+    <color name="reveilDown">#CC0000</color>
     <color name="hintColor">#a1a1a1</color>
 </resources>

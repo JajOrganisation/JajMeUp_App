@@ -5,11 +5,12 @@ import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.youtube.player.YouTubeBaseActivity
 import jajcompany.jajmeup.R
 import jajcompany.jajmeup.utils.Alarm
@@ -37,6 +38,14 @@ class LastAlarmActivity : AppCompatActivity() {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
             sharedPreferences.edit().putBoolean("on_wakeup_my_alarm_clock", true).apply()
             finish()
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            this.setShowWhenLocked(true)
+            this.setTurnScreenOn(true)
+        } else {
+            val windoWw = window
+            windoWw.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            windoWw.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
         }
         val audioManager: AudioManager = getSystemService(YouTubeBaseActivity.AUDIO_SERVICE) as AudioManager
         val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)

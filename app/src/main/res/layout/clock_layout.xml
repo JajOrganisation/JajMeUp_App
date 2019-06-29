@@ -1,51 +1,98 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clock_layout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="jajcompany.jajmeup.fragment.ClockFragment"
-    android:background="@drawable/gradientbackground">
+    android:background="@drawable/gradientbackground"
+    android:gravity="center_vertical|center_horizontal">
 
-    <TimePicker
+    <!--<TimePicker
         android:id="@+id/alarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:headerBackground="#313335"
-        android:numbersSelectorColor="@color/colorAccent">
+        android:numbersSelectorColor="@color/colorAccent"
+        android:descendantFocusability="blocksDescendants">
+    </TimePicker>-->
 
-    </TimePicker>
-
-    <TextView
-        android:id="@+id/alarmbetween"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="40pt"
-        android:layout_marginStart="10pt"
-        android:textSize="20sp"
-        android:text="@string/no_alarm"/>
-
-    <Switch
-        android:id="@+id/alarmSet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:minHeight="@android:dimen/notification_large_icon_height"
-        android:switchMinWidth="56dp"
-        android:textColorLink="@android:color/holo_red_dark"
-        android:maxHeight="10dp"
-        android:layout_marginBottom="60pt"/>
-
-    <!-- A GARDER DE COTE
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/cardView_item_person"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_margin="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        card_view:cardElevation="4dp"
+        card_view:contentPadding="4dp"
+        card_view:cardBackgroundColor="@android:color/transparent">
+        <TextView
+            android:id="@+id/hoursclock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="130sp"
+            android:text="00:00"/>
+    </androidx.cardview.widget.CardView>
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" >
+        <TextView
+            android:id="@+id/alarmbetween"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:text="@string/no_alarm"/>
+    </TableRow>
+    <TableRow
+        android:id="@+id/tableRow1oui"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" >
+        <TextView
+            android:id="@+id/alarmbetweenvalue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:text="@string/no_alarm"/>
+    </TableRow>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-    -->
+        android:layout_gravity="bottom|end">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/statusalarm" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/textstatus"
+            android:text="OFF"
+            android:elevation="16dp"
+            android:textColor="@android:color/white"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </FrameLayout>
+        <!--<android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@android:drawable/ic_dialog_email" />-->
 
-
-</FrameLayout>
+</LinearLayout>

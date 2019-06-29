@@ -5,10 +5,10 @@ import android.content.Intent
 import android.media.AudioManager
 import android.media.AudioManager.STREAM_MUSIC
 import android.opengl.Visibility
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.support.v4.content.WakefulBroadcastReceiver
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.util.Log
@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.legacy.content.WakefulBroadcastReceiver
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -49,6 +50,14 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            this.setShowWhenLocked(true)
+            this.setTurnScreenOn(true)
+        } else {
+            val windoWw = window
+            windoWw.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            windoWw.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+        }
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val audioManager: AudioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         val maxVolume = audioManager.getStreamMaxVolume(STREAM_MUSIC)

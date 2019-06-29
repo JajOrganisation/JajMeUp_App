@@ -13,14 +13,14 @@ import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.preference.PreferenceScreen
 import android.provider.MediaStore
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
 import android.transition.Slide
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.EmailAuthProvider
@@ -140,8 +140,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         override fun onPreferenceTreeClick(preferenceScreen: PreferenceScreen?, preference: Preference?): Boolean {
-            if (Jajinternet.getStatusInternet(context)) {
-                if (preference!!.key == "changepassword") {
+
+            if (preference!!.key == "changepassword") {
+                if (Jajinternet.getStatusInternet(context)) {
                     val inflater = LayoutInflater.from(context)
                     val view = inflater.inflate(R.layout.changepassword_popup_layout, null)
                     val popupWindow = PopupWindow(
@@ -201,12 +202,22 @@ class SettingsActivity : AppCompatActivity() {
                             0,
                             0
                     )
-                } else if (preference.key == "deconnect") {
+                }
+                else {
+                    Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+                }
+            } else if (preference.key == "deconnect") {
+                if (Jajinternet.getStatusInternet(context)) {
                     val sendDeconnect = LocalBroadcastManager.getInstance(context)
                     sendDeconnect
                             .sendBroadcast(Intent("deconnectUser"))
                     activity.finish()
-                } else if (preference.key == "deleteaccount") {
+                }
+                else {
+                    Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+                }
+            } else if (preference.key == "deleteaccount") {
+                if (Jajinternet.getStatusInternet(context)) {
                     val inflater = LayoutInflater.from(context)
                     val view = inflater.inflate(R.layout.deleteaccount_popup_layout, null)
                     val popupWindow = PopupWindow(
@@ -252,15 +263,19 @@ class SettingsActivity : AppCompatActivity() {
                             0,
                             0
                     )
-                } else if (preference.key == "last_alarm") {
-                    val intent = Intent().apply {
-                        type = "audio/*"
-                        action = Intent.ACTION_OPEN_DOCUMENT
-                        putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("audio/mpeg"))
-                    }
+                } else {
+                    Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+                }
+            } else if (preference.key == "last_alarm") {
+                val intent = Intent().apply {
+                    type = "audio/*"
+                    action = Intent.ACTION_OPEN_DOCUMENT
+                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("audio/mpeg"))
+                }
 
-                    startActivityForResult(Intent.createChooser(intent, "Select Audio"), 3)
-                } else if (preference.key == "default_alarm") {
+                startActivityForResult(Intent.createChooser(intent, "Select Audio"), 3)
+            } else if (preference.key == "default_alarm") {
+                if (Jajinternet.getStatusInternet(context)) {
                     val myClipboard: ClipboardManager? = activity.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
                     val primary = myClipboard?.primaryClip
                     val item = primary?.getItemAt(0)
@@ -285,17 +300,17 @@ class SettingsActivity : AppCompatActivity() {
                     val labelvideoname = view.findViewById<TextView>(R.id.youtube_video_nom_default_alarm)
                     val pattern = "(?<=watch\\?v=|/videos/|embed\\/|https://youtu.be/)[^#\\&\\?]*"
                     val compiledPattern = Pattern.compile(pattern)
-                    if(compiledPattern.matcher(item!!.text.toString()).find()) {
+                    if (compiledPattern.matcher(item!!.text.toString()).find()) {
                         Toast.makeText(context, R.string.copie_presse_papier, Toast.LENGTH_SHORT).show()
                         edityt.setText(item.text, TextView.BufferType.EDITABLE)
                         labelvideoname.visibility = View.VISIBLE
                         labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(item.text.toString())).take(50)
-                    }else if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
+                    } else if (PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456") != "123456") {
                         Toast.makeText(context, R.string.partage_recupere, Toast.LENGTH_SHORT).show()
                         edityt.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"), TextView.BufferType.EDITABLE)
                         labelvideoname.visibility = View.VISIBLE
                         labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(PreferenceManager.getDefaultSharedPreferences(context).getString("current_link", "123456"))).take(50)
-                    }else {
+                    } else {
                         PreferenceManager.getDefaultSharedPreferences(context).getString("default_reveil", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
                     }
 
@@ -329,8 +344,7 @@ class SettingsActivity : AppCompatActivity() {
                             edityt.setText(itemPastee.text.toString())
                             labelvideoname.visibility = View.VISIBLE
                             labelvideoname.text = YoutubeInformation.getTitleQuietly(YoutubeInformation.getIDFromURL(itemPastee.text.toString())).take(50)
-                        }
-                        else
+                        } else
                             Toast.makeText(context, "Aucun lien dans le presse-papier", Toast.LENGTH_SHORT).show()
                     }
                     popupWindow.showAtLocation(
@@ -339,46 +353,44 @@ class SettingsActivity : AppCompatActivity() {
                             0,
                             0
                     )
+                } else {
+                    Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
                 }
-                else if (preference.key == "volume") {
-                    val inflater = LayoutInflater.from(context)
-                    val view = inflater.inflate(R.layout.volumechange_popup_layout, null)
-                    val popupWindow = PopupWindow(
-                            view,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    val slideIn = Slide()
-                    slideIn.slideEdge = Gravity.TOP
-                    popupWindow.enterTransition = slideIn
-                    val slideOut = Slide()
-                    slideOut.slideEdge = Gravity.END
-                    popupWindow.exitTransition = slideOut
-                    popupWindow.isFocusable = true
-                    val closepop = view.findViewById<Button>(R.id.button_closepop_volume)
-                    val validationpop = view.findViewById<Button>(R.id.button_change_volume)
-                    val levelpref = view.findViewById<SeekBar>(R.id.volumelevelpref)
-                    levelpref.max = 10
-                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                    levelpref.progress = sharedPreferences.getInt("volume_reveil", 6)
-                    validationpop.setOnClickListener {
-                        Log.d("HELLO", "Volume level "+levelpref.progress.toString())
-                        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("volume_reveil", levelpref.progress).apply()
-                        popupWindow.dismiss()
-                    }
-                    closepop.setOnClickListener {
-                        popupWindow.dismiss()
-                    }
-                    popupWindow.showAtLocation(
-                            view,
-                            Gravity.CENTER,
-                            0,
-                            0
-                    )
+            } else if (preference.key == "volume") {
+                val inflater = LayoutInflater.from(context)
+                val view = inflater.inflate(R.layout.volumechange_popup_layout, null)
+                val popupWindow = PopupWindow(
+                        view,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                val slideIn = Slide()
+                slideIn.slideEdge = Gravity.TOP
+                popupWindow.enterTransition = slideIn
+                val slideOut = Slide()
+                slideOut.slideEdge = Gravity.END
+                popupWindow.exitTransition = slideOut
+                popupWindow.isFocusable = true
+                val closepop = view.findViewById<Button>(R.id.button_closepop_volume)
+                val validationpop = view.findViewById<Button>(R.id.button_change_volume)
+                val levelpref = view.findViewById<SeekBar>(R.id.volumelevelpref)
+                levelpref.max = 10
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                levelpref.progress = sharedPreferences.getInt("volume_reveil", 6)
+                validationpop.setOnClickListener {
+                    Log.d("HELLO", "Volume level " + levelpref.progress.toString())
+                    PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("volume_reveil", levelpref.progress).apply()
+                    popupWindow.dismiss()
                 }
-            }
-            else {
-                Toast.makeText(context, getString(R.string.erreur_internet), Toast.LENGTH_LONG).show()
+                closepop.setOnClickListener {
+                    popupWindow.dismiss()
+                }
+                popupWindow.showAtLocation(
+                        view,
+                        Gravity.CENTER,
+                        0,
+                        0
+                )
             }
             return super.onPreferenceTreeClick(preferenceScreen, preference)
         }

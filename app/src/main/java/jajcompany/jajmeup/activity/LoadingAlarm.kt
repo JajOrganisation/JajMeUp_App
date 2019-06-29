@@ -6,9 +6,10 @@ import android.content.Intent.FLAG_ACTIVITY_TASK_ON_HOME
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
+//import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import jajcompany.jajmeup.models.History
 import jajcompany.jajmeup.models.NotifWakeUp
@@ -24,10 +25,12 @@ class LoadingAlarm : AppCompatActivity() {
         Alarm.unsetNotif()
         Alarm.deleteAlarm()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            this.setShowWhenLocked(true)
             this.setTurnScreenOn(true)
         } else {
             val windoWw = window
-            windoWw.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            windoWw.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            windoWw.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
         }
         Log.d("HELLO", "Dans le loading")
         if (Jajinternet.getStatusInternet(this)) {

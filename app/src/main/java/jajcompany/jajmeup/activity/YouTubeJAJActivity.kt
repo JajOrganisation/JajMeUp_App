@@ -33,7 +33,7 @@ class YouTubeJAJActivity : YouTubeBaseActivity(){
     private var clicked = false
 
     companion object IntentOptions{
-        val API_KEY: String = "AIzaSyBjGxgGofuyFwavGjp4VMlNkfD0_iFcscg"
+        val API_KEY: String = "API_KEY"
         var votant:String? = ""
         var lien:String? = ""
         var message:String? = ""
